@@ -359,13 +359,7 @@ def BSIMBULKPAeffGeo(nf, geo, minSD, Weffcj, DMCG, DMCI, DMDG):
         Ad = 0
     return Ps, Pd, As, Ad
 
-def bsimbulk():
-    param = {
-        "L": 1e-6,
-        "TOXP": 1e-9,
-        "Temp": 125.0,
-        "Vg": 0.0
-    }
+def bsimbulk(param):
     ntype = 1
     ptype = -1
     q = 1.60219e-19
@@ -1529,7 +1523,7 @@ def bsimbulk():
     epsratio = EPSRSUB / EPSROX
 
     # Physical oxide thickness
-    if ("TOXP" not in keys(param)):
+    if ("TOXP" not in param.keys()):
         BSIMBULKTOXP = (TOXE * EPSROX / 3.9) - DTOX
     else:
         BSIMBULKTOXP = TOXP
@@ -1537,11 +1531,11 @@ def bsimbulk():
     W_mult = W * WMLT
     Lnew = L_mult + XL
     if (Lnew <= 0.0):
-        print("Fatal: Ldrawn * LMLT + XL = %e for %M is non-positive", Lnew)    
+        print("Fatal: Ldrawn * LMLT + XL = %e for %M is non-positive", Lnew)
     W_by_NF = W_mult / NF
     Wnew    = W_by_NF + XW
     if (Wnew <= 0.0):
-        print("Fatal: W / NF * WMLT + XW = %e for %M is non-positive", Wnew)    
+        print("Fatal: W / NF * WMLT + XW = %e for %M is non-positive", Wnew)
 
     # Leff and Weff for I-V
     L_LLN      = Lnew**-LLN
@@ -1556,12 +1550,12 @@ def bsimbulk():
     if (Leff <= 0.0):
         print("Fatal: Effective channel length = %e for  %M is non-positive", Leff)
     elif (Leff <= 1.0e-9):
-        print("Warning: Effective channel length = %e for %M is <= 1.0e-9. Recommended Leff >= 1e-8", Leff)    
+        print("Warning: Effective channel length = %e for %M is <= 1.0e-9. Recommended Leff >= 1e-8", Leff)
     Weff = Wnew - 2.0 * dWIV
     if (Weff <= 0.0):
          print("Fatal: Effective channel Width = %e for %M is non-positive", Weff)
     elif (Weff <= 1.0e-9):
-        print("Warning: Effective channel width = %e for %M is <= 1.0e-9. Recommended Weff >= 1e-8", Weff)    
+        print("Warning: Effective channel width = %e for %M is <= 1.0e-9. Recommended Weff >= 1e-8", Weff)
 
     # Leff and Weff for C-V
     dLCV = DLC + LLC * L_LLN + LWC * W_LWN + LWLC * LW_LLN_LWN
@@ -1575,7 +1569,7 @@ def bsimbulk():
     if (Wact <= 0.0):
         print("Fatal: Effective channel width for C-V = %e for %M is non-positive", Wact)
     elif (Wact <= 1.0e-9):
-        print("Warning: Effective channel width for C-V = %e for %M is <= 1.0e-9. Recommended Wact >= 1e-8", Wact)    
+        print("Warning: Effective channel width for C-V = %e for %M is <= 1.0e-9. Recommended Wact >= 1e-8", Wact)
 
     # Weffcj for diode, GIDL etc.
     dWJ    = DWJ + WLC / Lnew**WLN + WWC / Wnew**WWN + WWLC / Lnew**WLN / Wnew**WWN
@@ -1613,16 +1607,16 @@ def bsimbulk():
     dWB         = WINT + WL * L_WLN1 + WW * W_WWN1 + WWL * LW_WLN_WWN1
     Leff1 = Lnew - 2.0 * dLB + DLBIN
     if (Leff1 <= 0.0):
-        print("Fatal: Effective channel length for binning = %e for %M is non-positive", Leff1)    
+        print("Fatal: Effective channel length for binning = %e for %M is non-positive", Leff1)
     Weff1 = Wnew - 2.0 * dWB + DWBIN
     if (Weff1 <= 0.0):
-        print("Fatal: Effective channel width for binning = %e for %M is non-positive", Weff1)    
+        print("Fatal: Effective channel width for binning = %e for %M is non-positive", Weff1)
     if (BINUNIT == 1):
         BIN_L = 1.0e-6 / Leff1
         BIN_W = 1.0e-6 / Weff1
     else:
         BIN_L = 1.0 / Leff1
-        BIN_W = 1.0 / Weff1    
+        BIN_W = 1.0 / Weff1
     BIN_WL         = BIN_L * BIN_W
     VFB_i          = VFB + BIN_L * LVFB + BIN_W * WVFB + BIN_WL * PVFB
     VFBCV_i        = VFBCV + BIN_L * LVFBCV + BIN_W * WVFBCV + BIN_WL * PVFBCV
@@ -1788,7 +1782,7 @@ def bsimbulk():
         PDIBLCR_i = 0.0
         VSATR_i   = 0.0
         PSATR_i   = 0.0
-        PTWGR_i   = 0.0    
+        PTWGR_i   = 0.0
 
     # Geometrical scaling
     T0        = NDEPL1 * max(Inv_L**NDEPLEXP1 - Inv_Llong**NDEPLEXP1, 0.0) + NDEPL2 * max(Inv_L**NDEPLEXP2 - Inv_Llong**NDEPLEXP2, 0.0)
@@ -1800,7 +1794,7 @@ def bsimbulk():
     T0        = (1.0 + CDSCDL * max(Inv_L**CDSCDLEXP - Inv_Llong**CDSCDLEXP, 0.0))
     CDSCD_i   = CDSCD_i * T0
     if (ASYMMOD != 0):
-        CDSCDR_i = CDSCDR_i * T0    
+        CDSCDR_i = CDSCDR_i * T0
     CDSCB_i = CDSCB_i * (1.0 + CDSCBL * max(Inv_L**CDSCBLEXP - Inv_Llong**CDSCBLEXP, 0.0))
     U0_i    = MULU0 * U0_i
     if (MOBSCALE != 1):
@@ -1820,19 +1814,19 @@ def bsimbulk():
     T1   = UAW * max(Inv_W**UAWEXP - Inv_Wwide**UAWEXP, 0.0) + UAWL * Inv_WL**UAWLEXP
     UA_i = UA_i * (1.0 + T0 + T1)
     if (ASYMMOD != 0):
-        UAR_i = UAR_i * (1.0 + T0 + T1)    
+        UAR_i = UAR_i * (1.0 + T0 + T1)
     T0   = EUL * max(Inv_L**EULEXP - Inv_Llong**EULEXP, 0.0)
     T1   = EUW * max(Inv_W**EUWEXP - Inv_Wwide**EUWEXP, 0.0) + EUWL * Inv_WL**EUWLEXP
     EU_i = EU_i * (1.0 + T0 + T1)
     T0   = 1.0 + UDL * max(Inv_L**UDLEXP - Inv_Llong**UDLEXP, 0.0)
     UD_i = UD_i * T0
     if (ASYMMOD != 0):
-        UDR_i = UDR_i * T0    
+        UDR_i = UDR_i * T0
     T0   = UCL * max(Inv_L**UCLEXP - Inv_Llong**UCLEXP, 0.0)
     T1   = UCW * max(Inv_W**UCWEXP - Inv_Wwide**UCWEXP, 0.0) + UCWL * Inv_WL**UCWLEXP
     UC_i = UC_i * (1.0 + T0 + T1)
     if (ASYMMOD != 0):
-        UCR_i = UCR_i * (1.0 + T0 + T1)    
+        UCR_i = UCR_i * (1.0 + T0 + T1)
     T0     = max(Inv_L**DSUB - Inv_Llong**DSUB, 0.0)
     ETA0_i = ETA0_i * T0
     if (ASYMMOD != 0):
@@ -1913,11 +1907,11 @@ def bsimbulk():
         elif (UCSR_i > 2.0):
             UCSR_i = 2.0
     if (CGIDL_i < 0.0):
-        print("Fatal: CGIDL_i = %e is negative.", CGIDL_i)    
+        print("Fatal: CGIDL_i = %e is negative.", CGIDL_i)
     if (CGISL_i < 0.0):
-        print("Fatal: CGISL_i = %e is negative.", CGISL_i)    
+        print("Fatal: CGISL_i = %e is negative.", CGISL_i)
     if (CKAPPAD_i <= 0.0):
-        print("Fatal: CKAPPAD_i = %e is non-positive.", CKAPPAD_i)    
+        print("Fatal: CKAPPAD_i = %e is non-positive.", CKAPPAD_i)
     if (CKAPPAS_i <= 0.0):
         print("Fatal: CKAPPAS_i = %e is non-positive.", CKAPPAS_i)
     if (PDITS_i < 0.0):
@@ -1978,14 +1972,14 @@ def bsimbulk():
     DMDGeff = DMDG - DMCGT
 
     # Processing S/D resistances and conductances
-    if "NRS" in keys(param):
+    if "NRS" in param.keys():
         RSourceGeo = RSH * NRS
     elif (RGEOMOD > 0 and RSH > 0.0):
         RSourceGeo = BSIMBULKRdseffGeo(NF, GEOMOD, RGEOMOD, MINZ, Weff, RSH, DMCGeff, DMCIeff, DMDGeff, 1)
     else:
         RSourceGeo = 0.0
 
-    if "NRD" in keys(param):
+    if "NRD" in param.keys():
         RDrainGeo = RSH * NRD
     elif (RGEOMOD > 0 and RSH > 0.0):
         RDrainGeo = BSIMBULKRdseffGeo(NF, GEOMOD, RGEOMOD, MINZ, Weff, RSH, DMCGeff, DMCIeff, DMDGeff, 0)
@@ -2029,9 +2023,9 @@ def bsimbulk():
         Rbps = RBPS
         Rbdb = RBDB
         Rbsb = RBSB
-        if ("RBPS0" not in keys(param)) or ("RBPD0" not in keys(param)):
+        if ("RBPS0" not in param.keys()) or ("RBPD0" not in param.keys()):
             Bodymode = 1
-        elif ("RBSBX0" not in keys(param)) and ("RBSBY0" not in keys(param)) or ("RBDBX0" not in keys(param)) and ("RBDBY0" not in keys(param)):
+        elif ("RBSBX0" not in param.keys()) and ("RBSBY0" not in param.keys()) or ("RBDBX0" not in param.keys()) and ("RBDBY0" not in param.keys()):
             Bodymode = 3
         if (RBODYMOD == 2):
             if (Bodymode == 5):
@@ -2262,21 +2256,21 @@ def bsimbulk():
 
     # Effective S/D junction area and perimeters
     temp_PSeff, temp_PDeff, temp_ASeff, temp_ADeff = BSIMBULKPAeffGeo(NF, GEOMOD, MINZ, Weffcj, DMCGeff, DMCIeff, DMDGeff)
-    if "AS" in keys(param):
+    if "AS" in param.keys():
         ASeff = AS * WMLT * LMLT
     else:
         ASeff = temp_ASeff
     if (ASeff < 0.0):
         print("Warning: (instance %M) ASeff = %e is negative. Set to 0.0.", ASeff)
         ASeff = 0.0
-    if "AD" in keys(param):
+    if "AD" in param.keys():
         ADeff = AD * WMLT * LMLT
     else:
         ADeff = temp_ADeff
     if (ADeff < 0.0):
         print("Warning: (instance %M) ADeff = %e is negative. Set to 0.0.", ADeff)
         ADeff = 0.0
-    if "PS" in keys(param):
+    if "PS" in param.keys():
         if (PERMOD == 0):
             # PS does not include gate-edge perimeters
             PSeff = PS * WMLT
@@ -2288,7 +2282,7 @@ def bsimbulk():
         if (PSeff < 0.0):
             print("Warning: (instance %M) PSeff = %e is negative. Set to 0.0.", PSeff)
             PSeff = 0.0
-    if "PD" in keys(param):
+    if "PD" in param.keys():
         if (PERMOD == 0):
             # PD does not include gate-edge perimeters
             PDeff = PD * WMLT
@@ -2401,8 +2395,8 @@ def bsimbulk():
         local_sca = SCA
         local_scb = SCB
         local_scc = SCC
-        if ("SCA" not in keys(param)) and ("SCB" not in keys(param)) and ("SCC" not in keys(param)):
-            if ("SC" in keys(param)) and (SC > 0.0):
+        if ("SCA" not in param.keys()) and ("SCB" not in param.keys()) and ("SCC" not in param.keys()):
+            if ("SC" in param.keys()) and (SC > 0.0):
                 T1        = SC + Wdrn
                 T2        = 1.0 / SCREF
                 local_sca = SCREF * SCREF / (SC * T1)
@@ -3014,7 +3008,7 @@ def bsimbulk():
                     CIGS_i = 0.01
             else:
                 T1 = AIGS_i - BIGS_i * Vgs_eff
-    
+
             T2       = 1.0 + CIGS_i * Vgs_eff
             T3       = BechvbEdge * T1 * T2
             T4       = lexp(T3)
@@ -3073,7 +3067,7 @@ def bsimbulk():
     # Junction currents and capacitances
     # Source-side junction currents
     if (Isbs > 0.0):
-        if (Vbs_jct < VjsmRev)
+        if (Vbs_jct < VjsmRev):
             T0  = Vbs_jct / Nvtms
             T1  = lexp(T0) - 1.0
             T2  = IVjsmRev + SslpRev * (Vbs_jct - VjsmRev)
@@ -3090,7 +3084,7 @@ def bsimbulk():
 
     # Source-side junction tunneling currents
     if (JTSS_t > 0.0):
-        if ((VTSS - Vbs_jct) < (VTSS * 1.0e-3))
+        if ((VTSS - Vbs_jct) < (VTSS * 1.0e-3)):
             T0  = -Vbs_jct / Vtm0 / NJTS_t
             T1  = lexp(T0 * 1.0e3) - 1.0
             Ibs = Ibs - ASeff * JTSS_t * T1
@@ -3099,7 +3093,7 @@ def bsimbulk():
             T1  = lexp(T0 * VTSS / (VTSS - Vbs_jct)) - 1.0
             Ibs = Ibs - ASeff * JTSS_t * T1
     if (JTSSWS_t > 0.0):
-        if ((VTSSWS - Vbs_jct) < (VTSSWS * 1.0e-3))
+        if ((VTSSWS - Vbs_jct) < (VTSSWS * 1.0e-3)):
             T0  = -Vbs_jct / Vtm0 / NJTSSW_t
             T1  = lexp(T0 * 1.0e3) - 1.0
             Ibs = Ibs - PSeff * JTSSWS_t * T1
@@ -3119,7 +3113,7 @@ def bsimbulk():
 
     # Drain-side junction currents
     if (Isbd > 0.0):
-        if (Vbd_jct < VjdmRev)
+        if (Vbd_jct < VjdmRev):
             T0  = Vbd_jct / Nvtmd
             T1  = lexp(T0) - 1.0
             T2  = IVjdmRev + DslpRev * (Vbd_jct - VjdmRev)
@@ -3136,7 +3130,7 @@ def bsimbulk():
 
     # Drain-side junction tunneling currents
     if (JTSD_t > 0.0):
-        if ((VTSD - Vbd_jct) < (VTSD * 1.0e-3))
+        if ((VTSD - Vbd_jct) < (VTSD * 1.0e-3)):
             T0  = -Vbd_jct / Vtm0 / NJTSD_t
             T1  = lexp(T0 * 1.0e3) - 1.0
             Ibd = Ibd - ADeff * JTSD_t * T1
@@ -3144,8 +3138,8 @@ def bsimbulk():
             T0  = -Vbd_jct / Vtm0 / NJTSD_t
             T1  = lexp(T0 * VTSD/ (VTSD - Vbd_jct)) - 1.0
             Ibd = Ibd - ADeff * JTSD_t * T1
-    if (JTSSWD_t > 0.0)
-        if ((VTSSWD - Vbd_jct) < (VTSSWD * 1.0e-3))
+    if (JTSSWD_t > 0.0):
+        if ((VTSSWD - Vbd_jct) < (VTSSWD * 1.0e-3)):
             T0  = -Vbd_jct / Vtm0 / NJTSSWD_t
             T1  = lexp(T0 * 1.0e3) - 1.0
             Ibd = Ibd - PDeff * JTSSWD_t * T1
@@ -3153,9 +3147,8 @@ def bsimbulk():
             T0  = -Vbd_jct / Vtm0 / NJTSSWD_t
             T1  = lexp(T0 * VTSSWD / (VTSSWD - Vbd_jct)) - 1.0
             Ibd = Ibd - PDeff * JTSSWD_t * T1
-
-    if (JTSSWGD_t > 0.0)
-        if ((VTSSWGD - Vbd_jct) < (VTSSWGD * 1.0e-3))
+    if (JTSSWGD_t > 0.0):
+        if ((VTSSWGD - Vbd_jct) < (VTSSWGD * 1.0e-3)):
             T0  = -Vbd_jct / Vtm0 / NJTSSWGD_t
             T1  = lexp(T0 * 1.0e3) - 1.0
             Ibd = Ibd - Weffcj * NF * JTSSWGD_t * T1
@@ -3196,9 +3189,8 @@ def bsimbulk():
     Qbdj3 = JunCap(Czbdswg, Vbd_jct, PBSWGD_t, MJSWGD, czbdswg_p1, czbdswg_p2)
     Qbdj = Qbdj1 + Qbdj2 + Qbdj3
 
-    #=
     # Sub-surface leakage drain current
-    if (SSLMOD != 0)
+    if (SSLMOD != 0):
         T1 = (NDEP_i / 1.0e23)**SSLEXP1
         T2 = (300.0 / DevTemp)**SSLEXP2
         T3 = (devsign * SSL5 * (Vb - Vs)) / Vt
@@ -3210,13 +3202,13 @@ def bsimbulk():
     # Harshit's new flicker noise model. Ref: H. Agarwal et. al., IEEE J-EDS, vol. 3, no. 4, April 2015.
     Nt      = 4.0 * Vt * q
     Esatnoi = 2.0 * VSAT_a / ueff
-    if (EM <= 0.0)
+    if (EM <= 0.0):
        DelClm = 0.0
     else:
         T0     = (diffVds / litl + EM) / Esatnoi
         DelClm = litl * lln(T0)
-        if (DelClm < 0.0)
-           DelClm = 0.0
+        if (DelClm < 0.0):
+            DelClm = 0.0
 
     Nstar = Vt / q * (Cox + Cdep + CIT_i)
     Nl    = 2.0 * nq * Cox * Vt * qdeff * Mnud1 * Mnud / q
@@ -3225,15 +3217,14 @@ def bsimbulk():
     T0c   = NOIA + NOIB * Nl + NOIC * Nl * Nl
     T0d   = (Nl + Nstar) * (Nl + Nstar)
     T0e   = NOIA * q * Vt
-    if (FNOIMOD == 1)
+    if (FNOIMOD == 1):
         LH1 = LH
-        if (Leff > LH1)
+        if (Leff > LH1):
             T0 = (Leff - LH1)
         else:
             LH1 = Leff
             T0 = LH1
-
-        if(LINTNOI >= T0 / 2.0)
+        if (LINTNOI >= T0 / 2.0):
             print("Warning: LINTNOI = %e is too large - Leff for noise is negative. Re-setting LINTNOI = 0.", LINTNOI)
             LINTNOI_i = 0.0
         else:
@@ -3262,12 +3253,11 @@ def bsimbulk():
         # Normalized drain current for channel transistor. Eq. (15) of the paper
         i2 = ids * (LeffnoiH - LH1) / (2.0 * nq * beta_ch * nVt * nVt)
         T0 = (1.0 + 4.0 * (qsh * qsh + qsh - i1))
-        if (T0 < 1.0)
+        if (T0 < 1.0):
             qdh = 0.0
         else:
             # Drain charge of halo transistor. Eq. (16) of the paper
             qdh = -0.5 + 0.5 * sqrt(T0)
-
 
         # Source charge of channel transistor. Eq. (17) of the paper
         qsch   = -0.5 + 0.5 * sqrt(1.0 + 4.0 * (qdeff * qdeff + qdeff + i2))
@@ -3281,7 +3271,7 @@ def bsimbulk():
         CF_h   = R_h * R_h * t_tot
 
         # Local noise source
-        if (Leff != LH1)
+        if (Leff != LH1):
             Np2       = 2.0 * nq * Cox * Vt * qsch / q
             Leffnoi   = LeffnoiH - 2.0 * LINTNOI_i-LH1
             Leffnoisq = Leffnoi * Leffnoi
@@ -3295,36 +3285,32 @@ def bsimbulk():
             T6     = Weff * NF * Leffnoi * 1.0e10 * Nstar * Nstar
             Swi_ch = T0e / T6 * ids * ids
             T7 = Swi_ch + Ssi_ch
-            if (T7 > 0.0)
+            if (T7 > 0.0):
                 FNPowerAt1Hz_ch = (Ssi_ch * Swi_ch) / T7
             else:
                 FNPowerAt1Hz_ch = 0.0
-    
         else:
             FNPowerAt1Hz_ch = 0.0
-
-
         # Halo transistor LNS
         T8    = NOIA2 * q * Vt
         T9    = Weff * NF * LH1 * 1.0e10 * Nstar * Nstar
         Swi_h = T8 / T9 * ids * ids
         T10   = Swi_h
-        if (T10 > 0.0)
+        if (T10 > 0.0):
             FNPowerAt1Hz_h = Swi_h
         else:
             FNPowerAt1Hz_h = 0.0
-
         # Overall noise
         FNPowerAt1Hz = FNPowerAt1Hz_ch * CF_ch + FNPowerAt1Hz_h * CF_h
     else:
         # Parameter checking
-        if (LINTNOI >= Leff/2.0)
+        if (LINTNOI >= Leff/2.0):
             print("Warning: LINTNOI = %e is too large - Leff for noise is negative. Re-setting LINTNOI = 0.", LINTNOI)
             LINTNOI_i = 0.0
         else:
             LINTNOI_i = LINTNOI
 
-        if (NOIA > 0.0 or NOIB > 0.0 or NOIC > 0.0)
+        if (NOIA > 0.0 or NOIB > 0.0 or NOIC > 0.0):
             Leffnoi   = Leff - 2.0 * LINTNOI_i
             Leffnoisq = Leffnoi * Leffnoi
             T0        = 1.0e10 * Cox * Leffnoisq
@@ -3337,15 +3323,12 @@ def bsimbulk():
             T5        = Weff * NF * Leffnoi * 1.0e10 * Nstar * Nstar
             Swi       = T0e / T5 * ids * ids
             T6        = Swi + Ssi
-            if (T6 > 0.0)
+            if (T6 > 0.0):
                 FNPowerAt1Hz = (Ssi * Swi) / T6 / (1 + NOIA1 * (qs-qdeff)**NOIAX)
             else:
                 FNPowerAt1Hz = 0.0
-    
         else:
             FNPowerAt1Hz = 0.0
-
-
     T0         = qia / Esatnoi / Leff
     T1         = T0 * T0
     T3         = RNOIA * (1.0 + TNOIA * Leff * T1)
@@ -3357,7 +3340,6 @@ def bsimbulk():
     betaLowId  = T5 * T5
     thetanoisq = T4 * T4
     cm_igid    = 0.0
-    =#
 
     # C-V model
     vgfbCV   = vgfb
@@ -3448,7 +3430,7 @@ def bsimbulk():
         EsatL   = Esat * Lact
         Vasat   = VdssatCV + EsatL
         diffVds = Vds - Vdseff
-    if (PCLMCV_i != 0.0)
+    if (PCLMCV_i != 0.0):
         MdL = 1.0 + PCLMCV_i * lln(1.0 + diffVds / PCLMCV_i / Vasat)
     else:
         MdL = 1.0
@@ -3498,8 +3480,8 @@ def bsimbulk():
     QGi        = -(QBi + QSi + QDi)
 
     # Outer fringing capacitances
-    if ("CF" not in keys(param)):
-        CF_i = 2.0 * EPSROX * EPS0 / M_PI * lln(CFRCOEFF * (1.0 + 0.4e-6 / TOXE))    
+    if ("CF" not in param.keys()):
+        CF_i = 2.0 * EPSROX * EPS0 / M_PI * lln(CFRCOEFF * (1.0 + 0.4e-6 / TOXE))
     Cgsof = CGSO + CF_i
     Cgdof = CGDO + CF_i
 
@@ -3519,7 +3501,6 @@ def bsimbulk():
     Qovb = -devsign * NF * Lact * CGBO * (Vg - Vb)
     Qovg = -(Qovs + Qovd + Qovb)
 
-    #=
     # Edge FET model
     if (EDGEFET == 1):
         phib_edge     = lln(NDEPEDGE_i / ni)
@@ -3547,7 +3528,7 @@ def bsimbulk():
         if (T0 < 40.0):
             theta_sce_edge = 0.5 * DVT0EDGE / (cosh(T0) - 1.0)
         else:
-            theta_sce_edge = DVT0EDGE * lexp(-T0)       
+            theta_sce_edge = DVT0EDGE * lexp(-T0)
         dvth_sce  = theta_sce_edge * (Vbi_edge - Phist)
         Vth_shift = dvth_dibl - dvth_temp + dvth_sce + DVTEDGE + vth0_stress_EDGE - K2EDGE_i * Vbsx
         vgfb      = vg - vfb - Vth_shift * inv_nVt
@@ -3584,8 +3565,16 @@ def bsimbulk():
         T2       = sqrt(T0)
         nq_edge  = 1.0 + gam_edge / (sqrtpsip + T2)
         ids_edge = 2.0 * NF * nq_edge * ueff * WEDGE / Leff * Cox * nVt * nVt * ((qs_edge - qdeff_edge) * (1.0 + qs_edge + qdeff_edge)) * Moc
-        ids      = ids_edge + ids    
-    =#
+        ids      = ids_edge + ids
     return ids
 
-bsimbulk()
+param = {
+    "L": 1e-6,
+    "TOXP": 1e-9,
+    "Temp": 125.0,
+    "Vg": 0.1,
+    "Vd": 0.1,
+}
+
+yy=bsimbulk(param)
+print(yy)
