@@ -1,0 +1,4184 @@
+if self.Lgiven == True:
+    self.L = param['L']
+else:
+    self.L = 1e-05
+if self.Wgiven == True:
+    self.W = param['W']
+else:
+    self.W = 1e-05
+if self.NFgiven == True:
+    self.NF = param['NF']
+else:
+    self.NF = 1.0
+if self.NRSgiven == True:
+    self.NRS = param['NRS']
+else:
+    self.NRS = 1.0
+if self.NRDgiven == True:
+    self.NRD = param['NRD']
+else:
+    self.NRD = 1.0
+if self.VFBSDOFFgiven == True:
+    self.VFBSDOFF = param['VFBSDOFF']
+else:
+    self.VFBSDOFF = 0.0
+if self.MINZgiven == True:
+    self.MINZ = param['MINZ']
+else:
+    self.MINZ = 0.0
+if self.RGATEMODgiven == True:
+    self.RGATEMOD = param['RGATEMOD']
+else:
+    self.RGATEMOD = 0.0
+if self.RBODYMODgiven == True:
+    self.RBODYMOD = param['RBODYMOD']
+else:
+    self.RBODYMOD = 0.0
+if self.GEOMODgiven == True:
+    self.GEOMOD = param['GEOMOD']
+else:
+    self.GEOMOD = 0.0
+if self.RGEOMODgiven == True:
+    self.RGEOMOD = param['RGEOMOD']
+else:
+    self.RGEOMOD = 0.0
+if self.RBPBgiven == True:
+    self.RBPB = param['RBPB']
+else:
+    self.RBPB = 50.0
+if self.RBPDgiven == True:
+    self.RBPD = param['RBPD']
+else:
+    self.RBPD = 50.0
+if self.RBPSgiven == True:
+    self.RBPS = param['RBPS']
+else:
+    self.RBPS = 50.0
+if self.RBDBgiven == True:
+    self.RBDB = param['RBDB']
+else:
+    self.RBDB = 50.0
+if self.RBSBgiven == True:
+    self.RBSB = param['RBSB']
+else:
+    self.RBSB = 50.0
+if self.SAgiven == True:
+    self.SA = param['SA']
+else:
+    self.SA = 0.0
+if self.SBgiven == True:
+    self.SB = param['SB']
+else:
+    self.SB = 0.0
+if self.SDgiven == True:
+    self.SD = param['SD']
+else:
+    self.SD = 0.0
+if self.SCAgiven == True:
+    self.SCA = param['SCA']
+else:
+    self.SCA = 0.0
+if self.SCBgiven == True:
+    self.SCB = param['SCB']
+else:
+    self.SCB = 0.0
+if self.SCCgiven == True:
+    self.SCC = param['SCC']
+else:
+    self.SCC = 0.0
+if self.SCgiven == True:
+    self.SC = param['SC']
+else:
+    self.SC = 0.0
+if self.ASgiven == True:
+    self.AS = param['AS']
+else:
+    self.AS = 0.0
+if self.ADgiven == True:
+    self.AD = param['AD']
+else:
+    self.AD = 0.0
+if self.PSgiven == True:
+    self.PS = param['PS']
+else:
+    self.PS = 0.0
+if self.PDgiven == True:
+    self.PD = param['PD']
+else:
+    self.PD = 0.0
+if self.XGWgiven == True:
+    self.XGW = param['XGW']
+else:
+    self.XGW = 0.0
+if self.NGCONgiven == True:
+    self.NGCON = param['NGCON']
+else:
+    self.NGCON = 1.0
+if self.DTEMPgiven == True:
+    self.DTEMP = param['DTEMP']
+else:
+    self.DTEMP = 0.0
+if self.MULU0given == True:
+    self.MULU0 = param['MULU0']
+else:
+    self.MULU0 = 1.0
+if self.DELVTOgiven == True:
+    self.DELVTO = param['DELVTO']
+else:
+    self.DELVTO = 0.0
+if self.IDS0MULTgiven == True:
+    self.IDS0MULT = param['IDS0MULT']
+else:
+    self.IDS0MULT = 1.0
+if self.EDGEFETgiven == True:
+    self.EDGEFET = param['EDGEFET']
+else:
+    self.EDGEFET = 0.0
+if self.SSLMODgiven == True:
+    self.SSLMOD = param['SSLMOD']
+else:
+    self.SSLMOD = 0.0
+if self.TYPEgiven == True:
+    self.TYPE = param['TYPE']
+else:
+    self.TYPE = self.ntype
+if self.CVMODgiven == True:
+    self.CVMOD = param['CVMOD']
+else:
+    self.CVMOD = 0.0
+if self.COVMODgiven == True:
+    self.COVMOD = param['COVMOD']
+else:
+    self.COVMOD = 0.0
+if self.RDSMODgiven == True:
+    self.RDSMOD = param['RDSMOD']
+else:
+    self.RDSMOD = 0.0
+if self.WPEMODgiven == True:
+    self.WPEMOD = param['WPEMOD']
+else:
+    self.WPEMOD = 0.0
+if self.ASYMMODgiven == True:
+    self.ASYMMOD = param['ASYMMOD']
+else:
+    self.ASYMMOD = 0.0
+if self.GIDLMODgiven == True:
+    self.GIDLMOD = param['GIDLMOD']
+else:
+    self.GIDLMOD = 0.0
+if self.IGCMODgiven == True:
+    self.IGCMOD = param['IGCMOD']
+else:
+    self.IGCMOD = 0.0
+if self.IGBMODgiven == True:
+    self.IGBMOD = param['IGBMOD']
+else:
+    self.IGBMOD = 0.0
+if self.TNOIMODgiven == True:
+    self.TNOIMOD = param['TNOIMOD']
+else:
+    self.TNOIMOD = 0.0
+if self.SHMODgiven == True:
+    self.SHMOD = param['SHMOD']
+else:
+    self.SHMOD = 0.0
+if self.MOBSCALEgiven == True:
+    self.MOBSCALE = param['MOBSCALE']
+else:
+    self.MOBSCALE = 0.0
+if self.LLONGgiven == True:
+    self.LLONG = param['LLONG']
+else:
+    self.LLONG = 1e-05
+if self.LMLTgiven == True:
+    self.LMLT = param['LMLT']
+else:
+    self.LMLT = 1.0
+if self.WMLTgiven == True:
+    self.WMLT = param['WMLT']
+else:
+    self.WMLT = 1.0
+if self.XLgiven == True:
+    self.XL = param['XL']
+else:
+    self.XL = 0.0
+if self.WWIDEgiven == True:
+    self.WWIDE = param['WWIDE']
+else:
+    self.WWIDE = 1e-05
+if self.XWgiven == True:
+    self.XW = param['XW']
+else:
+    self.XW = 0.0
+if self.LINTgiven == True:
+    self.LINT = param['LINT']
+else:
+    self.LINT = 0.0
+if self.LLgiven == True:
+    self.LL = param['LL']
+else:
+    self.LL = 0.0
+if self.LWgiven == True:
+    self.LW = param['LW']
+else:
+    self.LW = 0.0
+if self.LWLgiven == True:
+    self.LWL = param['LWL']
+else:
+    self.LWL = 0.0
+if self.LLNgiven == True:
+    self.LLN = param['LLN']
+else:
+    self.LLN = 1.0
+if self.LWNgiven == True:
+    self.LWN = param['LWN']
+else:
+    self.LWN = 1.0
+if self.WINTgiven == True:
+    self.WINT = param['WINT']
+else:
+    self.WINT = 0.0
+if self.WLgiven == True:
+    self.WL = param['WL']
+else:
+    self.WL = 0.0
+if self.WWgiven == True:
+    self.WW = param['WW']
+else:
+    self.WW = 0.0
+if self.WWLgiven == True:
+    self.WWL = param['WWL']
+else:
+    self.WWL = 0.0
+if self.WLNgiven == True:
+    self.WLN = param['WLN']
+else:
+    self.WLN = 1.0
+if self.WWNgiven == True:
+    self.WWN = param['WWN']
+else:
+    self.WWN = 1.0
+if self.DLCgiven == True:
+    self.DLC = param['DLC']
+else:
+    self.DLC = 0.0
+if self.LLCgiven == True:
+    self.LLC = param['LLC']
+else:
+    self.LLC = 0.0
+if self.LWCgiven == True:
+    self.LWC = param['LWC']
+else:
+    self.LWC = 0.0
+if self.LWLCgiven == True:
+    self.LWLC = param['LWLC']
+else:
+    self.LWLC = 0.0
+if self.DWCgiven == True:
+    self.DWC = param['DWC']
+else:
+    self.DWC = 0.0
+if self.WLCgiven == True:
+    self.WLC = param['WLC']
+else:
+    self.WLC = 0.0
+if self.WWCgiven == True:
+    self.WWC = param['WWC']
+else:
+    self.WWC = 0.0
+if self.WWLCgiven == True:
+    self.WWLC = param['WWLC']
+else:
+    self.WWLC = 0.0
+if self.TOXEgiven == True:
+    self.TOXE = param['TOXE']
+else:
+    self.TOXE = 3e-09
+if self.TOXPgiven == True:
+    self.TOXP = param['TOXP']
+else:
+    self.TOXP = self.TOXE
+if self.DTOXgiven == True:
+    self.DTOX = param['DTOX']
+else:
+    self.DTOX = 0.0
+if self.NDEPgiven == True:
+    self.NDEP = param['NDEP']
+else:
+    self.NDEP = 1e+24
+if self.NDEPL1given == True:
+    self.NDEPL1 = param['NDEPL1']
+else:
+    self.NDEPL1 = 0.0
+if self.NDEPLEXP1given == True:
+    self.NDEPLEXP1 = param['NDEPLEXP1']
+else:
+    self.NDEPLEXP1 = 1.0
+if self.NDEPL2given == True:
+    self.NDEPL2 = param['NDEPL2']
+else:
+    self.NDEPL2 = 0.0
+if self.NDEPLEXP2given == True:
+    self.NDEPLEXP2 = param['NDEPLEXP2']
+else:
+    self.NDEPLEXP2 = 2.0
+if self.NDEPWgiven == True:
+    self.NDEPW = param['NDEPW']
+else:
+    self.NDEPW = 0.0
+if self.NDEPWEXPgiven == True:
+    self.NDEPWEXP = param['NDEPWEXP']
+else:
+    self.NDEPWEXP = 1.0
+if self.NDEPWLgiven == True:
+    self.NDEPWL = param['NDEPWL']
+else:
+    self.NDEPWL = 0.0
+if self.NDEPWLEXPgiven == True:
+    self.NDEPWLEXP = param['NDEPWLEXP']
+else:
+    self.NDEPWLEXP = 1.0
+if self.LNDEPgiven == True:
+    self.LNDEP = param['LNDEP']
+else:
+    self.LNDEP = 0.0
+if self.WNDEPgiven == True:
+    self.WNDEP = param['WNDEP']
+else:
+    self.WNDEP = 0.0
+if self.PNDEPgiven == True:
+    self.PNDEP = param['PNDEP']
+else:
+    self.PNDEP = 0.0
+if self.NDEPCVgiven == True:
+    self.NDEPCV = param['NDEPCV']
+else:
+    self.NDEPCV = 1e+24
+if self.NDEPCVL1given == True:
+    self.NDEPCVL1 = param['NDEPCVL1']
+else:
+    self.NDEPCVL1 = 0.0
+if self.NDEPCVLEXP1given == True:
+    self.NDEPCVLEXP1 = param['NDEPCVLEXP1']
+else:
+    self.NDEPCVLEXP1 = 1.0
+if self.NDEPCVL2given == True:
+    self.NDEPCVL2 = param['NDEPCVL2']
+else:
+    self.NDEPCVL2 = 0.0
+if self.NDEPCVLEXP2given == True:
+    self.NDEPCVLEXP2 = param['NDEPCVLEXP2']
+else:
+    self.NDEPCVLEXP2 = 2.0
+if self.NDEPCVWgiven == True:
+    self.NDEPCVW = param['NDEPCVW']
+else:
+    self.NDEPCVW = 0.0
+if self.NDEPCVWEXPgiven == True:
+    self.NDEPCVWEXP = param['NDEPCVWEXP']
+else:
+    self.NDEPCVWEXP = 1.0
+if self.NDEPCVWLgiven == True:
+    self.NDEPCVWL = param['NDEPCVWL']
+else:
+    self.NDEPCVWL = 0.0
+if self.NDEPCVWLEXPgiven == True:
+    self.NDEPCVWLEXP = param['NDEPCVWLEXP']
+else:
+    self.NDEPCVWLEXP = 1.0
+if self.LNDEPCVgiven == True:
+    self.LNDEPCV = param['LNDEPCV']
+else:
+    self.LNDEPCV = 0.0
+if self.WNDEPCVgiven == True:
+    self.WNDEPCV = param['WNDEPCV']
+else:
+    self.WNDEPCV = 0.0
+if self.PNDEPCVgiven == True:
+    self.PNDEPCV = param['PNDEPCV']
+else:
+    self.PNDEPCV = 0.0
+if self.NGATEgiven == True:
+    self.NGATE = param['NGATE']
+else:
+    self.NGATE = 5e+25
+if self.LNGATEgiven == True:
+    self.LNGATE = param['LNGATE']
+else:
+    self.LNGATE = 0.0
+if self.WNGATEgiven == True:
+    self.WNGATE = param['WNGATE']
+else:
+    self.WNGATE = 0.0
+if self.PNGATEgiven == True:
+    self.PNGATE = param['PNGATE']
+else:
+    self.PNGATE = 0.0
+if self.EASUBgiven == True:
+    self.EASUB = param['EASUB']
+else:
+    self.EASUB = 4.05
+if self.NI0SUBgiven == True:
+    self.NI0SUB = param['NI0SUB']
+else:
+    self.NI0SUB = 1.1e+16
+if self.BG0SUBgiven == True:
+    self.BG0SUB = param['BG0SUB']
+else:
+    self.BG0SUB = 1.17
+if self.EPSRSUBgiven == True:
+    self.EPSRSUB = param['EPSRSUB']
+else:
+    self.EPSRSUB = 11.9
+if self.EPSROXgiven == True:
+    self.EPSROX = param['EPSROX']
+else:
+    self.EPSROX = 3.9
+if self.XJgiven == True:
+    self.XJ = param['XJ']
+else:
+    self.XJ = 1.5e-07
+if self.LXJgiven == True:
+    self.LXJ = param['LXJ']
+else:
+    self.LXJ = 0.0
+if self.WXJgiven == True:
+    self.WXJ = param['WXJ']
+else:
+    self.WXJ = 0.0
+if self.PXJgiven == True:
+    self.PXJ = param['PXJ']
+else:
+    self.PXJ = 0.0
+if self.VFBgiven == True:
+    self.VFB = param['VFB']
+else:
+    self.VFB = -0.5
+if self.LVFBgiven == True:
+    self.LVFB = param['LVFB']
+else:
+    self.LVFB = 0.0
+if self.WVFBgiven == True:
+    self.WVFB = param['WVFB']
+else:
+    self.WVFB = 0.0
+if self.PVFBgiven == True:
+    self.PVFB = param['PVFB']
+else:
+    self.PVFB = 0.0
+if self.VFBCVgiven == True:
+    self.VFBCV = param['VFBCV']
+else:
+    self.VFBCV = -0.5
+if self.LVFBCVgiven == True:
+    self.LVFBCV = param['LVFBCV']
+else:
+    self.LVFBCV = 0.0
+if self.WVFBCVgiven == True:
+    self.WVFBCV = param['WVFBCV']
+else:
+    self.WVFBCV = 0.0
+if self.PVFBCVgiven == True:
+    self.PVFBCV = param['PVFBCV']
+else:
+    self.PVFBCV = 0.0
+if self.VFBCVLgiven == True:
+    self.VFBCVL = param['VFBCVL']
+else:
+    self.VFBCVL = 0.0
+if self.VFBCVLEXPgiven == True:
+    self.VFBCVLEXP = param['VFBCVLEXP']
+else:
+    self.VFBCVLEXP = 1.0
+if self.VFBCVWgiven == True:
+    self.VFBCVW = param['VFBCVW']
+else:
+    self.VFBCVW = 0.0
+if self.VFBCVWEXPgiven == True:
+    self.VFBCVWEXP = param['VFBCVWEXP']
+else:
+    self.VFBCVWEXP = 1.0
+if self.VFBCVWLgiven == True:
+    self.VFBCVWL = param['VFBCVWL']
+else:
+    self.VFBCVWL = 0.0
+if self.VFBCVWLEXPgiven == True:
+    self.VFBCVWLEXP = param['VFBCVWLEXP']
+else:
+    self.VFBCVWLEXP = 1.0
+if self.DELVFBACCgiven == True:
+    self.DELVFBACC = param['DELVFBACC']
+else:
+    self.DELVFBACC = 0.0
+if self.PERMODgiven == True:
+    self.PERMOD = param['PERMOD']
+else:
+    self.PERMOD = 1.0
+if self.DWJgiven == True:
+    self.DWJ = param['DWJ']
+else:
+    self.DWJ = self.DWC
+if self.NSDgiven == True:
+    self.NSD = param['NSD']
+else:
+    self.NSD = 1e+26
+if self.LNSDgiven == True:
+    self.LNSD = param['LNSD']
+else:
+    self.LNSD = 0.0
+if self.WNSDgiven == True:
+    self.WNSD = param['WNSD']
+else:
+    self.WNSD = 0.0
+if self.PNSDgiven == True:
+    self.PNSD = param['PNSD']
+else:
+    self.PNSD = 0.0
+if self.DVTP0given == True:
+    self.DVTP0 = param['DVTP0']
+else:
+    self.DVTP0 = 0.0
+if self.LDVTP0given == True:
+    self.LDVTP0 = param['LDVTP0']
+else:
+    self.LDVTP0 = 0.0
+if self.WDVTP0given == True:
+    self.WDVTP0 = param['WDVTP0']
+else:
+    self.WDVTP0 = 0.0
+if self.PDVTP0given == True:
+    self.PDVTP0 = param['PDVTP0']
+else:
+    self.PDVTP0 = 0.0
+if self.DVTP1given == True:
+    self.DVTP1 = param['DVTP1']
+else:
+    self.DVTP1 = 0.0
+if self.LDVTP1given == True:
+    self.LDVTP1 = param['LDVTP1']
+else:
+    self.LDVTP1 = 0.0
+if self.WDVTP1given == True:
+    self.WDVTP1 = param['WDVTP1']
+else:
+    self.WDVTP1 = 0.0
+if self.PDVTP1given == True:
+    self.PDVTP1 = param['PDVTP1']
+else:
+    self.PDVTP1 = 0.0
+if self.DVTP2given == True:
+    self.DVTP2 = param['DVTP2']
+else:
+    self.DVTP2 = 0.0
+if self.LDVTP2given == True:
+    self.LDVTP2 = param['LDVTP2']
+else:
+    self.LDVTP2 = 0.0
+if self.WDVTP2given == True:
+    self.WDVTP2 = param['WDVTP2']
+else:
+    self.WDVTP2 = 0.0
+if self.PDVTP2given == True:
+    self.PDVTP2 = param['PDVTP2']
+else:
+    self.PDVTP2 = 0.0
+if self.DVTP3given == True:
+    self.DVTP3 = param['DVTP3']
+else:
+    self.DVTP3 = 0.0
+if self.LDVTP3given == True:
+    self.LDVTP3 = param['LDVTP3']
+else:
+    self.LDVTP3 = 0.0
+if self.WDVTP3given == True:
+    self.WDVTP3 = param['WDVTP3']
+else:
+    self.WDVTP3 = 0.0
+if self.PDVTP3given == True:
+    self.PDVTP3 = param['PDVTP3']
+else:
+    self.PDVTP3 = 0.0
+if self.DVTP4given == True:
+    self.DVTP4 = param['DVTP4']
+else:
+    self.DVTP4 = 0.0
+if self.LDVTP4given == True:
+    self.LDVTP4 = param['LDVTP4']
+else:
+    self.LDVTP4 = 0.0
+if self.WDVTP4given == True:
+    self.WDVTP4 = param['WDVTP4']
+else:
+    self.WDVTP4 = 0.0
+if self.PDVTP4given == True:
+    self.PDVTP4 = param['PDVTP4']
+else:
+    self.PDVTP4 = 0.0
+if self.DVTP5given == True:
+    self.DVTP5 = param['DVTP5']
+else:
+    self.DVTP5 = 0.0
+if self.LDVTP5given == True:
+    self.LDVTP5 = param['LDVTP5']
+else:
+    self.LDVTP5 = 0.0
+if self.WDVTP5given == True:
+    self.WDVTP5 = param['WDVTP5']
+else:
+    self.WDVTP5 = 0.0
+if self.PDVTP5given == True:
+    self.PDVTP5 = param['PDVTP5']
+else:
+    self.PDVTP5 = 0.0
+if self.PHINgiven == True:
+    self.PHIN = param['PHIN']
+else:
+    self.PHIN = 0.045
+if self.LPHINgiven == True:
+    self.LPHIN = param['LPHIN']
+else:
+    self.LPHIN = 0.0
+if self.WPHINgiven == True:
+    self.WPHIN = param['WPHIN']
+else:
+    self.WPHIN = 0.0
+if self.PPHINgiven == True:
+    self.PPHIN = param['PPHIN']
+else:
+    self.PPHIN = 0.0
+if self.ETA0given == True:
+    self.ETA0 = param['ETA0']
+else:
+    self.ETA0 = 0.08
+if self.LETA0given == True:
+    self.LETA0 = param['LETA0']
+else:
+    self.LETA0 = 0.0
+if self.WETA0given == True:
+    self.WETA0 = param['WETA0']
+else:
+    self.WETA0 = 0.0
+if self.PETA0given == True:
+    self.PETA0 = param['PETA0']
+else:
+    self.PETA0 = 0.0
+if self.ETA0Rgiven == True:
+    self.ETA0R = param['ETA0R']
+else:
+    self.ETA0R = self.ETA0
+if self.LETA0Rgiven == True:
+    self.LETA0R = param['LETA0R']
+else:
+    self.LETA0R = self.LETA0
+if self.WETA0Rgiven == True:
+    self.WETA0R = param['WETA0R']
+else:
+    self.WETA0R = self.WETA0
+if self.PETA0Rgiven == True:
+    self.PETA0R = param['PETA0R']
+else:
+    self.PETA0R = self.PETA0
+if self.DSUBgiven == True:
+    self.DSUB = param['DSUB']
+else:
+    self.DSUB = 1.0
+if self.ETABgiven == True:
+    self.ETAB = param['ETAB']
+else:
+    self.ETAB = -0.07
+if self.ETABEXPgiven == True:
+    self.ETABEXP = param['ETABEXP']
+else:
+    self.ETABEXP = 1.0
+if self.LETABgiven == True:
+    self.LETAB = param['LETAB']
+else:
+    self.LETAB = 0.0
+if self.WETABgiven == True:
+    self.WETAB = param['WETAB']
+else:
+    self.WETAB = 0.0
+if self.PETABgiven == True:
+    self.PETAB = param['PETAB']
+else:
+    self.PETAB = 0.0
+if self.K1given == True:
+    self.K1 = param['K1']
+else:
+    self.K1 = 0.0
+if self.K1Lgiven == True:
+    self.K1L = param['K1L']
+else:
+    self.K1L = 0.0
+if self.K1LEXPgiven == True:
+    self.K1LEXP = param['K1LEXP']
+else:
+    self.K1LEXP = 1.0
+if self.K1Wgiven == True:
+    self.K1W = param['K1W']
+else:
+    self.K1W = 0.0
+if self.K1WEXPgiven == True:
+    self.K1WEXP = param['K1WEXP']
+else:
+    self.K1WEXP = 1.0
+if self.K1WLgiven == True:
+    self.K1WL = param['K1WL']
+else:
+    self.K1WL = 0.0
+if self.K1WLEXPgiven == True:
+    self.K1WLEXP = param['K1WLEXP']
+else:
+    self.K1WLEXP = 1.0
+if self.LK1given == True:
+    self.LK1 = param['LK1']
+else:
+    self.LK1 = 0.0
+if self.WK1given == True:
+    self.WK1 = param['WK1']
+else:
+    self.WK1 = 0.0
+if self.PK1given == True:
+    self.PK1 = param['PK1']
+else:
+    self.PK1 = 0.0
+if self.K2given == True:
+    self.K2 = param['K2']
+else:
+    self.K2 = 0.0
+if self.K2Lgiven == True:
+    self.K2L = param['K2L']
+else:
+    self.K2L = 0.0
+if self.K2LEXPgiven == True:
+    self.K2LEXP = param['K2LEXP']
+else:
+    self.K2LEXP = 1.0
+if self.K2Wgiven == True:
+    self.K2W = param['K2W']
+else:
+    self.K2W = 0.0
+if self.K2WEXPgiven == True:
+    self.K2WEXP = param['K2WEXP']
+else:
+    self.K2WEXP = 1.0
+if self.K2WLgiven == True:
+    self.K2WL = param['K2WL']
+else:
+    self.K2WL = 0.0
+if self.K2WLEXPgiven == True:
+    self.K2WLEXP = param['K2WLEXP']
+else:
+    self.K2WLEXP = 1.0
+if self.LK2given == True:
+    self.LK2 = param['LK2']
+else:
+    self.LK2 = 0.0
+if self.WK2given == True:
+    self.WK2 = param['WK2']
+else:
+    self.WK2 = 0.0
+if self.PK2given == True:
+    self.PK2 = param['PK2']
+else:
+    self.PK2 = 0.0
+if self.ADOSgiven == True:
+    self.ADOS = param['ADOS']
+else:
+    self.ADOS = 0.0
+if self.BDOSgiven == True:
+    self.BDOS = param['BDOS']
+else:
+    self.BDOS = 1.0
+if self.QM0given == True:
+    self.QM0 = param['QM0']
+else:
+    self.QM0 = 0.001
+if self.ETAQMgiven == True:
+    self.ETAQM = param['ETAQM']
+else:
+    self.ETAQM = 0.54
+if self.CITgiven == True:
+    self.CIT = param['CIT']
+else:
+    self.CIT = 0.0
+if self.LCITgiven == True:
+    self.LCIT = param['LCIT']
+else:
+    self.LCIT = 0.0
+if self.WCITgiven == True:
+    self.WCIT = param['WCIT']
+else:
+    self.WCIT = 0.0
+if self.PCITgiven == True:
+    self.PCIT = param['PCIT']
+else:
+    self.PCIT = 0.0
+if self.NFACTORgiven == True:
+    self.NFACTOR = param['NFACTOR']
+else:
+    self.NFACTOR = 0.0
+if self.NFACTORLgiven == True:
+    self.NFACTORL = param['NFACTORL']
+else:
+    self.NFACTORL = 0.0
+if self.NFACTORLEXPgiven == True:
+    self.NFACTORLEXP = param['NFACTORLEXP']
+else:
+    self.NFACTORLEXP = 1.0
+if self.NFACTORWgiven == True:
+    self.NFACTORW = param['NFACTORW']
+else:
+    self.NFACTORW = 0.0
+if self.NFACTORWEXPgiven == True:
+    self.NFACTORWEXP = param['NFACTORWEXP']
+else:
+    self.NFACTORWEXP = 1.0
+if self.NFACTORWLgiven == True:
+    self.NFACTORWL = param['NFACTORWL']
+else:
+    self.NFACTORWL = 0.0
+if self.NFACTORWLEXPgiven == True:
+    self.NFACTORWLEXP = param['NFACTORWLEXP']
+else:
+    self.NFACTORWLEXP = 1.0
+if self.LNFACTORgiven == True:
+    self.LNFACTOR = param['LNFACTOR']
+else:
+    self.LNFACTOR = 0.0
+if self.WNFACTORgiven == True:
+    self.WNFACTOR = param['WNFACTOR']
+else:
+    self.WNFACTOR = 0.0
+if self.PNFACTORgiven == True:
+    self.PNFACTOR = param['PNFACTOR']
+else:
+    self.PNFACTOR = 0.0
+if self.CDSCDgiven == True:
+    self.CDSCD = param['CDSCD']
+else:
+    self.CDSCD = 1e-09
+if self.CDSCDLgiven == True:
+    self.CDSCDL = param['CDSCDL']
+else:
+    self.CDSCDL = 0.0
+if self.CDSCDLEXPgiven == True:
+    self.CDSCDLEXP = param['CDSCDLEXP']
+else:
+    self.CDSCDLEXP = 1.0
+if self.LCDSCDgiven == True:
+    self.LCDSCD = param['LCDSCD']
+else:
+    self.LCDSCD = 0.0
+if self.WCDSCDgiven == True:
+    self.WCDSCD = param['WCDSCD']
+else:
+    self.WCDSCD = 0.0
+if self.PCDSCDgiven == True:
+    self.PCDSCD = param['PCDSCD']
+else:
+    self.PCDSCD = 0.0
+if self.CDSCDRgiven == True:
+    self.CDSCDR = param['CDSCDR']
+else:
+    self.CDSCDR = self.CDSCD
+if self.CDSCDLRgiven == True:
+    self.CDSCDLR = param['CDSCDLR']
+else:
+    self.CDSCDLR = self.CDSCDL
+if self.LCDSCDRgiven == True:
+    self.LCDSCDR = param['LCDSCDR']
+else:
+    self.LCDSCDR = self.LCDSCD
+if self.WCDSCDRgiven == True:
+    self.WCDSCDR = param['WCDSCDR']
+else:
+    self.WCDSCDR = self.WCDSCD
+if self.PCDSCDRgiven == True:
+    self.PCDSCDR = param['PCDSCDR']
+else:
+    self.PCDSCDR = self.PCDSCD
+if self.CDSCBgiven == True:
+    self.CDSCB = param['CDSCB']
+else:
+    self.CDSCB = 0.0
+if self.CDSCBLgiven == True:
+    self.CDSCBL = param['CDSCBL']
+else:
+    self.CDSCBL = 0.0
+if self.CDSCBLEXPgiven == True:
+    self.CDSCBLEXP = param['CDSCBLEXP']
+else:
+    self.CDSCBLEXP = 1.0
+if self.LCDSCBgiven == True:
+    self.LCDSCB = param['LCDSCB']
+else:
+    self.LCDSCB = 0.0
+if self.WCDSCBgiven == True:
+    self.WCDSCB = param['WCDSCB']
+else:
+    self.WCDSCB = 0.0
+if self.PCDSCBgiven == True:
+    self.PCDSCB = param['PCDSCB']
+else:
+    self.PCDSCB = 0.0
+if self.VSATgiven == True:
+    self.VSAT = param['VSAT']
+else:
+    self.VSAT = 100000.0
+if self.LVSATgiven == True:
+    self.LVSAT = param['LVSAT']
+else:
+    self.LVSAT = 0.0
+if self.WVSATgiven == True:
+    self.WVSAT = param['WVSAT']
+else:
+    self.WVSAT = 0.0
+if self.PVSATgiven == True:
+    self.PVSAT = param['PVSAT']
+else:
+    self.PVSAT = 0.0
+if self.VSATLgiven == True:
+    self.VSATL = param['VSATL']
+else:
+    self.VSATL = 0.0
+if self.VSATLEXPgiven == True:
+    self.VSATLEXP = param['VSATLEXP']
+else:
+    self.VSATLEXP = 1.0
+if self.VSATWgiven == True:
+    self.VSATW = param['VSATW']
+else:
+    self.VSATW = 0.0
+if self.VSATWEXPgiven == True:
+    self.VSATWEXP = param['VSATWEXP']
+else:
+    self.VSATWEXP = 1.0
+if self.VSATWLgiven == True:
+    self.VSATWL = param['VSATWL']
+else:
+    self.VSATWL = 0.0
+if self.VSATWLEXPgiven == True:
+    self.VSATWLEXP = param['VSATWLEXP']
+else:
+    self.VSATWLEXP = 1.0
+if self.VSATRgiven == True:
+    self.VSATR = param['VSATR']
+else:
+    self.VSATR = self.VSAT
+if self.LVSATRgiven == True:
+    self.LVSATR = param['LVSATR']
+else:
+    self.LVSATR = self.LVSAT
+if self.WVSATRgiven == True:
+    self.WVSATR = param['WVSATR']
+else:
+    self.WVSATR = self.WVSAT
+if self.PVSATRgiven == True:
+    self.PVSATR = param['PVSATR']
+else:
+    self.PVSATR = self.PVSAT
+if self.DELTAgiven == True:
+    self.DELTA = param['DELTA']
+else:
+    self.DELTA = 0.125
+if self.LDELTAgiven == True:
+    self.LDELTA = param['LDELTA']
+else:
+    self.LDELTA = 0.0
+if self.WDELTAgiven == True:
+    self.WDELTA = param['WDELTA']
+else:
+    self.WDELTA = 0.0
+if self.PDELTAgiven == True:
+    self.PDELTA = param['PDELTA']
+else:
+    self.PDELTA = 0.0
+if self.DELTALgiven == True:
+    self.DELTAL = param['DELTAL']
+else:
+    self.DELTAL = 0.0
+if self.DELTALEXPgiven == True:
+    self.DELTALEXP = param['DELTALEXP']
+else:
+    self.DELTALEXP = 1.0
+if self.VSATCVgiven == True:
+    self.VSATCV = param['VSATCV']
+else:
+    self.VSATCV = 100000.0
+if self.LVSATCVgiven == True:
+    self.LVSATCV = param['LVSATCV']
+else:
+    self.LVSATCV = 0.0
+if self.WVSATCVgiven == True:
+    self.WVSATCV = param['WVSATCV']
+else:
+    self.WVSATCV = 0.0
+if self.PVSATCVgiven == True:
+    self.PVSATCV = param['PVSATCV']
+else:
+    self.PVSATCV = 0.0
+if self.VSATCVLgiven == True:
+    self.VSATCVL = param['VSATCVL']
+else:
+    self.VSATCVL = 0.0
+if self.VSATCVLEXPgiven == True:
+    self.VSATCVLEXP = param['VSATCVLEXP']
+else:
+    self.VSATCVLEXP = 1.0
+if self.VSATCVWgiven == True:
+    self.VSATCVW = param['VSATCVW']
+else:
+    self.VSATCVW = 0.0
+if self.VSATCVWEXPgiven == True:
+    self.VSATCVWEXP = param['VSATCVWEXP']
+else:
+    self.VSATCVWEXP = 1.0
+if self.VSATCVWLgiven == True:
+    self.VSATCVWL = param['VSATCVWL']
+else:
+    self.VSATCVWL = 0.0
+if self.VSATCVWLEXPgiven == True:
+    self.VSATCVWLEXP = param['VSATCVWLEXP']
+else:
+    self.VSATCVWLEXP = 1.0
+if self.UP1given == True:
+    self.UP1 = param['UP1']
+else:
+    self.UP1 = 0.0
+if self.LP1given == True:
+    self.LP1 = param['LP1']
+else:
+    self.LP1 = 1e-08
+if self.UP2given == True:
+    self.UP2 = param['UP2']
+else:
+    self.UP2 = 0.0
+if self.LP2given == True:
+    self.LP2 = param['LP2']
+else:
+    self.LP2 = 1e-08
+if self.U0given == True:
+    self.U0 = param['U0']
+else:
+    self.U0 = 0.067
+if self.U0Lgiven == True:
+    self.U0L = param['U0L']
+else:
+    self.U0L = 0.0
+if self.U0LEXPgiven == True:
+    self.U0LEXP = param['U0LEXP']
+else:
+    self.U0LEXP = 1.0
+if self.LU0given == True:
+    self.LU0 = param['LU0']
+else:
+    self.LU0 = 0.0
+if self.WU0given == True:
+    self.WU0 = param['WU0']
+else:
+    self.WU0 = 0.0
+if self.PU0given == True:
+    self.PU0 = param['PU0']
+else:
+    self.PU0 = 0.0
+if self.U0Rgiven == True:
+    self.U0R = param['U0R']
+else:
+    self.U0R = self.U0
+if self.LU0Rgiven == True:
+    self.LU0R = param['LU0R']
+else:
+    self.LU0R = self.LU0
+if self.WU0Rgiven == True:
+    self.WU0R = param['WU0R']
+else:
+    self.WU0R = self.WU0
+if self.PU0Rgiven == True:
+    self.PU0R = param['PU0R']
+else:
+    self.PU0R = self.PU0
+if self.ETAMOBgiven == True:
+    self.ETAMOB = param['ETAMOB']
+else:
+    self.ETAMOB = 1.0
+if self.UAgiven == True:
+    self.UA = param['UA']
+else:
+    self.UA = 0.001
+if self.UALgiven == True:
+    self.UAL = param['UAL']
+else:
+    self.UAL = 0.0
+if self.UALEXPgiven == True:
+    self.UALEXP = param['UALEXP']
+else:
+    self.UALEXP = 1.0
+if self.UAWgiven == True:
+    self.UAW = param['UAW']
+else:
+    self.UAW = 0.0
+if self.UAWEXPgiven == True:
+    self.UAWEXP = param['UAWEXP']
+else:
+    self.UAWEXP = 1.0
+if self.UAWLgiven == True:
+    self.UAWL = param['UAWL']
+else:
+    self.UAWL = 0.0
+if self.UAWLEXPgiven == True:
+    self.UAWLEXP = param['UAWLEXP']
+else:
+    self.UAWLEXP = 1.0
+if self.LUAgiven == True:
+    self.LUA = param['LUA']
+else:
+    self.LUA = 0.0
+if self.WUAgiven == True:
+    self.WUA = param['WUA']
+else:
+    self.WUA = 0.0
+if self.PUAgiven == True:
+    self.PUA = param['PUA']
+else:
+    self.PUA = 0.0
+if self.UARgiven == True:
+    self.UAR = param['UAR']
+else:
+    self.UAR = self.UA
+if self.LUARgiven == True:
+    self.LUAR = param['LUAR']
+else:
+    self.LUAR = self.LUA
+if self.WUARgiven == True:
+    self.WUAR = param['WUAR']
+else:
+    self.WUAR = self.WUA
+if self.PUARgiven == True:
+    self.PUAR = param['PUAR']
+else:
+    self.PUAR = self.PUA
+if self.EUgiven == True:
+    self.EU = param['EU']
+else:
+    self.EU = 1.5
+if self.LEUgiven == True:
+    self.LEU = param['LEU']
+else:
+    self.LEU = 0.0
+if self.WEUgiven == True:
+    self.WEU = param['WEU']
+else:
+    self.WEU = 0.0
+if self.PEUgiven == True:
+    self.PEU = param['PEU']
+else:
+    self.PEU = 0.0
+if self.EULgiven == True:
+    self.EUL = param['EUL']
+else:
+    self.EUL = 0.0
+if self.EULEXPgiven == True:
+    self.EULEXP = param['EULEXP']
+else:
+    self.EULEXP = 1.0
+if self.EUWgiven == True:
+    self.EUW = param['EUW']
+else:
+    self.EUW = 0.0
+if self.EUWEXPgiven == True:
+    self.EUWEXP = param['EUWEXP']
+else:
+    self.EUWEXP = 1.0
+if self.EUWLgiven == True:
+    self.EUWL = param['EUWL']
+else:
+    self.EUWL = 0.0
+if self.EUWLEXPgiven == True:
+    self.EUWLEXP = param['EUWLEXP']
+else:
+    self.EUWLEXP = 1.0
+if self.UDgiven == True:
+    self.UD = param['UD']
+else:
+    self.UD = 0.001
+if self.UDLgiven == True:
+    self.UDL = param['UDL']
+else:
+    self.UDL = 0.0
+if self.UDLEXPgiven == True:
+    self.UDLEXP = param['UDLEXP']
+else:
+    self.UDLEXP = 1.0
+if self.LUDgiven == True:
+    self.LUD = param['LUD']
+else:
+    self.LUD = 0.0
+if self.WUDgiven == True:
+    self.WUD = param['WUD']
+else:
+    self.WUD = 0.0
+if self.PUDgiven == True:
+    self.PUD = param['PUD']
+else:
+    self.PUD = 0.0
+if self.UDRgiven == True:
+    self.UDR = param['UDR']
+else:
+    self.UDR = self.UD
+if self.LUDRgiven == True:
+    self.LUDR = param['LUDR']
+else:
+    self.LUDR = self.LUD
+if self.WUDRgiven == True:
+    self.WUDR = param['WUDR']
+else:
+    self.WUDR = self.WUD
+if self.PUDRgiven == True:
+    self.PUDR = param['PUDR']
+else:
+    self.PUDR = self.PUD
+if self.UCSgiven == True:
+    self.UCS = param['UCS']
+else:
+    self.UCS = 2.0
+if self.LUCSgiven == True:
+    self.LUCS = param['LUCS']
+else:
+    self.LUCS = 0.0
+if self.WUCSgiven == True:
+    self.WUCS = param['WUCS']
+else:
+    self.WUCS = 0.0
+if self.PUCSgiven == True:
+    self.PUCS = param['PUCS']
+else:
+    self.PUCS = 0.0
+if self.UCSRgiven == True:
+    self.UCSR = param['UCSR']
+else:
+    self.UCSR = self.UCS
+if self.LUCSRgiven == True:
+    self.LUCSR = param['LUCSR']
+else:
+    self.LUCSR = self.LUCS
+if self.WUCSRgiven == True:
+    self.WUCSR = param['WUCSR']
+else:
+    self.WUCSR = self.WUCS
+if self.PUCSRgiven == True:
+    self.PUCSR = param['PUCSR']
+else:
+    self.PUCSR = self.PUCS
+if self.UCgiven == True:
+    self.UC = param['UC']
+else:
+    self.UC = 0.0
+if self.UCLgiven == True:
+    self.UCL = param['UCL']
+else:
+    self.UCL = 0.0
+if self.UCLEXPgiven == True:
+    self.UCLEXP = param['UCLEXP']
+else:
+    self.UCLEXP = 1.0
+if self.UCWgiven == True:
+    self.UCW = param['UCW']
+else:
+    self.UCW = 0.0
+if self.UCWEXPgiven == True:
+    self.UCWEXP = param['UCWEXP']
+else:
+    self.UCWEXP = 1.0
+if self.UCWLgiven == True:
+    self.UCWL = param['UCWL']
+else:
+    self.UCWL = 0.0
+if self.UCWLEXPgiven == True:
+    self.UCWLEXP = param['UCWLEXP']
+else:
+    self.UCWLEXP = 1.0
+if self.LUCgiven == True:
+    self.LUC = param['LUC']
+else:
+    self.LUC = 0.0
+if self.WUCgiven == True:
+    self.WUC = param['WUC']
+else:
+    self.WUC = 0.0
+if self.PUCgiven == True:
+    self.PUC = param['PUC']
+else:
+    self.PUC = 0.0
+if self.UCRgiven == True:
+    self.UCR = param['UCR']
+else:
+    self.UCR = self.UC
+if self.LUCRgiven == True:
+    self.LUCR = param['LUCR']
+else:
+    self.LUCR = self.LUC
+if self.WUCRgiven == True:
+    self.WUCR = param['WUCR']
+else:
+    self.WUCR = self.WUC
+if self.PUCRgiven == True:
+    self.PUCR = param['PUCR']
+else:
+    self.PUCR = self.PUC
+if self.PCLMgiven == True:
+    self.PCLM = param['PCLM']
+else:
+    self.PCLM = 0.0
+if self.PCLMLgiven == True:
+    self.PCLML = param['PCLML']
+else:
+    self.PCLML = 0.0
+if self.PCLMLEXPgiven == True:
+    self.PCLMLEXP = param['PCLMLEXP']
+else:
+    self.PCLMLEXP = 1.0
+if self.LPCLMgiven == True:
+    self.LPCLM = param['LPCLM']
+else:
+    self.LPCLM = 0.0
+if self.WPCLMgiven == True:
+    self.WPCLM = param['WPCLM']
+else:
+    self.WPCLM = 0.0
+if self.PPCLMgiven == True:
+    self.PPCLM = param['PPCLM']
+else:
+    self.PPCLM = 0.0
+if self.PCLMRgiven == True:
+    self.PCLMR = param['PCLMR']
+else:
+    self.PCLMR = self.PCLM
+if self.LPCLMRgiven == True:
+    self.LPCLMR = param['LPCLMR']
+else:
+    self.LPCLMR = self.LPCLM
+if self.WPCLMRgiven == True:
+    self.WPCLMR = param['WPCLMR']
+else:
+    self.WPCLMR = self.WPCLM
+if self.PPCLMRgiven == True:
+    self.PPCLMR = param['PPCLMR']
+else:
+    self.PPCLMR = self.PPCLM
+if self.PCLMGgiven == True:
+    self.PCLMG = param['PCLMG']
+else:
+    self.PCLMG = 0.0
+if self.PCLMCVgiven == True:
+    self.PCLMCV = param['PCLMCV']
+else:
+    self.PCLMCV = self.PCLM
+if self.PCLMCVLgiven == True:
+    self.PCLMCVL = param['PCLMCVL']
+else:
+    self.PCLMCVL = self.PCLML
+if self.PCLMCVLEXPgiven == True:
+    self.PCLMCVLEXP = param['PCLMCVLEXP']
+else:
+    self.PCLMCVLEXP = self.PCLMLEXP
+if self.LPCLMCVgiven == True:
+    self.LPCLMCV = param['LPCLMCV']
+else:
+    self.LPCLMCV = self.LPCLM
+if self.WPCLMCVgiven == True:
+    self.WPCLMCV = param['WPCLMCV']
+else:
+    self.WPCLMCV = self.WPCLM
+if self.PPCLMCVgiven == True:
+    self.PPCLMCV = param['PPCLMCV']
+else:
+    self.PPCLMCV = self.PPCLM
+if self.PSCBE1given == True:
+    self.PSCBE1 = param['PSCBE1']
+else:
+    self.PSCBE1 = 424000000.0
+if self.LPSCBE1given == True:
+    self.LPSCBE1 = param['LPSCBE1']
+else:
+    self.LPSCBE1 = 0.0
+if self.WPSCBE1given == True:
+    self.WPSCBE1 = param['WPSCBE1']
+else:
+    self.WPSCBE1 = 0.0
+if self.PPSCBE1given == True:
+    self.PPSCBE1 = param['PPSCBE1']
+else:
+    self.PPSCBE1 = 0.0
+if self.PSCBE2given == True:
+    self.PSCBE2 = param['PSCBE2']
+else:
+    self.PSCBE2 = 1e-08
+if self.LPSCBE2given == True:
+    self.LPSCBE2 = param['LPSCBE2']
+else:
+    self.LPSCBE2 = 0.0
+if self.WPSCBE2given == True:
+    self.WPSCBE2 = param['WPSCBE2']
+else:
+    self.WPSCBE2 = 0.0
+if self.PPSCBE2given == True:
+    self.PPSCBE2 = param['PPSCBE2']
+else:
+    self.PPSCBE2 = 0.0
+if self.PDITSgiven == True:
+    self.PDITS = param['PDITS']
+else:
+    self.PDITS = 0.0
+if self.LPDITSgiven == True:
+    self.LPDITS = param['LPDITS']
+else:
+    self.LPDITS = 0.0
+if self.WPDITSgiven == True:
+    self.WPDITS = param['WPDITS']
+else:
+    self.WPDITS = 0.0
+if self.PPDITSgiven == True:
+    self.PPDITS = param['PPDITS']
+else:
+    self.PPDITS = 0.0
+if self.PDITSLgiven == True:
+    self.PDITSL = param['PDITSL']
+else:
+    self.PDITSL = 0.0
+if self.PDITSDgiven == True:
+    self.PDITSD = param['PDITSD']
+else:
+    self.PDITSD = 0.0
+if self.LPDITSDgiven == True:
+    self.LPDITSD = param['LPDITSD']
+else:
+    self.LPDITSD = 0.0
+if self.WPDITSDgiven == True:
+    self.WPDITSD = param['WPDITSD']
+else:
+    self.WPDITSD = 0.0
+if self.PPDITSDgiven == True:
+    self.PPDITSD = param['PPDITSD']
+else:
+    self.PPDITSD = 0.0
+if self.RSHgiven == True:
+    self.RSH = param['RSH']
+else:
+    self.RSH = 0.0
+if self.PRWGgiven == True:
+    self.PRWG = param['PRWG']
+else:
+    self.PRWG = 1.0
+if self.LPRWGgiven == True:
+    self.LPRWG = param['LPRWG']
+else:
+    self.LPRWG = 0.0
+if self.WPRWGgiven == True:
+    self.WPRWG = param['WPRWG']
+else:
+    self.WPRWG = 0.0
+if self.PPRWGgiven == True:
+    self.PPRWG = param['PPRWG']
+else:
+    self.PPRWG = 0.0
+if self.PRWBgiven == True:
+    self.PRWB = param['PRWB']
+else:
+    self.PRWB = 0.0
+if self.LPRWBgiven == True:
+    self.LPRWB = param['LPRWB']
+else:
+    self.LPRWB = 0.0
+if self.WPRWBgiven == True:
+    self.WPRWB = param['WPRWB']
+else:
+    self.WPRWB = 0.0
+if self.PPRWBgiven == True:
+    self.PPRWB = param['PPRWB']
+else:
+    self.PPRWB = 0.0
+if self.PRWBLgiven == True:
+    self.PRWBL = param['PRWBL']
+else:
+    self.PRWBL = 0.0
+if self.PRWBLEXPgiven == True:
+    self.PRWBLEXP = param['PRWBLEXP']
+else:
+    self.PRWBLEXP = 1.0
+if self.WRgiven == True:
+    self.WR = param['WR']
+else:
+    self.WR = 1.0
+if self.LWRgiven == True:
+    self.LWR = param['LWR']
+else:
+    self.LWR = 0.0
+if self.WWRgiven == True:
+    self.WWR = param['WWR']
+else:
+    self.WWR = 0.0
+if self.PWRgiven == True:
+    self.PWR = param['PWR']
+else:
+    self.PWR = 0.0
+if self.RSWMINgiven == True:
+    self.RSWMIN = param['RSWMIN']
+else:
+    self.RSWMIN = 0.0
+if self.LRSWMINgiven == True:
+    self.LRSWMIN = param['LRSWMIN']
+else:
+    self.LRSWMIN = 0.0
+if self.WRSWMINgiven == True:
+    self.WRSWMIN = param['WRSWMIN']
+else:
+    self.WRSWMIN = 0.0
+if self.PRSWMINgiven == True:
+    self.PRSWMIN = param['PRSWMIN']
+else:
+    self.PRSWMIN = 0.0
+if self.RSWgiven == True:
+    self.RSW = param['RSW']
+else:
+    self.RSW = 10.0
+if self.LRSWgiven == True:
+    self.LRSW = param['LRSW']
+else:
+    self.LRSW = 0.0
+if self.WRSWgiven == True:
+    self.WRSW = param['WRSW']
+else:
+    self.WRSW = 0.0
+if self.PRSWgiven == True:
+    self.PRSW = param['PRSW']
+else:
+    self.PRSW = 0.0
+if self.RSWLgiven == True:
+    self.RSWL = param['RSWL']
+else:
+    self.RSWL = 0.0
+if self.RSWLEXPgiven == True:
+    self.RSWLEXP = param['RSWLEXP']
+else:
+    self.RSWLEXP = 1.0
+if self.RDWMINgiven == True:
+    self.RDWMIN = param['RDWMIN']
+else:
+    self.RDWMIN = self.RSWMIN
+if self.LRDWMINgiven == True:
+    self.LRDWMIN = param['LRDWMIN']
+else:
+    self.LRDWMIN = self.LRSWMIN
+if self.WRDWMINgiven == True:
+    self.WRDWMIN = param['WRDWMIN']
+else:
+    self.WRDWMIN = self.WRSWMIN
+if self.PRDWMINgiven == True:
+    self.PRDWMIN = param['PRDWMIN']
+else:
+    self.PRDWMIN = self.PRSWMIN
+if self.RDWgiven == True:
+    self.RDW = param['RDW']
+else:
+    self.RDW = self.RSW
+if self.LRDWgiven == True:
+    self.LRDW = param['LRDW']
+else:
+    self.LRDW = self.LRSW
+if self.WRDWgiven == True:
+    self.WRDW = param['WRDW']
+else:
+    self.WRDW = self.WRSW
+if self.PRDWgiven == True:
+    self.PRDW = param['PRDW']
+else:
+    self.PRDW = self.PRSW
+if self.RDWLgiven == True:
+    self.RDWL = param['RDWL']
+else:
+    self.RDWL = self.RSWL
+if self.RDWLEXPgiven == True:
+    self.RDWLEXP = param['RDWLEXP']
+else:
+    self.RDWLEXP = self.RSWLEXP
+if self.RDSWMINgiven == True:
+    self.RDSWMIN = param['RDSWMIN']
+else:
+    self.RDSWMIN = 0.0
+if self.LRDSWMINgiven == True:
+    self.LRDSWMIN = param['LRDSWMIN']
+else:
+    self.LRDSWMIN = 0.0
+if self.WRDSWMINgiven == True:
+    self.WRDSWMIN = param['WRDSWMIN']
+else:
+    self.WRDSWMIN = 0.0
+if self.PRDSWMINgiven == True:
+    self.PRDSWMIN = param['PRDSWMIN']
+else:
+    self.PRDSWMIN = 0.0
+if self.RDSWgiven == True:
+    self.RDSW = param['RDSW']
+else:
+    self.RDSW = 20.0
+if self.RDSWLgiven == True:
+    self.RDSWL = param['RDSWL']
+else:
+    self.RDSWL = 0.0
+if self.RDSWLEXPgiven == True:
+    self.RDSWLEXP = param['RDSWLEXP']
+else:
+    self.RDSWLEXP = 1.0
+if self.LRDSWgiven == True:
+    self.LRDSW = param['LRDSW']
+else:
+    self.LRDSW = 0.0
+if self.WRDSWgiven == True:
+    self.WRDSW = param['WRDSW']
+else:
+    self.WRDSW = 0.0
+if self.PRDSWgiven == True:
+    self.PRDSW = param['PRDSW']
+else:
+    self.PRDSW = 0.0
+if self.PSATgiven == True:
+    self.PSAT = param['PSAT']
+else:
+    self.PSAT = 1.0
+if self.LPSATgiven == True:
+    self.LPSAT = param['LPSAT']
+else:
+    self.LPSAT = 0.0
+if self.WPSATgiven == True:
+    self.WPSAT = param['WPSAT']
+else:
+    self.WPSAT = 0.0
+if self.PPSATgiven == True:
+    self.PPSAT = param['PPSAT']
+else:
+    self.PPSAT = 0.0
+if self.PSATLgiven == True:
+    self.PSATL = param['PSATL']
+else:
+    self.PSATL = 0.0
+if self.PSATLEXPgiven == True:
+    self.PSATLEXP = param['PSATLEXP']
+else:
+    self.PSATLEXP = 1.0
+if self.PSATBgiven == True:
+    self.PSATB = param['PSATB']
+else:
+    self.PSATB = 0.0
+if self.PSATRgiven == True:
+    self.PSATR = param['PSATR']
+else:
+    self.PSATR = self.PSAT
+if self.LPSATRgiven == True:
+    self.LPSATR = param['LPSATR']
+else:
+    self.LPSATR = self.LPSAT
+if self.WPSATRgiven == True:
+    self.WPSATR = param['WPSATR']
+else:
+    self.WPSATR = self.WPSAT
+if self.PPSATRgiven == True:
+    self.PPSATR = param['PPSATR']
+else:
+    self.PPSATR = self.PPSAT
+if self.LPSATBgiven == True:
+    self.LPSATB = param['LPSATB']
+else:
+    self.LPSATB = 0.0
+if self.WPSATBgiven == True:
+    self.WPSATB = param['WPSATB']
+else:
+    self.WPSATB = 0.0
+if self.PPSATBgiven == True:
+    self.PPSATB = param['PPSATB']
+else:
+    self.PPSATB = 0.0
+if self.PSATXgiven == True:
+    self.PSATX = param['PSATX']
+else:
+    self.PSATX = 1.0
+if self.PTWGgiven == True:
+    self.PTWG = param['PTWG']
+else:
+    self.PTWG = 0.0
+if self.LPTWGgiven == True:
+    self.LPTWG = param['LPTWG']
+else:
+    self.LPTWG = 0.0
+if self.WPTWGgiven == True:
+    self.WPTWG = param['WPTWG']
+else:
+    self.WPTWG = 0.0
+if self.PPTWGgiven == True:
+    self.PPTWG = param['PPTWG']
+else:
+    self.PPTWG = 0.0
+if self.PTWGLgiven == True:
+    self.PTWGL = param['PTWGL']
+else:
+    self.PTWGL = 0.0
+if self.PTWGLEXPgiven == True:
+    self.PTWGLEXP = param['PTWGLEXP']
+else:
+    self.PTWGLEXP = 1.0
+if self.PTWGRgiven == True:
+    self.PTWGR = param['PTWGR']
+else:
+    self.PTWGR = self.PTWG
+if self.LPTWGRgiven == True:
+    self.LPTWGR = param['LPTWGR']
+else:
+    self.LPTWGR = self.LPTWG
+if self.WPTWGRgiven == True:
+    self.WPTWGR = param['WPTWGR']
+else:
+    self.WPTWGR = self.WPTWG
+if self.PPTWGRgiven == True:
+    self.PPTWGR = param['PPTWGR']
+else:
+    self.PPTWGR = self.PPTWG
+if self.PTWGLRgiven == True:
+    self.PTWGLR = param['PTWGLR']
+else:
+    self.PTWGLR = self.PTWGL
+if self.PTWGLEXPRgiven == True:
+    self.PTWGLEXPR = param['PTWGLEXPR']
+else:
+    self.PTWGLEXPR = self.PTWGLEXP
+if self.A1given == True:
+    self.A1 = param['A1']
+else:
+    self.A1 = 0.0
+if self.LA1given == True:
+    self.LA1 = param['LA1']
+else:
+    self.LA1 = 0.0
+if self.WA1given == True:
+    self.WA1 = param['WA1']
+else:
+    self.WA1 = 0.0
+if self.PA1given == True:
+    self.PA1 = param['PA1']
+else:
+    self.PA1 = 0.0
+if self.A11given == True:
+    self.A11 = param['A11']
+else:
+    self.A11 = 0.0
+if self.LA11given == True:
+    self.LA11 = param['LA11']
+else:
+    self.LA11 = 0.0
+if self.WA11given == True:
+    self.WA11 = param['WA11']
+else:
+    self.WA11 = 0.0
+if self.PA11given == True:
+    self.PA11 = param['PA11']
+else:
+    self.PA11 = 0.0
+if self.A2given == True:
+    self.A2 = param['A2']
+else:
+    self.A2 = 0.0
+if self.LA2given == True:
+    self.LA2 = param['LA2']
+else:
+    self.LA2 = 0.0
+if self.WA2given == True:
+    self.WA2 = param['WA2']
+else:
+    self.WA2 = 0.0
+if self.PA2given == True:
+    self.PA2 = param['PA2']
+else:
+    self.PA2 = 0.0
+if self.A21given == True:
+    self.A21 = param['A21']
+else:
+    self.A21 = 0.0
+if self.LA21given == True:
+    self.LA21 = param['LA21']
+else:
+    self.LA21 = 0.0
+if self.WA21given == True:
+    self.WA21 = param['WA21']
+else:
+    self.WA21 = 0.0
+if self.PA21given == True:
+    self.PA21 = param['PA21']
+else:
+    self.PA21 = 0.0
+if self.PDIBLCgiven == True:
+    self.PDIBLC = param['PDIBLC']
+else:
+    self.PDIBLC = 0.0
+if self.PDIBLCLgiven == True:
+    self.PDIBLCL = param['PDIBLCL']
+else:
+    self.PDIBLCL = 0.0
+if self.PDIBLCLEXPgiven == True:
+    self.PDIBLCLEXP = param['PDIBLCLEXP']
+else:
+    self.PDIBLCLEXP = 1.0
+if self.LPDIBLCgiven == True:
+    self.LPDIBLC = param['LPDIBLC']
+else:
+    self.LPDIBLC = 0.0
+if self.WPDIBLCgiven == True:
+    self.WPDIBLC = param['WPDIBLC']
+else:
+    self.WPDIBLC = 0.0
+if self.PPDIBLCgiven == True:
+    self.PPDIBLC = param['PPDIBLC']
+else:
+    self.PPDIBLC = 0.0
+if self.PDIBLCRgiven == True:
+    self.PDIBLCR = param['PDIBLCR']
+else:
+    self.PDIBLCR = self.PDIBLC
+if self.PDIBLCLRgiven == True:
+    self.PDIBLCLR = param['PDIBLCLR']
+else:
+    self.PDIBLCLR = self.PDIBLCL
+if self.PDIBLCLEXPRgiven == True:
+    self.PDIBLCLEXPR = param['PDIBLCLEXPR']
+else:
+    self.PDIBLCLEXPR = self.PDIBLCLEXP
+if self.LPDIBLCRgiven == True:
+    self.LPDIBLCR = param['LPDIBLCR']
+else:
+    self.LPDIBLCR = self.LPDIBLC
+if self.WPDIBLCRgiven == True:
+    self.WPDIBLCR = param['WPDIBLCR']
+else:
+    self.WPDIBLCR = self.WPDIBLC
+if self.PPDIBLCRgiven == True:
+    self.PPDIBLCR = param['PPDIBLCR']
+else:
+    self.PPDIBLCR = self.PPDIBLC
+if self.PDIBLCBgiven == True:
+    self.PDIBLCB = param['PDIBLCB']
+else:
+    self.PDIBLCB = 0.0
+if self.LPDIBLCBgiven == True:
+    self.LPDIBLCB = param['LPDIBLCB']
+else:
+    self.LPDIBLCB = 0.0
+if self.WPDIBLCBgiven == True:
+    self.WPDIBLCB = param['WPDIBLCB']
+else:
+    self.WPDIBLCB = 0.0
+if self.PPDIBLCBgiven == True:
+    self.PPDIBLCB = param['PPDIBLCB']
+else:
+    self.PPDIBLCB = 0.0
+if self.PVAGgiven == True:
+    self.PVAG = param['PVAG']
+else:
+    self.PVAG = 1.0
+if self.LPVAGgiven == True:
+    self.LPVAG = param['LPVAG']
+else:
+    self.LPVAG = 0.0
+if self.WPVAGgiven == True:
+    self.WPVAG = param['WPVAG']
+else:
+    self.WPVAG = 0.0
+if self.PPVAGgiven == True:
+    self.PPVAG = param['PPVAG']
+else:
+    self.PPVAG = 0.0
+if self.FPROUTgiven == True:
+    self.FPROUT = param['FPROUT']
+else:
+    self.FPROUT = 0.0
+if self.FPROUTLgiven == True:
+    self.FPROUTL = param['FPROUTL']
+else:
+    self.FPROUTL = 0.0
+if self.FPROUTLEXPgiven == True:
+    self.FPROUTLEXP = param['FPROUTLEXP']
+else:
+    self.FPROUTLEXP = 1.0
+if self.LFPROUTgiven == True:
+    self.LFPROUT = param['LFPROUT']
+else:
+    self.LFPROUT = 0.0
+if self.WFPROUTgiven == True:
+    self.WFPROUT = param['WFPROUT']
+else:
+    self.WFPROUT = 0.0
+if self.PFPROUTgiven == True:
+    self.PFPROUT = param['PFPROUT']
+else:
+    self.PFPROUT = 0.0
+if self.ALPHA0given == True:
+    self.ALPHA0 = param['ALPHA0']
+else:
+    self.ALPHA0 = 0.0
+if self.ALPHA0Lgiven == True:
+    self.ALPHA0L = param['ALPHA0L']
+else:
+    self.ALPHA0L = 0.0
+if self.ALPHA0LEXPgiven == True:
+    self.ALPHA0LEXP = param['ALPHA0LEXP']
+else:
+    self.ALPHA0LEXP = 1.0
+if self.LALPHA0given == True:
+    self.LALPHA0 = param['LALPHA0']
+else:
+    self.LALPHA0 = 0.0
+if self.WALPHA0given == True:
+    self.WALPHA0 = param['WALPHA0']
+else:
+    self.WALPHA0 = 0.0
+if self.PALPHA0given == True:
+    self.PALPHA0 = param['PALPHA0']
+else:
+    self.PALPHA0 = 0.0
+if self.BETA0given == True:
+    self.BETA0 = param['BETA0']
+else:
+    self.BETA0 = 0.0
+if self.LBETA0given == True:
+    self.LBETA0 = param['LBETA0']
+else:
+    self.LBETA0 = 0.0
+if self.WBETA0given == True:
+    self.WBETA0 = param['WBETA0']
+else:
+    self.WBETA0 = 0.0
+if self.PBETA0given == True:
+    self.PBETA0 = param['PBETA0']
+else:
+    self.PBETA0 = 0.0
+if self.AIGBACCgiven == True:
+    self.AIGBACC = param['AIGBACC']
+else:
+    self.AIGBACC = 0.0136
+if self.BIGBACCgiven == True:
+    self.BIGBACC = param['BIGBACC']
+else:
+    self.BIGBACC = 0.00171
+if self.CIGBACCgiven == True:
+    self.CIGBACC = param['CIGBACC']
+else:
+    self.CIGBACC = 0.075
+if self.NIGBACCgiven == True:
+    self.NIGBACC = param['NIGBACC']
+else:
+    self.NIGBACC = 1.0
+if self.AIGBINVgiven == True:
+    self.AIGBINV = param['AIGBINV']
+else:
+    self.AIGBINV = 0.0111
+if self.BIGBINVgiven == True:
+    self.BIGBINV = param['BIGBINV']
+else:
+    self.BIGBINV = 0.000949
+if self.CIGBINVgiven == True:
+    self.CIGBINV = param['CIGBINV']
+else:
+    self.CIGBINV = 0.006
+if self.EIGBINVgiven == True:
+    self.EIGBINV = param['EIGBINV']
+else:
+    self.EIGBINV = 1.1
+if self.NIGBINVgiven == True:
+    self.NIGBINV = param['NIGBINV']
+else:
+    self.NIGBINV = 3.0
+if self.AIGCgiven == True:
+    self.AIGC = param['AIGC']
+else:
+    self.AIGC = 1.36e-2 if (self.TYPE == self.ntype) else 9.8e-3
+if self.BIGCgiven == True:
+    self.BIGC = param['BIGC']
+else:
+    self.BIGC = 1.71e-3 if (self.TYPE == self.ntype) else 7.59e-4
+if self.CIGCgiven == True:
+    self.CIGC = param['CIGC']
+else:
+    self.CIGC = 0.075 if (self.TYPE == self.ntype) else 0.03
+if self.AIGSgiven == True:
+    self.AIGS = param['AIGS']
+else:
+    self.AIGS = 1.36e-2 if (self.TYPE == self.ntype) else 9.8e-3
+if self.BIGSgiven == True:
+    self.BIGS = param['BIGS']
+else:
+    self.BIGS = 1.71e-3 if (self.TYPE == self.ntype) else 7.59e-4
+if self.CIGSgiven == True:
+    self.CIGS = param['CIGS']
+else:
+    self.CIGS = 0.075 if (self.TYPE == self.ntype) else 0.03
+if self.AIGDgiven == True:
+    self.AIGD = param['AIGD']
+else:
+    self.AIGD = 1.36e-2 if (self.TYPE == self.ntype) else 9.8e-3
+if self.BIGDgiven == True:
+    self.BIGD = param['BIGD']
+else:
+    self.BIGD = 1.71e-3 if (self.TYPE == self.ntype) else 7.59e-4
+if self.CIGDgiven == True:
+    self.CIGD = param['CIGD']
+else:
+    self.CIGD = 0.075 if (self.TYPE == self.ntype) else 0.03
+if self.DLCIGgiven == True:
+    self.DLCIG = param['DLCIG']
+else:
+    self.DLCIG = self.LINT
+if self.DLCIGDgiven == True:
+    self.DLCIGD = param['DLCIGD']
+else:
+    self.DLCIGD = self.DLCIG
+if self.POXEDGEgiven == True:
+    self.POXEDGE = param['POXEDGE']
+else:
+    self.POXEDGE = 1.0
+if self.NTOXgiven == True:
+    self.NTOX = param['NTOX']
+else:
+    self.NTOX = 1.0
+if self.TOXREFgiven == True:
+    self.TOXREF = param['TOXREF']
+else:
+    self.TOXREF = 3e-09
+if self.PIGCDgiven == True:
+    self.PIGCD = param['PIGCD']
+else:
+    self.PIGCD = 1.0
+if self.AIGCLgiven == True:
+    self.AIGCL = param['AIGCL']
+else:
+    self.AIGCL = 0.0
+if self.AIGCWgiven == True:
+    self.AIGCW = param['AIGCW']
+else:
+    self.AIGCW = 0.0
+if self.AIGSLgiven == True:
+    self.AIGSL = param['AIGSL']
+else:
+    self.AIGSL = 0.0
+if self.AIGSWgiven == True:
+    self.AIGSW = param['AIGSW']
+else:
+    self.AIGSW = 0.0
+if self.AIGDLgiven == True:
+    self.AIGDL = param['AIGDL']
+else:
+    self.AIGDL = 0.0
+if self.AIGDWgiven == True:
+    self.AIGDW = param['AIGDW']
+else:
+    self.AIGDW = 0.0
+if self.PIGCDLgiven == True:
+    self.PIGCDL = param['PIGCDL']
+else:
+    self.PIGCDL = 0.0
+if self.LAIGBINVgiven == True:
+    self.LAIGBINV = param['LAIGBINV']
+else:
+    self.LAIGBINV = 0.0
+if self.WAIGBINVgiven == True:
+    self.WAIGBINV = param['WAIGBINV']
+else:
+    self.WAIGBINV = 0.0
+if self.PAIGBINVgiven == True:
+    self.PAIGBINV = param['PAIGBINV']
+else:
+    self.PAIGBINV = 0.0
+if self.LBIGBINVgiven == True:
+    self.LBIGBINV = param['LBIGBINV']
+else:
+    self.LBIGBINV = 0.0
+if self.WBIGBINVgiven == True:
+    self.WBIGBINV = param['WBIGBINV']
+else:
+    self.WBIGBINV = 0.0
+if self.PBIGBINVgiven == True:
+    self.PBIGBINV = param['PBIGBINV']
+else:
+    self.PBIGBINV = 0.0
+if self.LCIGBINVgiven == True:
+    self.LCIGBINV = param['LCIGBINV']
+else:
+    self.LCIGBINV = 0.0
+if self.WCIGBINVgiven == True:
+    self.WCIGBINV = param['WCIGBINV']
+else:
+    self.WCIGBINV = 0.0
+if self.PCIGBINVgiven == True:
+    self.PCIGBINV = param['PCIGBINV']
+else:
+    self.PCIGBINV = 0.0
+if self.LEIGBINVgiven == True:
+    self.LEIGBINV = param['LEIGBINV']
+else:
+    self.LEIGBINV = 0.0
+if self.WEIGBINVgiven == True:
+    self.WEIGBINV = param['WEIGBINV']
+else:
+    self.WEIGBINV = 0.0
+if self.PEIGBINVgiven == True:
+    self.PEIGBINV = param['PEIGBINV']
+else:
+    self.PEIGBINV = 0.0
+if self.LNIGBINVgiven == True:
+    self.LNIGBINV = param['LNIGBINV']
+else:
+    self.LNIGBINV = 0.0
+if self.WNIGBINVgiven == True:
+    self.WNIGBINV = param['WNIGBINV']
+else:
+    self.WNIGBINV = 0.0
+if self.PNIGBINVgiven == True:
+    self.PNIGBINV = param['PNIGBINV']
+else:
+    self.PNIGBINV = 0.0
+if self.LAIGBACCgiven == True:
+    self.LAIGBACC = param['LAIGBACC']
+else:
+    self.LAIGBACC = 0.0
+if self.WAIGBACCgiven == True:
+    self.WAIGBACC = param['WAIGBACC']
+else:
+    self.WAIGBACC = 0.0
+if self.PAIGBACCgiven == True:
+    self.PAIGBACC = param['PAIGBACC']
+else:
+    self.PAIGBACC = 0.0
+if self.LBIGBACCgiven == True:
+    self.LBIGBACC = param['LBIGBACC']
+else:
+    self.LBIGBACC = 0.0
+if self.WBIGBACCgiven == True:
+    self.WBIGBACC = param['WBIGBACC']
+else:
+    self.WBIGBACC = 0.0
+if self.PBIGBACCgiven == True:
+    self.PBIGBACC = param['PBIGBACC']
+else:
+    self.PBIGBACC = 0.0
+if self.LCIGBACCgiven == True:
+    self.LCIGBACC = param['LCIGBACC']
+else:
+    self.LCIGBACC = 0.0
+if self.WCIGBACCgiven == True:
+    self.WCIGBACC = param['WCIGBACC']
+else:
+    self.WCIGBACC = 0.0
+if self.PCIGBACCgiven == True:
+    self.PCIGBACC = param['PCIGBACC']
+else:
+    self.PCIGBACC = 0.0
+if self.LNIGBACCgiven == True:
+    self.LNIGBACC = param['LNIGBACC']
+else:
+    self.LNIGBACC = 0.0
+if self.WNIGBACCgiven == True:
+    self.WNIGBACC = param['WNIGBACC']
+else:
+    self.WNIGBACC = 0.0
+if self.PNIGBACCgiven == True:
+    self.PNIGBACC = param['PNIGBACC']
+else:
+    self.PNIGBACC = 0.0
+if self.LAIGCgiven == True:
+    self.LAIGC = param['LAIGC']
+else:
+    self.LAIGC = 0.0
+if self.WAIGCgiven == True:
+    self.WAIGC = param['WAIGC']
+else:
+    self.WAIGC = 0.0
+if self.PAIGCgiven == True:
+    self.PAIGC = param['PAIGC']
+else:
+    self.PAIGC = 0.0
+if self.LBIGCgiven == True:
+    self.LBIGC = param['LBIGC']
+else:
+    self.LBIGC = 0.0
+if self.WBIGCgiven == True:
+    self.WBIGC = param['WBIGC']
+else:
+    self.WBIGC = 0.0
+if self.PBIGCgiven == True:
+    self.PBIGC = param['PBIGC']
+else:
+    self.PBIGC = 0.0
+if self.LCIGCgiven == True:
+    self.LCIGC = param['LCIGC']
+else:
+    self.LCIGC = 0.0
+if self.WCIGCgiven == True:
+    self.WCIGC = param['WCIGC']
+else:
+    self.WCIGC = 0.0
+if self.PCIGCgiven == True:
+    self.PCIGC = param['PCIGC']
+else:
+    self.PCIGC = 0.0
+if self.LAIGSgiven == True:
+    self.LAIGS = param['LAIGS']
+else:
+    self.LAIGS = 0.0
+if self.WAIGSgiven == True:
+    self.WAIGS = param['WAIGS']
+else:
+    self.WAIGS = 0.0
+if self.PAIGSgiven == True:
+    self.PAIGS = param['PAIGS']
+else:
+    self.PAIGS = 0.0
+if self.LBIGSgiven == True:
+    self.LBIGS = param['LBIGS']
+else:
+    self.LBIGS = 0.0
+if self.WBIGSgiven == True:
+    self.WBIGS = param['WBIGS']
+else:
+    self.WBIGS = 0.0
+if self.PBIGSgiven == True:
+    self.PBIGS = param['PBIGS']
+else:
+    self.PBIGS = 0.0
+if self.LCIGSgiven == True:
+    self.LCIGS = param['LCIGS']
+else:
+    self.LCIGS = 0.0
+if self.WCIGSgiven == True:
+    self.WCIGS = param['WCIGS']
+else:
+    self.WCIGS = 0.0
+if self.PCIGSgiven == True:
+    self.PCIGS = param['PCIGS']
+else:
+    self.PCIGS = 0.0
+if self.LAIGDgiven == True:
+    self.LAIGD = param['LAIGD']
+else:
+    self.LAIGD = 0.0
+if self.WAIGDgiven == True:
+    self.WAIGD = param['WAIGD']
+else:
+    self.WAIGD = 0.0
+if self.PAIGDgiven == True:
+    self.PAIGD = param['PAIGD']
+else:
+    self.PAIGD = 0.0
+if self.LBIGDgiven == True:
+    self.LBIGD = param['LBIGD']
+else:
+    self.LBIGD = 0.0
+if self.WBIGDgiven == True:
+    self.WBIGD = param['WBIGD']
+else:
+    self.WBIGD = 0.0
+if self.PBIGDgiven == True:
+    self.PBIGD = param['PBIGD']
+else:
+    self.PBIGD = 0.0
+if self.LCIGDgiven == True:
+    self.LCIGD = param['LCIGD']
+else:
+    self.LCIGD = 0.0
+if self.WCIGDgiven == True:
+    self.WCIGD = param['WCIGD']
+else:
+    self.WCIGD = 0.0
+if self.PCIGDgiven == True:
+    self.PCIGD = param['PCIGD']
+else:
+    self.PCIGD = 0.0
+if self.LPOXEDGEgiven == True:
+    self.LPOXEDGE = param['LPOXEDGE']
+else:
+    self.LPOXEDGE = 0.0
+if self.WPOXEDGEgiven == True:
+    self.WPOXEDGE = param['WPOXEDGE']
+else:
+    self.WPOXEDGE = 0.0
+if self.PPOXEDGEgiven == True:
+    self.PPOXEDGE = param['PPOXEDGE']
+else:
+    self.PPOXEDGE = 0.0
+if self.LDLCIGgiven == True:
+    self.LDLCIG = param['LDLCIG']
+else:
+    self.LDLCIG = 0.0
+if self.WDLCIGgiven == True:
+    self.WDLCIG = param['WDLCIG']
+else:
+    self.WDLCIG = 0.0
+if self.PDLCIGgiven == True:
+    self.PDLCIG = param['PDLCIG']
+else:
+    self.PDLCIG = 0.0
+if self.LDLCIGDgiven == True:
+    self.LDLCIGD = param['LDLCIGD']
+else:
+    self.LDLCIGD = 0.0
+if self.WDLCIGDgiven == True:
+    self.WDLCIGD = param['WDLCIGD']
+else:
+    self.WDLCIGD = 0.0
+if self.PDLCIGDgiven == True:
+    self.PDLCIGD = param['PDLCIGD']
+else:
+    self.PDLCIGD = 0.0
+if self.LNTOXgiven == True:
+    self.LNTOX = param['LNTOX']
+else:
+    self.LNTOX = 0.0
+if self.WNTOXgiven == True:
+    self.WNTOX = param['WNTOX']
+else:
+    self.WNTOX = 0.0
+if self.PNTOXgiven == True:
+    self.PNTOX = param['PNTOX']
+else:
+    self.PNTOX = 0.0
+if self.AGIDLgiven == True:
+    self.AGIDL = param['AGIDL']
+else:
+    self.AGIDL = 0.0
+if self.AGIDLLgiven == True:
+    self.AGIDLL = param['AGIDLL']
+else:
+    self.AGIDLL = 0.0
+if self.AGIDLWgiven == True:
+    self.AGIDLW = param['AGIDLW']
+else:
+    self.AGIDLW = 0.0
+if self.LAGIDLgiven == True:
+    self.LAGIDL = param['LAGIDL']
+else:
+    self.LAGIDL = 0.0
+if self.WAGIDLgiven == True:
+    self.WAGIDL = param['WAGIDL']
+else:
+    self.WAGIDL = 0.0
+if self.PAGIDLgiven == True:
+    self.PAGIDL = param['PAGIDL']
+else:
+    self.PAGIDL = 0.0
+if self.BGIDLgiven == True:
+    self.BGIDL = param['BGIDL']
+else:
+    self.BGIDL = 2300000000.0
+if self.LBGIDLgiven == True:
+    self.LBGIDL = param['LBGIDL']
+else:
+    self.LBGIDL = 0.0
+if self.WBGIDLgiven == True:
+    self.WBGIDL = param['WBGIDL']
+else:
+    self.WBGIDL = 0.0
+if self.PBGIDLgiven == True:
+    self.PBGIDL = param['PBGIDL']
+else:
+    self.PBGIDL = 0.0
+if self.CGIDLgiven == True:
+    self.CGIDL = param['CGIDL']
+else:
+    self.CGIDL = 0.5
+if self.LCGIDLgiven == True:
+    self.LCGIDL = param['LCGIDL']
+else:
+    self.LCGIDL = 0.0
+if self.WCGIDLgiven == True:
+    self.WCGIDL = param['WCGIDL']
+else:
+    self.WCGIDL = 0.0
+if self.PCGIDLgiven == True:
+    self.PCGIDL = param['PCGIDL']
+else:
+    self.PCGIDL = 0.0
+if self.EGIDLgiven == True:
+    self.EGIDL = param['EGIDL']
+else:
+    self.EGIDL = 0.8
+if self.LEGIDLgiven == True:
+    self.LEGIDL = param['LEGIDL']
+else:
+    self.LEGIDL = 0.0
+if self.WEGIDLgiven == True:
+    self.WEGIDL = param['WEGIDL']
+else:
+    self.WEGIDL = 0.0
+if self.PEGIDLgiven == True:
+    self.PEGIDL = param['PEGIDL']
+else:
+    self.PEGIDL = 0.0
+if self.AGISLgiven == True:
+    self.AGISL = param['AGISL']
+else:
+    self.AGISL = self.AGIDL
+if self.AGISLLgiven == True:
+    self.AGISLL = param['AGISLL']
+else:
+    self.AGISLL = self.AGIDLL
+if self.AGISLWgiven == True:
+    self.AGISLW = param['AGISLW']
+else:
+    self.AGISLW = self.AGIDLW
+if self.LAGISLgiven == True:
+    self.LAGISL = param['LAGISL']
+else:
+    self.LAGISL = self.LAGIDL
+if self.WAGISLgiven == True:
+    self.WAGISL = param['WAGISL']
+else:
+    self.WAGISL = self.WAGIDL
+if self.PAGISLgiven == True:
+    self.PAGISL = param['PAGISL']
+else:
+    self.PAGISL = self.PAGIDL
+if self.BGISLgiven == True:
+    self.BGISL = param['BGISL']
+else:
+    self.BGISL = self.BGIDL
+if self.LBGISLgiven == True:
+    self.LBGISL = param['LBGISL']
+else:
+    self.LBGISL = self.LBGIDL
+if self.WBGISLgiven == True:
+    self.WBGISL = param['WBGISL']
+else:
+    self.WBGISL = self.WBGIDL
+if self.PBGISLgiven == True:
+    self.PBGISL = param['PBGISL']
+else:
+    self.PBGISL = self.PBGIDL
+if self.CGISLgiven == True:
+    self.CGISL = param['CGISL']
+else:
+    self.CGISL = self.CGIDL
+if self.LCGISLgiven == True:
+    self.LCGISL = param['LCGISL']
+else:
+    self.LCGISL = self.LCGIDL
+if self.WCGISLgiven == True:
+    self.WCGISL = param['WCGISL']
+else:
+    self.WCGISL = self.WCGIDL
+if self.PCGISLgiven == True:
+    self.PCGISL = param['PCGISL']
+else:
+    self.PCGISL = self.PCGIDL
+if self.EGISLgiven == True:
+    self.EGISL = param['EGISL']
+else:
+    self.EGISL = self.EGIDL
+if self.LEGISLgiven == True:
+    self.LEGISL = param['LEGISL']
+else:
+    self.LEGISL = self.LEGIDL
+if self.WEGISLgiven == True:
+    self.WEGISL = param['WEGISL']
+else:
+    self.WEGISL = self.WEGIDL
+if self.PEGISLgiven == True:
+    self.PEGISL = param['PEGISL']
+else:
+    self.PEGISL = self.PEGIDL
+if self.CFgiven == True:
+    self.CF = param['CF']
+else:
+    self.CF = 0.0
+if self.LCFgiven == True:
+    self.LCF = param['LCF']
+else:
+    self.LCF = 0.0
+if self.WCFgiven == True:
+    self.WCF = param['WCF']
+else:
+    self.WCF = 0.0
+if self.PCFgiven == True:
+    self.PCF = param['PCF']
+else:
+    self.PCF = 0.0
+if self.CFRCOEFFgiven == True:
+    self.CFRCOEFF = param['CFRCOEFF']
+else:
+    self.CFRCOEFF = 1.0
+if self.CGSOgiven == True:
+    self.CGSO = param['CGSO']
+else:
+    self.CGSO = 0.0
+if self.CGDOgiven == True:
+    self.CGDO = param['CGDO']
+else:
+    self.CGDO = 0.0
+if self.CGBOgiven == True:
+    self.CGBO = param['CGBO']
+else:
+    self.CGBO = 0.0
+if self.CGSLgiven == True:
+    self.CGSL = param['CGSL']
+else:
+    self.CGSL = 0.0
+if self.LCGSLgiven == True:
+    self.LCGSL = param['LCGSL']
+else:
+    self.LCGSL = 0.0
+if self.WCGSLgiven == True:
+    self.WCGSL = param['WCGSL']
+else:
+    self.WCGSL = 0.0
+if self.PCGSLgiven == True:
+    self.PCGSL = param['PCGSL']
+else:
+    self.PCGSL = 0.0
+if self.CGDLgiven == True:
+    self.CGDL = param['CGDL']
+else:
+    self.CGDL = 0.0
+if self.LCGDLgiven == True:
+    self.LCGDL = param['LCGDL']
+else:
+    self.LCGDL = 0.0
+if self.WCGDLgiven == True:
+    self.WCGDL = param['WCGDL']
+else:
+    self.WCGDL = 0.0
+if self.PCGDLgiven == True:
+    self.PCGDL = param['PCGDL']
+else:
+    self.PCGDL = 0.0
+if self.CKAPPASgiven == True:
+    self.CKAPPAS = param['CKAPPAS']
+else:
+    self.CKAPPAS = 0.6
+if self.LCKAPPASgiven == True:
+    self.LCKAPPAS = param['LCKAPPAS']
+else:
+    self.LCKAPPAS = 0.0
+if self.WCKAPPASgiven == True:
+    self.WCKAPPAS = param['WCKAPPAS']
+else:
+    self.WCKAPPAS = 0.0
+if self.PCKAPPASgiven == True:
+    self.PCKAPPAS = param['PCKAPPAS']
+else:
+    self.PCKAPPAS = 0.0
+if self.CKAPPADgiven == True:
+    self.CKAPPAD = param['CKAPPAD']
+else:
+    self.CKAPPAD = 0.6
+if self.LCKAPPADgiven == True:
+    self.LCKAPPAD = param['LCKAPPAD']
+else:
+    self.LCKAPPAD = 0.0
+if self.WCKAPPADgiven == True:
+    self.WCKAPPAD = param['WCKAPPAD']
+else:
+    self.WCKAPPAD = 0.0
+if self.PCKAPPADgiven == True:
+    self.PCKAPPAD = param['PCKAPPAD']
+else:
+    self.PCKAPPAD = 0.0
+if self.DMCGgiven == True:
+    self.DMCG = param['DMCG']
+else:
+    self.DMCG = 0.0
+if self.DMCIgiven == True:
+    self.DMCI = param['DMCI']
+else:
+    self.DMCI = self.DMCG
+if self.DMDGgiven == True:
+    self.DMDG = param['DMDG']
+else:
+    self.DMDG = 0.0
+if self.DMCGTgiven == True:
+    self.DMCGT = param['DMCGT']
+else:
+    self.DMCGT = 0.0
+if self.XGLgiven == True:
+    self.XGL = param['XGL']
+else:
+    self.XGL = 0.0
+if self.RSHGgiven == True:
+    self.RSHG = param['RSHG']
+else:
+    self.RSHG = 0.1
+if self.CJSgiven == True:
+    self.CJS = param['CJS']
+else:
+    self.CJS = 0.0005
+if self.CJDgiven == True:
+    self.CJD = param['CJD']
+else:
+    self.CJD = self.CJS
+if self.CJSWSgiven == True:
+    self.CJSWS = param['CJSWS']
+else:
+    self.CJSWS = 5e-10
+if self.CJSWDgiven == True:
+    self.CJSWD = param['CJSWD']
+else:
+    self.CJSWD = self.CJSWS
+if self.CJSWGSgiven == True:
+    self.CJSWGS = param['CJSWGS']
+else:
+    self.CJSWGS = 0.0
+if self.CJSWGDgiven == True:
+    self.CJSWGD = param['CJSWGD']
+else:
+    self.CJSWGD = self.CJSWGS
+if self.PBSgiven == True:
+    self.PBS = param['PBS']
+else:
+    self.PBS = 1.0
+if self.PBDgiven == True:
+    self.PBD = param['PBD']
+else:
+    self.PBD = self.PBS
+if self.PBSWSgiven == True:
+    self.PBSWS = param['PBSWS']
+else:
+    self.PBSWS = 1.0
+if self.PBSWDgiven == True:
+    self.PBSWD = param['PBSWD']
+else:
+    self.PBSWD = self.PBSWS
+if self.PBSWGSgiven == True:
+    self.PBSWGS = param['PBSWGS']
+else:
+    self.PBSWGS = self.PBSWS
+if self.PBSWGDgiven == True:
+    self.PBSWGD = param['PBSWGD']
+else:
+    self.PBSWGD = self.PBSWGS
+if self.MJSgiven == True:
+    self.MJS = param['MJS']
+else:
+    self.MJS = 0.5
+if self.MJDgiven == True:
+    self.MJD = param['MJD']
+else:
+    self.MJD = self.MJS
+if self.MJSWSgiven == True:
+    self.MJSWS = param['MJSWS']
+else:
+    self.MJSWS = 0.33
+if self.MJSWDgiven == True:
+    self.MJSWD = param['MJSWD']
+else:
+    self.MJSWD = self.MJSWS
+if self.MJSWGSgiven == True:
+    self.MJSWGS = param['MJSWGS']
+else:
+    self.MJSWGS = self.MJSWS
+if self.MJSWGDgiven == True:
+    self.MJSWGD = param['MJSWGD']
+else:
+    self.MJSWGD = self.MJSWGS
+if self.JSSgiven == True:
+    self.JSS = param['JSS']
+else:
+    self.JSS = 0.0001
+if self.JSDgiven == True:
+    self.JSD = param['JSD']
+else:
+    self.JSD = self.JSS
+if self.JSWSgiven == True:
+    self.JSWS = param['JSWS']
+else:
+    self.JSWS = 0.0
+if self.JSWDgiven == True:
+    self.JSWD = param['JSWD']
+else:
+    self.JSWD = self.JSWS
+if self.JSWGSgiven == True:
+    self.JSWGS = param['JSWGS']
+else:
+    self.JSWGS = 0.0
+if self.JSWGDgiven == True:
+    self.JSWGD = param['JSWGD']
+else:
+    self.JSWGD = self.JSWGS
+if self.NJSgiven == True:
+    self.NJS = param['NJS']
+else:
+    self.NJS = 1.0
+if self.NJDgiven == True:
+    self.NJD = param['NJD']
+else:
+    self.NJD = self.NJS
+if self.IJTHSFWDgiven == True:
+    self.IJTHSFWD = param['IJTHSFWD']
+else:
+    self.IJTHSFWD = 0.1
+if self.IJTHDFWDgiven == True:
+    self.IJTHDFWD = param['IJTHDFWD']
+else:
+    self.IJTHDFWD = self.IJTHSFWD
+if self.IJTHSREVgiven == True:
+    self.IJTHSREV = param['IJTHSREV']
+else:
+    self.IJTHSREV = 0.1
+if self.IJTHDREVgiven == True:
+    self.IJTHDREV = param['IJTHDREV']
+else:
+    self.IJTHDREV = self.IJTHSREV
+if self.BVSgiven == True:
+    self.BVS = param['BVS']
+else:
+    self.BVS = 10.0
+if self.BVDgiven == True:
+    self.BVD = param['BVD']
+else:
+    self.BVD = self.BVS
+if self.XJBVSgiven == True:
+    self.XJBVS = param['XJBVS']
+else:
+    self.XJBVS = 1.0
+if self.XJBVDgiven == True:
+    self.XJBVD = param['XJBVD']
+else:
+    self.XJBVD = self.XJBVS
+if self.JTSSgiven == True:
+    self.JTSS = param['JTSS']
+else:
+    self.JTSS = 0.0
+if self.JTSDgiven == True:
+    self.JTSD = param['JTSD']
+else:
+    self.JTSD = self.JTSS
+if self.JTSSWSgiven == True:
+    self.JTSSWS = param['JTSSWS']
+else:
+    self.JTSSWS = 0.0
+if self.JTSSWDgiven == True:
+    self.JTSSWD = param['JTSSWD']
+else:
+    self.JTSSWD = self.JTSSWS
+if self.JTSSWGSgiven == True:
+    self.JTSSWGS = param['JTSSWGS']
+else:
+    self.JTSSWGS = 0.0
+if self.JTSSWGDgiven == True:
+    self.JTSSWGD = param['JTSSWGD']
+else:
+    self.JTSSWGD = self.JTSSWGS
+if self.JTWEFFgiven == True:
+    self.JTWEFF = param['JTWEFF']
+else:
+    self.JTWEFF = 0.0
+if self.NJTSgiven == True:
+    self.NJTS = param['NJTS']
+else:
+    self.NJTS = 20.0
+if self.NJTSDgiven == True:
+    self.NJTSD = param['NJTSD']
+else:
+    self.NJTSD = self.NJTS
+if self.NJTSSWgiven == True:
+    self.NJTSSW = param['NJTSSW']
+else:
+    self.NJTSSW = 20.0
+if self.NJTSSWDgiven == True:
+    self.NJTSSWD = param['NJTSSWD']
+else:
+    self.NJTSSWD = self.NJTSSW
+if self.NJTSSWGgiven == True:
+    self.NJTSSWG = param['NJTSSWG']
+else:
+    self.NJTSSWG = 20.0
+if self.NJTSSWGDgiven == True:
+    self.NJTSSWGD = param['NJTSSWGD']
+else:
+    self.NJTSSWGD = self.NJTSSWG
+if self.VTSSgiven == True:
+    self.VTSS = param['VTSS']
+else:
+    self.VTSS = 10.0
+if self.VTSDgiven == True:
+    self.VTSD = param['VTSD']
+else:
+    self.VTSD = self.VTSS
+if self.VTSSWSgiven == True:
+    self.VTSSWS = param['VTSSWS']
+else:
+    self.VTSSWS = 10.0
+if self.VTSSWDgiven == True:
+    self.VTSSWD = param['VTSSWD']
+else:
+    self.VTSSWD = self.VTSSWS
+if self.VTSSWGSgiven == True:
+    self.VTSSWGS = param['VTSSWGS']
+else:
+    self.VTSSWGS = 10.0
+if self.VTSSWGDgiven == True:
+    self.VTSSWGD = param['VTSSWGD']
+else:
+    self.VTSSWGD = self.VTSSWGS
+if self.XRCRG1given == True:
+    self.XRCRG1 = param['XRCRG1']
+else:
+    self.XRCRG1 = 12.0
+if self.XRCRG2given == True:
+    self.XRCRG2 = param['XRCRG2']
+else:
+    self.XRCRG2 = 1.0
+if self.GBMINgiven == True:
+    self.GBMIN = param['GBMIN']
+else:
+    self.GBMIN = 1e-12
+if self.RBPS0given == True:
+    self.RBPS0 = param['RBPS0']
+else:
+    self.RBPS0 = 50.0
+if self.RBPSLgiven == True:
+    self.RBPSL = param['RBPSL']
+else:
+    self.RBPSL = 0.0
+if self.RBPSWgiven == True:
+    self.RBPSW = param['RBPSW']
+else:
+    self.RBPSW = 0.0
+if self.RBPSNFgiven == True:
+    self.RBPSNF = param['RBPSNF']
+else:
+    self.RBPSNF = 0.0
+if self.RBPD0given == True:
+    self.RBPD0 = param['RBPD0']
+else:
+    self.RBPD0 = 50.0
+if self.RBPDLgiven == True:
+    self.RBPDL = param['RBPDL']
+else:
+    self.RBPDL = 0.0
+if self.RBPDWgiven == True:
+    self.RBPDW = param['RBPDW']
+else:
+    self.RBPDW = 0.0
+if self.RBPDNFgiven == True:
+    self.RBPDNF = param['RBPDNF']
+else:
+    self.RBPDNF = 0.0
+if self.RBPBX0given == True:
+    self.RBPBX0 = param['RBPBX0']
+else:
+    self.RBPBX0 = 100.0
+if self.RBPBXLgiven == True:
+    self.RBPBXL = param['RBPBXL']
+else:
+    self.RBPBXL = 0.0
+if self.RBPBXWgiven == True:
+    self.RBPBXW = param['RBPBXW']
+else:
+    self.RBPBXW = 0.0
+if self.RBPBXNFgiven == True:
+    self.RBPBXNF = param['RBPBXNF']
+else:
+    self.RBPBXNF = 0.0
+if self.RBPBY0given == True:
+    self.RBPBY0 = param['RBPBY0']
+else:
+    self.RBPBY0 = 100.0
+if self.RBPBYLgiven == True:
+    self.RBPBYL = param['RBPBYL']
+else:
+    self.RBPBYL = 0.0
+if self.RBPBYWgiven == True:
+    self.RBPBYW = param['RBPBYW']
+else:
+    self.RBPBYW = 0.0
+if self.RBPBYNFgiven == True:
+    self.RBPBYNF = param['RBPBYNF']
+else:
+    self.RBPBYNF = 0.0
+if self.RBSBX0given == True:
+    self.RBSBX0 = param['RBSBX0']
+else:
+    self.RBSBX0 = 100.0
+if self.RBSBY0given == True:
+    self.RBSBY0 = param['RBSBY0']
+else:
+    self.RBSBY0 = 100.0
+if self.RBDBX0given == True:
+    self.RBDBX0 = param['RBDBX0']
+else:
+    self.RBDBX0 = 100.0
+if self.RBDBY0given == True:
+    self.RBDBY0 = param['RBDBY0']
+else:
+    self.RBDBY0 = 100.0
+if self.RBSDBXLgiven == True:
+    self.RBSDBXL = param['RBSDBXL']
+else:
+    self.RBSDBXL = 0.0
+if self.RBSDBXWgiven == True:
+    self.RBSDBXW = param['RBSDBXW']
+else:
+    self.RBSDBXW = 0.0
+if self.RBSDBXNFgiven == True:
+    self.RBSDBXNF = param['RBSDBXNF']
+else:
+    self.RBSDBXNF = 0.0
+if self.RBSDBYLgiven == True:
+    self.RBSDBYL = param['RBSDBYL']
+else:
+    self.RBSDBYL = 0.0
+if self.RBSDBYWgiven == True:
+    self.RBSDBYW = param['RBSDBYW']
+else:
+    self.RBSDBYW = 0.0
+if self.RBSDBYNFgiven == True:
+    self.RBSDBYNF = param['RBSDBYNF']
+else:
+    self.RBSDBYNF = 0.0
+if self.EFgiven == True:
+    self.EF = param['EF']
+else:
+    self.EF = 1.0
+if self.EMgiven == True:
+    self.EM = param['EM']
+else:
+    self.EM = 41000000.0
+if self.NOIAgiven == True:
+    self.NOIA = param['NOIA']
+else:
+    self.NOIA = 6.25e+40
+if self.NOIBgiven == True:
+    self.NOIB = param['NOIB']
+else:
+    self.NOIB = 3.125e+25
+if self.NOICgiven == True:
+    self.NOIC = param['NOIC']
+else:
+    self.NOIC = 875000000.0
+if self.LINTNOIgiven == True:
+    self.LINTNOI = param['LINTNOI']
+else:
+    self.LINTNOI = 0.0
+if self.NOIA1given == True:
+    self.NOIA1 = param['NOIA1']
+else:
+    self.NOIA1 = 0.0
+if self.NOIAXgiven == True:
+    self.NOIAX = param['NOIAX']
+else:
+    self.NOIAX = 1.0
+if self.NTNOIgiven == True:
+    self.NTNOI = param['NTNOI']
+else:
+    self.NTNOI = 1.0
+if self.RNOIAgiven == True:
+    self.RNOIA = param['RNOIA']
+else:
+    self.RNOIA = 0.577
+if self.RNOIBgiven == True:
+    self.RNOIB = param['RNOIB']
+else:
+    self.RNOIB = 0.5164
+if self.RNOICgiven == True:
+    self.RNOIC = param['RNOIC']
+else:
+    self.RNOIC = 0.395
+if self.TNOIAgiven == True:
+    self.TNOIA = param['TNOIA']
+else:
+    self.TNOIA = 1.5
+if self.TNOIBgiven == True:
+    self.TNOIB = param['TNOIB']
+else:
+    self.TNOIB = 3.5
+if self.TNOICgiven == True:
+    self.TNOIC = param['TNOIC']
+else:
+    self.TNOIC = 0.0
+if self.BINUNITgiven == True:
+    self.BINUNIT = param['BINUNIT']
+else:
+    self.BINUNIT = 1.0
+if self.DLBINgiven == True:
+    self.DLBIN = param['DLBIN']
+else:
+    self.DLBIN = 0.0
+if self.DWBINgiven == True:
+    self.DWBIN = param['DWBIN']
+else:
+    self.DWBIN = 0.0
+if self.TNOMgiven == True:
+    self.TNOM = param['TNOM']
+else:
+    self.TNOM = 27.0
+if self.TBGASUBgiven == True:
+    self.TBGASUB = param['TBGASUB']
+else:
+    self.TBGASUB = 0.000473
+if self.TBGBSUBgiven == True:
+    self.TBGBSUB = param['TBGBSUB']
+else:
+    self.TBGBSUB = 636.0
+if self.TNFACTORgiven == True:
+    self.TNFACTOR = param['TNFACTOR']
+else:
+    self.TNFACTOR = 0.0
+if self.UTEgiven == True:
+    self.UTE = param['UTE']
+else:
+    self.UTE = -1.5
+if self.LUTEgiven == True:
+    self.LUTE = param['LUTE']
+else:
+    self.LUTE = 0.0
+if self.WUTEgiven == True:
+    self.WUTE = param['WUTE']
+else:
+    self.WUTE = 0.0
+if self.PUTEgiven == True:
+    self.PUTE = param['PUTE']
+else:
+    self.PUTE = 0.0
+if self.UTELgiven == True:
+    self.UTEL = param['UTEL']
+else:
+    self.UTEL = 0.0
+if self.UA1given == True:
+    self.UA1 = param['UA1']
+else:
+    self.UA1 = 0.001
+if self.LUA1given == True:
+    self.LUA1 = param['LUA1']
+else:
+    self.LUA1 = 0.0
+if self.WUA1given == True:
+    self.WUA1 = param['WUA1']
+else:
+    self.WUA1 = 0.0
+if self.PUA1given == True:
+    self.PUA1 = param['PUA1']
+else:
+    self.PUA1 = 0.0
+if self.UA1Lgiven == True:
+    self.UA1L = param['UA1L']
+else:
+    self.UA1L = 0.0
+if self.UC1given == True:
+    self.UC1 = param['UC1']
+else:
+    self.UC1 = 5.6e-11
+if self.LUC1given == True:
+    self.LUC1 = param['LUC1']
+else:
+    self.LUC1 = 0.0
+if self.WUC1given == True:
+    self.WUC1 = param['WUC1']
+else:
+    self.WUC1 = 0.0
+if self.PUC1given == True:
+    self.PUC1 = param['PUC1']
+else:
+    self.PUC1 = 0.0
+if self.UD1given == True:
+    self.UD1 = param['UD1']
+else:
+    self.UD1 = 0.0
+if self.LUD1given == True:
+    self.LUD1 = param['LUD1']
+else:
+    self.LUD1 = 0.0
+if self.WUD1given == True:
+    self.WUD1 = param['WUD1']
+else:
+    self.WUD1 = 0.0
+if self.PUD1given == True:
+    self.PUD1 = param['PUD1']
+else:
+    self.PUD1 = 0.0
+if self.UD1Lgiven == True:
+    self.UD1L = param['UD1L']
+else:
+    self.UD1L = 0.0
+if self.EU1given == True:
+    self.EU1 = param['EU1']
+else:
+    self.EU1 = 0.0
+if self.LEU1given == True:
+    self.LEU1 = param['LEU1']
+else:
+    self.LEU1 = 0.0
+if self.WEU1given == True:
+    self.WEU1 = param['WEU1']
+else:
+    self.WEU1 = 0.0
+if self.PEU1given == True:
+    self.PEU1 = param['PEU1']
+else:
+    self.PEU1 = 0.0
+if self.UCSTEgiven == True:
+    self.UCSTE = param['UCSTE']
+else:
+    self.UCSTE = -0.004775
+if self.LUCSTEgiven == True:
+    self.LUCSTE = param['LUCSTE']
+else:
+    self.LUCSTE = 0.0
+if self.WUCSTEgiven == True:
+    self.WUCSTE = param['WUCSTE']
+else:
+    self.WUCSTE = 0.0
+if self.PUCSTEgiven == True:
+    self.PUCSTE = param['PUCSTE']
+else:
+    self.PUCSTE = 0.0
+if self.TETA0given == True:
+    self.TETA0 = param['TETA0']
+else:
+    self.TETA0 = 0.0
+if self.PRTgiven == True:
+    self.PRT = param['PRT']
+else:
+    self.PRT = 0.0
+if self.LPRTgiven == True:
+    self.LPRT = param['LPRT']
+else:
+    self.LPRT = 0.0
+if self.WPRTgiven == True:
+    self.WPRT = param['WPRT']
+else:
+    self.WPRT = 0.0
+if self.PPRTgiven == True:
+    self.PPRT = param['PPRT']
+else:
+    self.PPRT = 0.0
+if self.ATgiven == True:
+    self.AT = param['AT']
+else:
+    self.AT = -0.00156
+if self.LATgiven == True:
+    self.LAT = param['LAT']
+else:
+    self.LAT = 0.0
+if self.WATgiven == True:
+    self.WAT = param['WAT']
+else:
+    self.WAT = 0.0
+if self.PATgiven == True:
+    self.PAT = param['PAT']
+else:
+    self.PAT = 0.0
+if self.ATLgiven == True:
+    self.ATL = param['ATL']
+else:
+    self.ATL = 0.0
+if self.TDELTAgiven == True:
+    self.TDELTA = param['TDELTA']
+else:
+    self.TDELTA = 0.0
+if self.PTWGTgiven == True:
+    self.PTWGT = param['PTWGT']
+else:
+    self.PTWGT = 0.0
+if self.LPTWGTgiven == True:
+    self.LPTWGT = param['LPTWGT']
+else:
+    self.LPTWGT = 0.0
+if self.WPTWGTgiven == True:
+    self.WPTWGT = param['WPTWGT']
+else:
+    self.WPTWGT = 0.0
+if self.PPTWGTgiven == True:
+    self.PPTWGT = param['PPTWGT']
+else:
+    self.PPTWGT = 0.0
+if self.PTWGTLgiven == True:
+    self.PTWGTL = param['PTWGTL']
+else:
+    self.PTWGTL = 0.0
+if self.KT1given == True:
+    self.KT1 = param['KT1']
+else:
+    self.KT1 = -0.11
+if self.KT1EXPgiven == True:
+    self.KT1EXP = param['KT1EXP']
+else:
+    self.KT1EXP = 1.0
+if self.KT1Lgiven == True:
+    self.KT1L = param['KT1L']
+else:
+    self.KT1L = 0.0
+if self.LKT1given == True:
+    self.LKT1 = param['LKT1']
+else:
+    self.LKT1 = 0.0
+if self.WKT1given == True:
+    self.WKT1 = param['WKT1']
+else:
+    self.WKT1 = 0.0
+if self.PKT1given == True:
+    self.PKT1 = param['PKT1']
+else:
+    self.PKT1 = 0.0
+if self.KT2given == True:
+    self.KT2 = param['KT2']
+else:
+    self.KT2 = 0.022
+if self.LKT2given == True:
+    self.LKT2 = param['LKT2']
+else:
+    self.LKT2 = 0.0
+if self.WKT2given == True:
+    self.WKT2 = param['WKT2']
+else:
+    self.WKT2 = 0.0
+if self.PKT2given == True:
+    self.PKT2 = param['PKT2']
+else:
+    self.PKT2 = 0.0
+if self.IITgiven == True:
+    self.IIT = param['IIT']
+else:
+    self.IIT = 0.0
+if self.LIITgiven == True:
+    self.LIIT = param['LIIT']
+else:
+    self.LIIT = 0.0
+if self.WIITgiven == True:
+    self.WIIT = param['WIIT']
+else:
+    self.WIIT = 0.0
+if self.PIITgiven == True:
+    self.PIIT = param['PIIT']
+else:
+    self.PIIT = 0.0
+if self.IGTgiven == True:
+    self.IGT = param['IGT']
+else:
+    self.IGT = 2.5
+if self.LIGTgiven == True:
+    self.LIGT = param['LIGT']
+else:
+    self.LIGT = 0.0
+if self.WIGTgiven == True:
+    self.WIGT = param['WIGT']
+else:
+    self.WIGT = 0.0
+if self.PIGTgiven == True:
+    self.PIGT = param['PIGT']
+else:
+    self.PIGT = 0.0
+if self.TGIDLgiven == True:
+    self.TGIDL = param['TGIDL']
+else:
+    self.TGIDL = 0.0
+if self.LTGIDLgiven == True:
+    self.LTGIDL = param['LTGIDL']
+else:
+    self.LTGIDL = 0.0
+if self.WTGIDLgiven == True:
+    self.WTGIDL = param['WTGIDL']
+else:
+    self.WTGIDL = 0.0
+if self.PTGIDLgiven == True:
+    self.PTGIDL = param['PTGIDL']
+else:
+    self.PTGIDL = 0.0
+if self.TCJgiven == True:
+    self.TCJ = param['TCJ']
+else:
+    self.TCJ = 0.0
+if self.TCJSWgiven == True:
+    self.TCJSW = param['TCJSW']
+else:
+    self.TCJSW = 0.0
+if self.TCJSWGgiven == True:
+    self.TCJSWG = param['TCJSWG']
+else:
+    self.TCJSWG = 0.0
+if self.TPBgiven == True:
+    self.TPB = param['TPB']
+else:
+    self.TPB = 0.0
+if self.TPBSWgiven == True:
+    self.TPBSW = param['TPBSW']
+else:
+    self.TPBSW = 0.0
+if self.TPBSWGgiven == True:
+    self.TPBSWG = param['TPBSWG']
+else:
+    self.TPBSWG = 0.0
+if self.XTISgiven == True:
+    self.XTIS = param['XTIS']
+else:
+    self.XTIS = 3.0
+if self.XTIDgiven == True:
+    self.XTID = param['XTID']
+else:
+    self.XTID = self.XTIS
+if self.XTSSgiven == True:
+    self.XTSS = param['XTSS']
+else:
+    self.XTSS = 0.02
+if self.XTSDgiven == True:
+    self.XTSD = param['XTSD']
+else:
+    self.XTSD = self.XTSS
+if self.XTSSWSgiven == True:
+    self.XTSSWS = param['XTSSWS']
+else:
+    self.XTSSWS = 0.02
+if self.XTSSWDgiven == True:
+    self.XTSSWD = param['XTSSWD']
+else:
+    self.XTSSWD = self.XTSSWS
+if self.XTSSWGSgiven == True:
+    self.XTSSWGS = param['XTSSWGS']
+else:
+    self.XTSSWGS = 0.02
+if self.XTSSWGDgiven == True:
+    self.XTSSWGD = param['XTSSWGD']
+else:
+    self.XTSSWGD = self.XTSSWGS
+if self.TNJTSgiven == True:
+    self.TNJTS = param['TNJTS']
+else:
+    self.TNJTS = 0.0
+if self.TNJTSDgiven == True:
+    self.TNJTSD = param['TNJTSD']
+else:
+    self.TNJTSD = self.TNJTS
+if self.TNJTSSWgiven == True:
+    self.TNJTSSW = param['TNJTSSW']
+else:
+    self.TNJTSSW = 0.0
+if self.TNJTSSWDgiven == True:
+    self.TNJTSSWD = param['TNJTSSWD']
+else:
+    self.TNJTSSWD = self.TNJTSSW
+if self.TNJTSSWGgiven == True:
+    self.TNJTSSWG = param['TNJTSSWG']
+else:
+    self.TNJTSSWG = 0.0
+if self.TNJTSSWGDgiven == True:
+    self.TNJTSSWGD = param['TNJTSSWGD']
+else:
+    self.TNJTSSWGD = self.TNJTSSWG
+if self.RTH0given == True:
+    self.RTH0 = param['RTH0']
+else:
+    self.RTH0 = 0.0
+if self.CTH0given == True:
+    self.CTH0 = param['CTH0']
+else:
+    self.CTH0 = 1e-05
+if self.WTH0given == True:
+    self.WTH0 = param['WTH0']
+else:
+    self.WTH0 = 0.0
+if self.SAREFgiven == True:
+    self.SAREF = param['SAREF']
+else:
+    self.SAREF = 1e-06
+if self.SBREFgiven == True:
+    self.SBREF = param['SBREF']
+else:
+    self.SBREF = 1e-06
+if self.WLODgiven == True:
+    self.WLOD = param['WLOD']
+else:
+    self.WLOD = 0.0
+if self.KU0given == True:
+    self.KU0 = param['KU0']
+else:
+    self.KU0 = 0.0
+if self.KVSATgiven == True:
+    self.KVSAT = param['KVSAT']
+else:
+    self.KVSAT = 0.0
+if self.TKU0given == True:
+    self.TKU0 = param['TKU0']
+else:
+    self.TKU0 = 0.0
+if self.LKU0given == True:
+    self.LKU0 = param['LKU0']
+else:
+    self.LKU0 = 0.0
+if self.WKU0given == True:
+    self.WKU0 = param['WKU0']
+else:
+    self.WKU0 = 0.0
+if self.PKU0given == True:
+    self.PKU0 = param['PKU0']
+else:
+    self.PKU0 = 0.0
+if self.LLODKU0given == True:
+    self.LLODKU0 = param['LLODKU0']
+else:
+    self.LLODKU0 = 0.0
+if self.WLODKU0given == True:
+    self.WLODKU0 = param['WLODKU0']
+else:
+    self.WLODKU0 = 0.0
+if self.KVTH0given == True:
+    self.KVTH0 = param['KVTH0']
+else:
+    self.KVTH0 = 0.0
+if self.LKVTH0given == True:
+    self.LKVTH0 = param['LKVTH0']
+else:
+    self.LKVTH0 = 0.0
+if self.WKVTH0given == True:
+    self.WKVTH0 = param['WKVTH0']
+else:
+    self.WKVTH0 = 0.0
+if self.PKVTH0given == True:
+    self.PKVTH0 = param['PKVTH0']
+else:
+    self.PKVTH0 = 0.0
+if self.LLODVTHgiven == True:
+    self.LLODVTH = param['LLODVTH']
+else:
+    self.LLODVTH = 0.0
+if self.WLODVTHgiven == True:
+    self.WLODVTH = param['WLODVTH']
+else:
+    self.WLODVTH = 0.0
+if self.STK2given == True:
+    self.STK2 = param['STK2']
+else:
+    self.STK2 = 0.0
+if self.LODK2given == True:
+    self.LODK2 = param['LODK2']
+else:
+    self.LODK2 = 0.0
+if self.STETA0given == True:
+    self.STETA0 = param['STETA0']
+else:
+    self.STETA0 = 0.0
+if self.LODETA0given == True:
+    self.LODETA0 = param['LODETA0']
+else:
+    self.LODETA0 = 0.0
+if self.WEBgiven == True:
+    self.WEB = param['WEB']
+else:
+    self.WEB = 0.0
+if self.WECgiven == True:
+    self.WEC = param['WEC']
+else:
+    self.WEC = 0.0
+if self.KVTH0WEgiven == True:
+    self.KVTH0WE = param['KVTH0WE']
+else:
+    self.KVTH0WE = 0.0
+if self.LKVTH0WEgiven == True:
+    self.LKVTH0WE = param['LKVTH0WE']
+else:
+    self.LKVTH0WE = 0.0
+if self.WKVTH0WEgiven == True:
+    self.WKVTH0WE = param['WKVTH0WE']
+else:
+    self.WKVTH0WE = 0.0
+if self.PKVTH0WEgiven == True:
+    self.PKVTH0WE = param['PKVTH0WE']
+else:
+    self.PKVTH0WE = 0.0
+if self.K2WEgiven == True:
+    self.K2WE = param['K2WE']
+else:
+    self.K2WE = 0.0
+if self.LK2WEgiven == True:
+    self.LK2WE = param['LK2WE']
+else:
+    self.LK2WE = 0.0
+if self.WK2WEgiven == True:
+    self.WK2WE = param['WK2WE']
+else:
+    self.WK2WE = 0.0
+if self.PK2WEgiven == True:
+    self.PK2WE = param['PK2WE']
+else:
+    self.PK2WE = 0.0
+if self.KU0WEgiven == True:
+    self.KU0WE = param['KU0WE']
+else:
+    self.KU0WE = 0.0
+if self.LKU0WEgiven == True:
+    self.LKU0WE = param['LKU0WE']
+else:
+    self.LKU0WE = 0.0
+if self.WKU0WEgiven == True:
+    self.WKU0WE = param['WKU0WE']
+else:
+    self.WKU0WE = 0.0
+if self.PKU0WEgiven == True:
+    self.PKU0WE = param['PKU0WE']
+else:
+    self.PKU0WE = 0.0
+if self.SCREFgiven == True:
+    self.SCREF = param['SCREF']
+else:
+    self.SCREF = 1e-06
+if self.SSL0given == True:
+    self.SSL0 = param['SSL0']
+else:
+    self.SSL0 = 400.0
+if self.SSL1given == True:
+    self.SSL1 = param['SSL1']
+else:
+    self.SSL1 = 336000000.0
+if self.SSL2given == True:
+    self.SSL2 = param['SSL2']
+else:
+    self.SSL2 = 0.185
+if self.SSL3given == True:
+    self.SSL3 = param['SSL3']
+else:
+    self.SSL3 = 0.3
+if self.SSL4given == True:
+    self.SSL4 = param['SSL4']
+else:
+    self.SSL4 = 1.4
+if self.SSL5given == True:
+    self.SSL5 = param['SSL5']
+else:
+    self.SSL5 = 0.0
+if self.SSLEXP1given == True:
+    self.SSLEXP1 = param['SSLEXP1']
+else:
+    self.SSLEXP1 = 0.49
+if self.SSLEXP2given == True:
+    self.SSLEXP2 = param['SSLEXP2']
+else:
+    self.SSLEXP2 = 1.42
+if self.AVDSXgiven == True:
+    self.AVDSX = param['AVDSX']
+else:
+    self.AVDSX = 20.0
+if self.WEDGEgiven == True:
+    self.WEDGE = param['WEDGE']
+else:
+    self.WEDGE = 1e-08
+if self.DGAMMAEDGEgiven == True:
+    self.DGAMMAEDGE = param['DGAMMAEDGE']
+else:
+    self.DGAMMAEDGE = 0.0
+if self.DGAMMAEDGELgiven == True:
+    self.DGAMMAEDGEL = param['DGAMMAEDGEL']
+else:
+    self.DGAMMAEDGEL = 0.0
+if self.DGAMMAEDGELEXPgiven == True:
+    self.DGAMMAEDGELEXP = param['DGAMMAEDGELEXP']
+else:
+    self.DGAMMAEDGELEXP = 1.0
+if self.DVTEDGEgiven == True:
+    self.DVTEDGE = param['DVTEDGE']
+else:
+    self.DVTEDGE = 0.0
+if self.NDEPEDGEgiven == True:
+    self.NDEPEDGE = param['NDEPEDGE']
+else:
+    self.NDEPEDGE = 1e+24
+if self.LNDEPEDGEgiven == True:
+    self.LNDEPEDGE = param['LNDEPEDGE']
+else:
+    self.LNDEPEDGE = 0.0
+if self.WNDEPEDGEgiven == True:
+    self.WNDEPEDGE = param['WNDEPEDGE']
+else:
+    self.WNDEPEDGE = 0.0
+if self.PNDEPEDGEgiven == True:
+    self.PNDEPEDGE = param['PNDEPEDGE']
+else:
+    self.PNDEPEDGE = 0.0
+if self.NFACTOREDGEgiven == True:
+    self.NFACTOREDGE = param['NFACTOREDGE']
+else:
+    self.NFACTOREDGE = 0.0
+if self.LNFACTOREDGEgiven == True:
+    self.LNFACTOREDGE = param['LNFACTOREDGE']
+else:
+    self.LNFACTOREDGE = 0.0
+if self.WNFACTOREDGEgiven == True:
+    self.WNFACTOREDGE = param['WNFACTOREDGE']
+else:
+    self.WNFACTOREDGE = 0.0
+if self.PNFACTOREDGEgiven == True:
+    self.PNFACTOREDGE = param['PNFACTOREDGE']
+else:
+    self.PNFACTOREDGE = 0.0
+if self.CITEDGEgiven == True:
+    self.CITEDGE = param['CITEDGE']
+else:
+    self.CITEDGE = 0.0
+if self.LCITEDGEgiven == True:
+    self.LCITEDGE = param['LCITEDGE']
+else:
+    self.LCITEDGE = 0.0
+if self.WCITEDGEgiven == True:
+    self.WCITEDGE = param['WCITEDGE']
+else:
+    self.WCITEDGE = 0.0
+if self.PCITEDGEgiven == True:
+    self.PCITEDGE = param['PCITEDGE']
+else:
+    self.PCITEDGE = 0.0
+if self.CDSCDEDGEgiven == True:
+    self.CDSCDEDGE = param['CDSCDEDGE']
+else:
+    self.CDSCDEDGE = 1e-09
+if self.LCDSCDEDGEgiven == True:
+    self.LCDSCDEDGE = param['LCDSCDEDGE']
+else:
+    self.LCDSCDEDGE = 0.0
+if self.WCDSCDEDGEgiven == True:
+    self.WCDSCDEDGE = param['WCDSCDEDGE']
+else:
+    self.WCDSCDEDGE = 0.0
+if self.PCDSCDEDGEgiven == True:
+    self.PCDSCDEDGE = param['PCDSCDEDGE']
+else:
+    self.PCDSCDEDGE = 0.0
+if self.CDSCBEDGEgiven == True:
+    self.CDSCBEDGE = param['CDSCBEDGE']
+else:
+    self.CDSCBEDGE = 0.0
+if self.LCDSCBEDGEgiven == True:
+    self.LCDSCBEDGE = param['LCDSCBEDGE']
+else:
+    self.LCDSCBEDGE = 0.0
+if self.WCDSCBEDGEgiven == True:
+    self.WCDSCBEDGE = param['WCDSCBEDGE']
+else:
+    self.WCDSCBEDGE = 0.0
+if self.PCDSCBEDGEgiven == True:
+    self.PCDSCBEDGE = param['PCDSCBEDGE']
+else:
+    self.PCDSCBEDGE = 0.0
+if self.ETA0EDGEgiven == True:
+    self.ETA0EDGE = param['ETA0EDGE']
+else:
+    self.ETA0EDGE = 0.08
+if self.LETA0EDGEgiven == True:
+    self.LETA0EDGE = param['LETA0EDGE']
+else:
+    self.LETA0EDGE = 0.0
+if self.WETA0EDGEgiven == True:
+    self.WETA0EDGE = param['WETA0EDGE']
+else:
+    self.WETA0EDGE = 0.0
+if self.PETA0EDGEgiven == True:
+    self.PETA0EDGE = param['PETA0EDGE']
+else:
+    self.PETA0EDGE = 0.0
+if self.ETABEDGEgiven == True:
+    self.ETABEDGE = param['ETABEDGE']
+else:
+    self.ETABEDGE = -0.07
+if self.LETABEDGEgiven == True:
+    self.LETABEDGE = param['LETABEDGE']
+else:
+    self.LETABEDGE = 0.0
+if self.WETABEDGEgiven == True:
+    self.WETABEDGE = param['WETABEDGE']
+else:
+    self.WETABEDGE = 0.0
+if self.PETABEDGEgiven == True:
+    self.PETABEDGE = param['PETABEDGE']
+else:
+    self.PETABEDGE = 0.0
+if self.KT1EDGEgiven == True:
+    self.KT1EDGE = param['KT1EDGE']
+else:
+    self.KT1EDGE = -0.11
+if self.LKT1EDGEgiven == True:
+    self.LKT1EDGE = param['LKT1EDGE']
+else:
+    self.LKT1EDGE = 0.0
+if self.WKT1EDGEgiven == True:
+    self.WKT1EDGE = param['WKT1EDGE']
+else:
+    self.WKT1EDGE = 0.0
+if self.PKT1EDGEgiven == True:
+    self.PKT1EDGE = param['PKT1EDGE']
+else:
+    self.PKT1EDGE = 0.0
+if self.KT1LEDGEgiven == True:
+    self.KT1LEDGE = param['KT1LEDGE']
+else:
+    self.KT1LEDGE = 0.0
+if self.LKT1LEDGEgiven == True:
+    self.LKT1LEDGE = param['LKT1LEDGE']
+else:
+    self.LKT1LEDGE = 0.0
+if self.WKT1LEDGEgiven == True:
+    self.WKT1LEDGE = param['WKT1LEDGE']
+else:
+    self.WKT1LEDGE = 0.0
+if self.PKT1LEDGEgiven == True:
+    self.PKT1LEDGE = param['PKT1LEDGE']
+else:
+    self.PKT1LEDGE = 0.0
+if self.KT2EDGEgiven == True:
+    self.KT2EDGE = param['KT2EDGE']
+else:
+    self.KT2EDGE = 0.022
+if self.LKT2EDGEgiven == True:
+    self.LKT2EDGE = param['LKT2EDGE']
+else:
+    self.LKT2EDGE = 0.0
+if self.WKT2EDGEgiven == True:
+    self.WKT2EDGE = param['WKT2EDGE']
+else:
+    self.WKT2EDGE = 0.0
+if self.PKT2EDGEgiven == True:
+    self.PKT2EDGE = param['PKT2EDGE']
+else:
+    self.PKT2EDGE = 0.0
+if self.KT1EXPEDGEgiven == True:
+    self.KT1EXPEDGE = param['KT1EXPEDGE']
+else:
+    self.KT1EXPEDGE = 1.0
+if self.LKT1EXPEDGEgiven == True:
+    self.LKT1EXPEDGE = param['LKT1EXPEDGE']
+else:
+    self.LKT1EXPEDGE = 0.0
+if self.WKT1EXPEDGEgiven == True:
+    self.WKT1EXPEDGE = param['WKT1EXPEDGE']
+else:
+    self.WKT1EXPEDGE = 0.0
+if self.PKT1EXPEDGEgiven == True:
+    self.PKT1EXPEDGE = param['PKT1EXPEDGE']
+else:
+    self.PKT1EXPEDGE = 0.0
+if self.TNFACTOREDGEgiven == True:
+    self.TNFACTOREDGE = param['TNFACTOREDGE']
+else:
+    self.TNFACTOREDGE = 0.0
+if self.LTNFACTOREDGEgiven == True:
+    self.LTNFACTOREDGE = param['LTNFACTOREDGE']
+else:
+    self.LTNFACTOREDGE = 0.0
+if self.WTNFACTOREDGEgiven == True:
+    self.WTNFACTOREDGE = param['WTNFACTOREDGE']
+else:
+    self.WTNFACTOREDGE = 0.0
+if self.PTNFACTOREDGEgiven == True:
+    self.PTNFACTOREDGE = param['PTNFACTOREDGE']
+else:
+    self.PTNFACTOREDGE = 0.0
+if self.TETA0EDGEgiven == True:
+    self.TETA0EDGE = param['TETA0EDGE']
+else:
+    self.TETA0EDGE = 0.0
+if self.LTETA0EDGEgiven == True:
+    self.LTETA0EDGE = param['LTETA0EDGE']
+else:
+    self.LTETA0EDGE = 0.0
+if self.WTETA0EDGEgiven == True:
+    self.WTETA0EDGE = param['WTETA0EDGE']
+else:
+    self.WTETA0EDGE = 0.0
+if self.PTETA0EDGEgiven == True:
+    self.PTETA0EDGE = param['PTETA0EDGE']
+else:
+    self.PTETA0EDGE = 0.0
+if self.DVT0EDGEgiven == True:
+    self.DVT0EDGE = param['DVT0EDGE']
+else:
+    self.DVT0EDGE = 2.2
+if self.DVT1EDGEgiven == True:
+    self.DVT1EDGE = param['DVT1EDGE']
+else:
+    self.DVT1EDGE = 0.53
+if self.DVT2EDGEgiven == True:
+    self.DVT2EDGE = param['DVT2EDGE']
+else:
+    self.DVT2EDGE = 0.0
+if self.K2EDGEgiven == True:
+    self.K2EDGE = param['K2EDGE']
+else:
+    self.K2EDGE = 0.0
+if self.LK2EDGEgiven == True:
+    self.LK2EDGE = param['LK2EDGE']
+else:
+    self.LK2EDGE = 0.0
+if self.WK2EDGEgiven == True:
+    self.WK2EDGE = param['WK2EDGE']
+else:
+    self.WK2EDGE = 0.0
+if self.PK2EDGEgiven == True:
+    self.PK2EDGE = param['PK2EDGE']
+else:
+    self.PK2EDGE = 0.0
+if self.KVTH0EDGEgiven == True:
+    self.KVTH0EDGE = param['KVTH0EDGE']
+else:
+    self.KVTH0EDGE = 0.0
+if self.LKVTH0EDGEgiven == True:
+    self.LKVTH0EDGE = param['LKVTH0EDGE']
+else:
+    self.LKVTH0EDGE = 0.0
+if self.WKVTH0EDGEgiven == True:
+    self.WKVTH0EDGE = param['WKVTH0EDGE']
+else:
+    self.WKVTH0EDGE = 0.0
+if self.PKVTH0EDGEgiven == True:
+    self.PKVTH0EDGE = param['PKVTH0EDGE']
+else:
+    self.PKVTH0EDGE = 0.0
+if self.STK2EDGEgiven == True:
+    self.STK2EDGE = param['STK2EDGE']
+else:
+    self.STK2EDGE = 0.0
+if self.LSTK2EDGEgiven == True:
+    self.LSTK2EDGE = param['LSTK2EDGE']
+else:
+    self.LSTK2EDGE = 0.0
+if self.WSTK2EDGEgiven == True:
+    self.WSTK2EDGE = param['WSTK2EDGE']
+else:
+    self.WSTK2EDGE = 0.0
+if self.PSTK2EDGEgiven == True:
+    self.PSTK2EDGE = param['PSTK2EDGE']
+else:
+    self.PSTK2EDGE = 0.0
+if self.STETA0EDGEgiven == True:
+    self.STETA0EDGE = param['STETA0EDGE']
+else:
+    self.STETA0EDGE = 0.0
+if self.LSTETA0EDGEgiven == True:
+    self.LSTETA0EDGE = param['LSTETA0EDGE']
+else:
+    self.LSTETA0EDGE = 0.0
+if self.WSTETA0EDGEgiven == True:
+    self.WSTETA0EDGE = param['WSTETA0EDGE']
+else:
+    self.WSTETA0EDGE = 0.0
+if self.PSTETA0EDGEgiven == True:
+    self.PSTETA0EDGE = param['PSTETA0EDGE']
+else:
+    self.PSTETA0EDGE = 0.0
+if self.IGCLAMPgiven == True:
+    self.IGCLAMP = param['IGCLAMP']
+else:
+    self.IGCLAMP = 1.0
+if self.LPgiven == True:
+    self.LP = param['LP']
+else:
+    self.LP = 1e-05
+if self.RNOIKgiven == True:
+    self.RNOIK = param['RNOIK']
+else:
+    self.RNOIK = 0.0
+if self.TNOIKgiven == True:
+    self.TNOIK = param['TNOIK']
+else:
+    self.TNOIK = 0.0
+if self.TNOIK2given == True:
+    self.TNOIK2 = param['TNOIK2']
+else:
+    self.TNOIK2 = 0.1
+if self.K0given == True:
+    self.K0 = param['K0']
+else:
+    self.K0 = 0.0
+if self.LK0given == True:
+    self.LK0 = param['LK0']
+else:
+    self.LK0 = 0.0
+if self.WK0given == True:
+    self.WK0 = param['WK0']
+else:
+    self.WK0 = 0.0
+if self.PK0given == True:
+    self.PK0 = param['PK0']
+else:
+    self.PK0 = 0.0
+if self.K01given == True:
+    self.K01 = param['K01']
+else:
+    self.K01 = 0.0
+if self.LK01given == True:
+    self.LK01 = param['LK01']
+else:
+    self.LK01 = 0.0
+if self.WK01given == True:
+    self.WK01 = param['WK01']
+else:
+    self.WK01 = 0.0
+if self.PK01given == True:
+    self.PK01 = param['PK01']
+else:
+    self.PK01 = 0.0
+if self.M0given == True:
+    self.M0 = param['M0']
+else:
+    self.M0 = 1.0
+if self.LM0given == True:
+    self.LM0 = param['LM0']
+else:
+    self.LM0 = 0.0
+if self.WM0given == True:
+    self.WM0 = param['WM0']
+else:
+    self.WM0 = 0.0
+if self.PM0given == True:
+    self.PM0 = param['PM0']
+else:
+    self.PM0 = 0.0
+if self.M01given == True:
+    self.M01 = param['M01']
+else:
+    self.M01 = 0.0
+if self.LM01given == True:
+    self.LM01 = param['LM01']
+else:
+    self.LM01 = 0.0
+if self.WM01given == True:
+    self.WM01 = param['WM01']
+else:
+    self.WM01 = 0.0
+if self.PM01given == True:
+    self.PM01 = param['PM01']
+else:
+    self.PM01 = 0.0
+if self.NEDGEgiven == True:
+    self.NEDGE = param['NEDGE']
+else:
+    self.NEDGE = 1.0
+if self.NOIA1_EDGEgiven == True:
+    self.NOIA1_EDGE = param['NOIA1_EDGE']
+else:
+    self.NOIA1_EDGE = 0.0
+if self.NOIAX_EDGEgiven == True:
+    self.NOIAX_EDGE = param['NOIAX_EDGE']
+else:
+    self.NOIAX_EDGE = 1.0
+if self.FNOIMODgiven == True:
+    self.FNOIMOD = param['FNOIMOD']
+else:
+    self.FNOIMOD = 0.0
+if self.LHgiven == True:
+    self.LH = param['LH']
+else:
+    self.LH = 1e-08
+if self.NOIA2given == True:
+    self.NOIA2 = param['NOIA2']
+else:
+    self.NOIA2 = self.NOIA
+if self.HNDEPgiven == True:
+    self.HNDEP = param['HNDEP']
+else:
+    self.HNDEP = self.NDEP
+if self.ABULKgiven == True:
+    self.ABULK = param['ABULK']
+else:
+    self.ABULK = 1.0
+if self.C0given == True:
+    self.C0 = param['C0']
+else:
+    self.C0 = 0.0
+if self.LC0given == True:
+    self.LC0 = param['LC0']
+else:
+    self.LC0 = 0.0
+if self.WC0given == True:
+    self.WC0 = param['WC0']
+else:
+    self.WC0 = 0.0
+if self.PC0given == True:
+    self.PC0 = param['PC0']
+else:
+    self.PC0 = 0.0
+if self.C01given == True:
+    self.C01 = param['C01']
+else:
+    self.C01 = 0.0
+if self.LC01given == True:
+    self.LC01 = param['LC01']
+else:
+    self.LC01 = 0.0
+if self.WC01given == True:
+    self.WC01 = param['WC01']
+else:
+    self.WC01 = 0.0
+if self.PC01given == True:
+    self.PC01 = param['PC01']
+else:
+    self.PC01 = 0.0
+if self.C0SIgiven == True:
+    self.C0SI = param['C0SI']
+else:
+    self.C0SI = 1.0
+if self.LC0SIgiven == True:
+    self.LC0SI = param['LC0SI']
+else:
+    self.LC0SI = 0.0
+if self.WC0SIgiven == True:
+    self.WC0SI = param['WC0SI']
+else:
+    self.WC0SI = 0.0
+if self.PC0SIgiven == True:
+    self.PC0SI = param['PC0SI']
+else:
+    self.PC0SI = 0.0
+if self.C0SI1given == True:
+    self.C0SI1 = param['C0SI1']
+else:
+    self.C0SI1 = 0.0
+if self.LC0SI1given == True:
+    self.LC0SI1 = param['LC0SI1']
+else:
+    self.LC0SI1 = 0.0
+if self.WC0SI1given == True:
+    self.WC0SI1 = param['WC0SI1']
+else:
+    self.WC0SI1 = 0.0
+if self.PC0SI1given == True:
+    self.PC0SI1 = param['PC0SI1']
+else:
+    self.PC0SI1 = 0.0
+if self.C0SISATgiven == True:
+    self.C0SISAT = param['C0SISAT']
+else:
+    self.C0SISAT = 0.0
+if self.LC0SISATgiven == True:
+    self.LC0SISAT = param['LC0SISAT']
+else:
+    self.LC0SISAT = 0.0
+if self.WC0SISATgiven == True:
+    self.WC0SISAT = param['WC0SISAT']
+else:
+    self.WC0SISAT = 0.0
+if self.PC0SISATgiven == True:
+    self.PC0SISAT = param['PC0SISAT']
+else:
+    self.PC0SISAT = 0.0
+if self.C0SISAT1given == True:
+    self.C0SISAT1 = param['C0SISAT1']
+else:
+    self.C0SISAT1 = 0.0
+if self.LC0SISAT1given == True:
+    self.LC0SISAT1 = param['LC0SISAT1']
+else:
+    self.LC0SISAT1 = 0.0
+if self.WC0SISAT1given == True:
+    self.WC0SISAT1 = param['WC0SISAT1']
+else:
+    self.WC0SISAT1 = 0.0
+if self.PC0SISAT1given == True:
+    self.PC0SISAT1 = param['PC0SISAT1']
+else:
+    self.PC0SISAT1 = 0.0
+if self.minrgiven == True:
+    self.minr = param['minr']
+else:
+    self.minr = 0.001
+if self.HVMODgiven == True:
+    self.HVMOD = param['HVMOD']
+else:
+    self.HVMOD = 0.0
+if self.HVCAPgiven == True:
+    self.HVCAP = param['HVCAP']
+else:
+    self.HVCAP = 0.0
+if self.HVCAPSgiven == True:
+    self.HVCAPS = param['HVCAPS']
+else:
+    self.HVCAPS = 0.0
+if self.IIMODgiven == True:
+    self.IIMOD = param['IIMOD']
+else:
+    self.IIMOD = 0.0
+if self.NDRIFTDgiven == True:
+    self.NDRIFTD = param['NDRIFTD']
+else:
+    self.NDRIFTD = 5e+16
+if self.VDRIFTgiven == True:
+    self.VDRIFT = param['VDRIFT']
+else:
+    self.VDRIFT = 100000.0
+if self.MDRIFTgiven == True:
+    self.MDRIFT = param['MDRIFT']
+else:
+    self.MDRIFT = 1.0
+if self.NDRIFTSgiven == True:
+    self.NDRIFTS = param['NDRIFTS']
+else:
+    self.NDRIFTS = self.NDRIFTD
+if self.RDLCWgiven == True:
+    self.RDLCW = param['RDLCW']
+else:
+    self.RDLCW = 100.0
+if self.RSLCWgiven == True:
+    self.RSLCW = param['RSLCW']
+else:
+    self.RSLCW = 0.0
+if self.PDRWBgiven == True:
+    self.PDRWB = param['PDRWB']
+else:
+    self.PDRWB = 0.0
+if self.VFBDRIFTgiven == True:
+    self.VFBDRIFT = param['VFBDRIFT']
+else:
+    self.VFBDRIFT = -1.0
+if self.VFBOVgiven == True:
+    self.VFBOV = param['VFBOV']
+else:
+    self.VFBOV = -1.0
+if self.LOVERgiven == True:
+    self.LOVER = param['LOVER']
+else:
+    self.LOVER = 5e-07
+if self.LOVERACCgiven == True:
+    self.LOVERACC = param['LOVERACC']
+else:
+    self.LOVERACC = self.LOVER
+if self.NDRgiven == True:
+    self.NDR = param['NDR']
+else:
+    self.NDR = self.NDEP
+if self.SLHVgiven == True:
+    self.SLHV = param['SLHV']
+else:
+    self.SLHV = 0.0
+if self.SLHV1given == True:
+    self.SLHV1 = param['SLHV1']
+else:
+    self.SLHV1 = 1.0
+if self.ALPHADRgiven == True:
+    self.ALPHADR = param['ALPHADR']
+else:
+    self.ALPHADR = self.ALPHA0
+if self.BETADRgiven == True:
+    self.BETADR = param['BETADR']
+else:
+    self.BETADR = self.BETA0
+if self.PRTHVgiven == True:
+    self.PRTHV = param['PRTHV']
+else:
+    self.PRTHV = 0.0
+if self.ATHVgiven == True:
+    self.ATHV = param['ATHV']
+else:
+    self.ATHV = 0.0
+if self.HVFACTORgiven == True:
+    self.HVFACTOR = param['HVFACTOR']
+else:
+    self.HVFACTOR = 0.001
+if self.DRII1given == True:
+    self.DRII1 = param['DRII1']
+else:
+    self.DRII1 = 1.0
+if self.DRII2given == True:
+    self.DRII2 = param['DRII2']
+else:
+    self.DRII2 = 5.0
+if self.DELTAIIgiven == True:
+    self.DELTAII = param['DELTAII']
+else:
+    self.DELTAII = 0.5
