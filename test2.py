@@ -6,6 +6,9 @@ with open("out2.txt", 'w') as f:
         f.write(f"if \'{par}\' in param:\n")
         f.write(f"    self.{par} = param[\'{par}\']\n")
         f.write(f"    self.{par}given = True\n")
+        f.write(f"elif \'{par}\'.swapcase() in param:\n")
+        f.write(f"    self.{par} = param[\'{par}\'.swapcase()]\n")
+        f.write(f"    self.{par}given = True\n")        
         f.write(f"else:\n")     
         f.write(f"    if self.{par}given == False:\n")   
         try:

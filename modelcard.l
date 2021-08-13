@@ -1,6 +1,9 @@
-
-.model pch pmos level=54
-***************
-* adja
-+toxe    =3.2e-009         toxp  = 2.9820425e-009      epsrox  = 3.9
-+lint    = -3.592989e-008   llong = 1e-005              lw      = 0
++ TYPE = 1
++ GIDLMOD = 0
++ GEOMOD = 0
++ RGEOMOD = 0
++ COVMOD = 1
++ RDSMOD = 0
++ IGCMOD = 0
++ IGBMOD = 0
++ SHMOD = 0
