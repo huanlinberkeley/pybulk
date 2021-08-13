@@ -1,6 +1,7 @@
 from math import *
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 class bsimbulk:
     """
@@ -9803,22 +9804,49 @@ class bsimbulk:
             ids      = ids_edge + ids
         return ids
 
+def read_mdl(file):
+    mdl = {}
+    with open(file,'r') as f:
+        lines = f.read().splitlines()
+    for line in lines:
+        line = line.replace("+","")
+        out = filter(None, re.split(r"=|\s+", line))
+        par = []
+        val = []
+        for num, i in enumerate(out):
+            if num % 2 == 0:
+                par.append(i)
+            else:
+                val.append(float(i))
+        for i, j in zip(par, val):        
+            mdl[i] = j
+    return mdl
+
+filepath = "modelcard.l"
+param2 = read_mdl(filepath)
+
+print(param2)
+
 param = {
+    "W": 1e-5,
     "L": 1e-6,
     "TOXP": 1e-9,
-    "Temp": 10.0,
+    "Temp": 125.0,
     "Vg": 0.1,
-    "Vd": 1.1,
+    "Vd": 1.0,
 }
 
 yy=bsimbulk(**param)
 
-u0 = np.arange(0.05,0.1,0.001)
+sweep = np.arange(0,1.1,0.1)
 
 id = []
-for x in u0:
-    yy.param_update(**{'U0':x})
+for x in sweep:
+    yy.param_update(**{'Vg':x})
     id.append(yy.calc())
 
-plt.scatter(u0,id)
-plt.show()
+plt.scatter(sweep,id)
+#plt.show()
+
+#for x, y in zip(sweep, id):
+#    print(x, y)
