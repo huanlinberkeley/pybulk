@@ -1084,7 +1084,7 @@ class bsimbulk:
             self.VD = param['VD']
             self.VDgiven = True
         else:
-            if self.Vdgiven == False:
+            if self.VDgiven == False:
                 self.VD = 1.0
         if 'VG' in param:
             self.VG = param['VG']
@@ -11500,7 +11500,7 @@ class bsimbulk:
             Tnom = self.REFTEMP
         else:
             Tnom = self.TNOM + self.P_CELSIUS0
-        DevTemp = self.Temp + self.P_CELSIUS0 + self.DTEMP
+        DevTemp = self.TEMP + self.P_CELSIUS0 + self.DTEMP
 
         Vt         = self.KboQ * DevTemp
         inv_Vt     = 1.0 / Vt
@@ -12961,26 +12961,24 @@ filepath = "modelcard.l"
 model = read_mdl(filepath)
 
 biasT = {
-    "Vd": 1.0,
-    "Vg": 1.0,
-    "Vs": 0.0,
-    "Vb": 0.0,
-    "Temp": 25.0,
+    "VD": 1.0,
+    "VG": 1.0,
+    "VS": 0.0,
+    "VB": 0.0,
+    "TEMP": 25.0,
 }
 
-param = model | biasT
-
-yy=bsimbulk(**param)
+yy=bsimbulk(**model, **biasT, **{"A21":-0.01})
 
 sweep = np.arange(0,1.1,0.1)
 
-id = []
+ids = []
 for x in sweep:
-    yy.param_update(**{'Vg':x})
-    id.append(yy.calc())
+    yy.param_update(**{'VG':x})
+    ids.append(yy.calc())
 
-plt.scatter(sweep,id)
+#plt.scatter(sweep,id)
 #plt.show()
 
-for x, y in zip(sweep, id):
-    print(x, y)
+for x, y in zip(sweep, ids):
+    print(f"{x:.2f}", f"{y:.9e}")
