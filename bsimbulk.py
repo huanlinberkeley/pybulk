@@ -9809,17 +9809,10 @@ def read_mdl(file):
     with open(file,'r') as f:
         lines = f.read().splitlines()
     for line in lines:
-        line = line.replace("+","")
-        out = filter(None, re.split(r"=|\s+", line))
-        par = []
-        val = []
-        for num, i in enumerate(out):
-            if num % 2 == 0:
-                par.append(i)
-            else:
-                val.append(float(i))
-        for i, j in zip(par, val):        
-            mdl[i] = j
+        pair = re.findall(r"\w+\s*=\s*[+-]*\d+\.*\d*[Ee]*[+-]*\d*", line)
+        for item in pair:
+            par, val = re.split(r"\s*=\s*", item)
+            mdl[par] = float(val)
     return mdl
 
 filepath = "modelcard.l"
