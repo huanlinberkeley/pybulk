@@ -10524,6 +10524,7 @@ class bsimbulk:
         else:
             if self.DELTAIIgiven == False:
                 self.DELTAII = 0.5
+        self.calc(**param)
 
     # Clamped exponential function
     def lexp(self, x):
@@ -10884,2067 +10885,2067 @@ class bsimbulk:
             Ad = 0
         return Ps, Pd, As, Ad
 
-    def calc(self):
+    def calc(self, **param):
         # Bias-independent calculations
         if (self.TYPE == self.ntype):
-            devsign = 1
+            self.devsign = 1
         else:
-            devsign = -1
+            self.devsign = -1
 
         # Constants
-        epssi    = self.EPSRSUB * self.EPS0
-        epsox    = self.EPSROX * self.EPS0
-        Cox      = self.EPSROX * self.EPS0 / self.TOXE
-        epsratio = self.EPSRSUB / self.EPSROX
+        self.epssi    = self.EPSRSUB * self.EPS0
+        self.epsox    = self.EPSROX * self.EPS0
+        self.Cox      = self.EPSROX * self.EPS0 / self.TOXE
+        self.epsratio = self.EPSRSUB / self.EPSROX
 
         # Physical oxide thickness
-        if self.TOXPgiven == False:
-            BSIMBULKTOXP = (self.TOXE * self.EPSROX / 3.9) - self.DTOX
+        if ("TOXP" not in param.keys()):
+            self.BSIMBULKTOXP = (self.TOXE * self.EPSROX / 3.9) - self.DTOX
         else:
-            BSIMBULKTOXP = self.TOXP
-        L_mult = self.L * self.LMLT
-        W_mult = self.W * self.WMLT
-        Lnew = L_mult + self.XL
-        if (Lnew <= 0.0):
+            self.BSIMBULKTOXP = self.TOXP
+        self.L_mult = self.L * self.LMLT
+        self.W_mult = self.W * self.WMLT
+        self.Lnew = self.L_mult + self.XL
+        if (self.Lnew <= 0.0):
             print("Fatal: Ldrawn * LMLT + XL = %e for %M is non-positive", Lnew)
-        W_by_NF = W_mult / self.NF
-        Wnew    = W_by_NF + self.XW
-        if (Wnew <= 0.0):
+        self.W_by_NF = self.W_mult / self.NF
+        self.Wnew    = self.W_by_NF + self.XW
+        if (self.Wnew <= 0.0):
             print("Fatal: W / NF * WMLT + XW = %e for %M is non-positive", Wnew)
 
         # Leff and Weff for I-V
-        L_LLN      = Lnew**-self.LLN
-        W_LWN      = Wnew**-self.LWN
-        LW_LLN_LWN = L_LLN * W_LWN
-        dLIV       = self.LINT + self.LL * L_LLN + self.LW * W_LWN + self.LWL * LW_LLN_LWN
-        L_WLN      = Lnew**-self.WLN
-        W_WWN      = Wnew**-self.WWN
-        LW_WLN_WWN = L_WLN * W_WWN
-        dWIV       = self.WINT + self.WL * L_WLN + self.WW * W_WWN + self.WWL * LW_WLN_WWN
-        Leff       = Lnew - 2.0 * dLIV
-        if (Leff <= 0.0):
+        self.L_LLN      = self.Lnew**-self.LLN
+        self.W_LWN      = self.Wnew**-self.LWN
+        self.LW_LLN_LWN = self.L_LLN * self.W_LWN
+        self.dLIV       = self.LINT + self.LL * self.L_LLN + self.LW * self.W_LWN + self.LWL * self.LW_LLN_LWN
+        self.L_WLN      = self.Lnew**-self.WLN
+        self.W_WWN      = self.Wnew**-self.WWN
+        self.LW_WLN_WWN = self.L_WLN * self.W_WWN
+        self.dWIV       = self.WINT + self.WL * self.L_WLN + self.WW * self.W_WWN + self.WWL * self.LW_WLN_WWN
+        self.Leff       = self.Lnew - 2.0 * self.dLIV
+        if (self.Leff <= 0.0):
             print("Fatal: Effective channel length = %e for  %M is non-positive", Leff)
-        elif (Leff <= 1.0e-9):
+        elif (self.Leff <= 1.0e-9):
             print("Warning: Effective channel length = %e for %M is <= 1.0e-9. Recommended Leff >= 1e-8", Leff)
-        Weff = Wnew - 2.0 * dWIV
-        if (Weff <= 0.0):
+        self.Weff = self.Wnew - 2.0 * self.dWIV
+        if (self.Weff <= 0.0):
              print("Fatal: Effective channel Width = %e for %M is non-positive", Weff)
-        elif (Weff <= 1.0e-9):
+        elif (self.Weff <= 1.0e-9):
             print("Warning: Effective channel width = %e for %M is <= 1.0e-9. Recommended Weff >= 1e-8", Weff)
 
         # Leff and Weff for C-V
-        dLCV = self.DLC + self.LLC * L_LLN + self.LWC * W_LWN + self.LWLC * LW_LLN_LWN
-        dWCV = self.DWC + self.WLC * L_WLN + self.WWC * W_WWN + self.WWLC * LW_WLN_WWN
-        Lact = Lnew - 2.0 * dLCV
-        if (Lact <= 0.0):
+        self.dLCV = self.DLC + self.LLC * self.L_LLN + self.LWC * self.W_LWN + self.LWLC * self.LW_LLN_LWN
+        self.dWCV = self.DWC + self.WLC * self.L_WLN + self.WWC * self.W_WWN + self.WWLC * self.LW_WLN_WWN
+        self.Lact = self.Lnew - 2.0 * self.dLCV
+        if (self.Lact <= 0.0):
              print("Fatal: Effective channel length for C-V = %e for %M is non-positive", Lact)
-        elif (Lact <= 1.0e-9):
+        elif (self.Lact <= 1.0e-9):
             print("Warning: Effective channel length for C-V = %e for %M is <= 1.0e-9. Recommended Lact >= 1e-8", Lact)
-        Wact = Wnew - 2.0 * dWCV
-        if (Wact <= 0.0):
+        self.Wact = self.Wnew - 2.0 * self.dWCV
+        if (self.Wact <= 0.0):
             print("Fatal: Effective channel width for C-V = %e for %M is non-positive", Wact)
-        elif (Wact <= 1.0e-9):
+        elif (self.Wact <= 1.0e-9):
             print("Warning: Effective channel width for C-V = %e for %M is <= 1.0e-9. Recommended Wact >= 1e-8", Wact)
 
         # Weffcj for diode, GIDL etc.
-        dWJ    = self.DWJ + self.WLC / Lnew**self.WLN + self.WWC / Wnew**self.WWN + self.WWLC / Lnew**self.WLN / Wnew**self.WWN
-        Weffcj = Wnew - 2.0 * dWJ
-        if (Weffcj <= 0.0):
+        self.dWJ    = self.DWJ + self.WLC / self.Lnew**self.WLN + self.WWC / self.Wnew**self.WWN + self.WWLC / self.Lnew**self.WLN / self.Wnew**self.WWN
+        self.Weffcj = self.Wnew - 2.0 * self.dWJ
+        if (self.Weffcj <= 0.0):
             print("Fatal: Effective channel width for S/D junctions = %e for %M is non-positive", Weffcj)
-        Inv_L     = 1.0e-6 / Leff
-        Inv_W     = 1.0e-6 / Weff
-        Inv_Lact  = 1.0e-6 / Lact
-        Inv_Wact  = 1.0e-6 / Wact
-        Inv_Llong = 1.0e-6 / self.LLONG
-        Inv_Wwide = 1.0e-6 / self.WWIDE
-        Inv_WL    = Inv_L * Inv_W
+        self.Inv_L     = 1.0e-6 / self.Leff
+        self.Inv_W     = 1.0e-6 / self.Weff
+        self.Inv_Lact  = 1.0e-6 / self.Lact
+        self.Inv_Wact  = 1.0e-6 / self.Wact
+        self.Inv_Llong = 1.0e-6 / self.LLONG
+        self.Inv_Wwide = 1.0e-6 / self.WWIDE
+        self.Inv_WL    = self.Inv_L * self.Inv_W
 
         # Effective length and width for binning
-        L_LLN1 = L_LLN
-        L_WLN1 = L_WLN
+        self.L_LLN1 = self.L_LLN
+        self.L_WLN1 = self.L_WLN
         if (self.DLBIN != 0.0):
-            if (self.DLBIN <= -Lnew):
+            if (self.DLBIN <= -self.Lnew):
                 print("Fatal: DLBIN for %M = %e is <= -Ldrawn * LMLT", DLBIN)
             else:
-                L_LLN1 = (Lnew + self.DLBIN)**-self.LLN
-                L_WLN1 = (Lnew + self.DLBIN)**-self.WLN
-        W_LWN1 = W_LWN
-        W_WWN1 = W_WWN
+                self.L_LLN1 = (self.Lnew + self.DLBIN)**-self.LLN
+                self.L_WLN1 = (self.Lnew + self.DLBIN)**-self.WLN
+        self.W_LWN1 = self.W_LWN
+        self.W_WWN1 = self.W_WWN
         if (self.DWBIN != 0.0):
-            if (self.DWBIN <= -Wnew):
+            if (self.DWBIN <= -self.Wnew):
                 print("Fatal: DWBIN for %M = %e is <= -Wdrawn * WMLT", DWBIN)
             else:
-                W_LWN1 = (Wnew + self.DWBIN)**-self.LWN
-                W_WWN1 = (Wnew + self.DWBIN)**-self.WWN
-        LW_LLN_LWN1 = L_LLN1 * W_LWN1
-        dLB         = self.LINT + self.LL * L_LLN1 + self.LW * W_LWN1 + self.LWL * LW_LLN_LWN1
-        LW_WLN_WWN1 = L_WLN1 * W_WWN1
-        dWB         = self.WINT + self.WL * L_WLN1 + self.WW * W_WWN1 + self.WWL * LW_WLN_WWN1
-        Leff1 = Lnew - 2.0 * dLB + self.DLBIN
-        if (Leff1 <= 0.0):
+                self.W_LWN1 = (self.Wnew + self.DWBIN)**-self.LWN
+                self.W_WWN1 = (self.Wnew + self.DWBIN)**-self.WWN
+        self.LW_LLN_LWN1 = self.L_LLN1 * self.W_LWN1
+        self.dLB         = self.LINT + self.LL * self.L_LLN1 + self.LW * self.W_LWN1 + self.LWL * self.LW_LLN_LWN1
+        self.LW_WLN_WWN1 = self.L_WLN1 * self.W_WWN1
+        self.dWB         = self.WINT + self.WL * self.L_WLN1 + self.WW * self.W_WWN1 + self.WWL * self.LW_WLN_WWN1
+        self.Leff1 = self.Lnew - 2.0 * self.dLB + self.DLBIN
+        if (self.Leff1 <= 0.0):
             print("Fatal: Effective channel length for binning = %e for %M is non-positive", Leff1)
-        Weff1 = Wnew - 2.0 * dWB + self.DWBIN
-        if (Weff1 <= 0.0):
+        self.Weff1 = self.Wnew - 2.0 * self.dWB + self.DWBIN
+        if (self.Weff1 <= 0.0):
             print("Fatal: Effective channel width for binning = %e for %M is non-positive", Weff1)
         if (self.BINUNIT == 1):
-            BIN_L = 1.0e-6 / Leff1
-            BIN_W = 1.0e-6 / Weff1
+            self.BIN_L = 1.0e-6 / self.Leff1
+            self.BIN_W = 1.0e-6 / self.Weff1
         else:
-            BIN_L = 1.0 / Leff1
-            BIN_W = 1.0 / Weff1
-        BIN_WL         = BIN_L * BIN_W
-        VFB_i          = self.VFB + BIN_L * self.LVFB + BIN_W * self.WVFB + BIN_WL * self.PVFB
-        VFBCV_i        = self.VFBCV + BIN_L * self.LVFBCV + BIN_W * self.WVFBCV + BIN_WL * self.PVFBCV
-        NSD_i          = self.NSD + BIN_L * self.LNSD + BIN_W * self.WNSD + BIN_WL * self.PNSD
-        NDEP_i         = self.NDEP + BIN_L * self.LNDEP + BIN_W * self.WNDEP + BIN_WL * self.PNDEP
-        NDEPCV_i       = self.NDEPCV + BIN_L * self.LNDEPCV + BIN_W * self.WNDEPCV + BIN_WL * self.PNDEPCV
-        NGATE_i        = self.NGATE + BIN_L * self.LNGATE + BIN_W * self.WNGATE + BIN_WL * self.PNGATE
-        CIT_i          = self.CIT + BIN_L * self.LCIT + BIN_W * self.WCIT + BIN_WL * self.PCIT
-        NFACTOR_i      = self.NFACTOR + BIN_L * self.LNFACTOR + BIN_W * self.WNFACTOR + BIN_WL * self.PNFACTOR
-        CDSCD_i        = self.CDSCD + BIN_L * self.LCDSCD + BIN_W * self.WCDSCD + BIN_WL * self.PCDSCD
-        CDSCB_i        = self.CDSCB + BIN_L * self.LCDSCB + BIN_W * self.WCDSCB + BIN_WL * self.PCDSCB
-        DVTP0_i        = self.DVTP0 + BIN_L * self.LDVTP0 + BIN_W * self.WDVTP0 + BIN_WL * self.PDVTP0
-        DVTP1_i        = self.DVTP1 + BIN_L * self.LDVTP1 + BIN_W * self.WDVTP1 + BIN_WL * self.PDVTP1
-        DVTP2_i        = self.DVTP2 + BIN_L * self.LDVTP2 + BIN_W * self.WDVTP2 + BIN_WL * self.PDVTP2
-        DVTP3_i        = self.DVTP3 + BIN_L * self.LDVTP3 + BIN_W * self.WDVTP3 + BIN_WL * self.PDVTP3
-        DVTP4_i        = self.DVTP4 + BIN_L * self.LDVTP4 + BIN_W * self.WDVTP4 + BIN_WL * self.PDVTP4
-        DVTP5_i        = self.DVTP5 + BIN_L * self.LDVTP5 + BIN_W * self.WDVTP5 + BIN_WL * self.PDVTP5
-        K2_i           = self.K2 + BIN_L * self.LK2 + BIN_W * self.WK2 + BIN_WL * self.PK2
-        K1_i           = self.K1 + BIN_L * self.LK1 + BIN_W * self.WK1 + BIN_WL * self.PK1
-        XJ_i           = self.XJ + BIN_L * self.LXJ + BIN_W * self.WXJ + BIN_WL * self.PXJ
-        PHIN_i         = self.PHIN + BIN_L * self.LPHIN + BIN_W * self.WPHIN + BIN_WL * self.PPHIN
-        ETA0_i         = self.ETA0 + BIN_L * self.LETA0 + BIN_W * self.WETA0 + BIN_WL * self.PETA0
-        ETAB_i         = self.ETAB + BIN_L * self.LETAB + BIN_W * self.WETAB + BIN_WL * self.PETAB
-        DELTA_i        = self.DELTA + BIN_L * self.LDELTA + BIN_W * self.WDELTA + BIN_WL * self.PDELTA
-        U0_i           = self.U0 + BIN_L * self.LU0 + BIN_W * self.WU0 + BIN_WL * self.PU0
-        UA_i           = self.UA + BIN_L * self.LUA + BIN_W * self.WUA + BIN_WL * self.PUA
-        UD_i           = self.UD + BIN_L * self.LUD + BIN_W * self.WUD + BIN_WL * self.PUD
-        EU_i           = self.EU + BIN_L * self.LEU + BIN_W * self.WEU + BIN_WL * self.PEU
-        UCS_i          = self.UCS + BIN_L * self.LUCS + BIN_W * self.WUCS + BIN_WL * self.PUCS
-        UC_i           = self.UC + BIN_L * self.LUC + BIN_W * self.WUC + BIN_WL * self.PUC
-        PCLM_i         = self.PCLM + BIN_L * self.LPCLM + BIN_W * self.WPCLM + BIN_WL * self.PPCLM
-        PCLMCV_i       = self.PCLMCV + BIN_L * self.LPCLMCV + BIN_W * self.WPCLMCV + BIN_WL * self.PPCLMCV
-        RSW_i          = self.RSW + BIN_L * self.LRSW + BIN_W * self.WRSW + BIN_WL * self.PRSW
-        RDW_i          = self.RDW + BIN_L * self.LRDW + BIN_W * self.WRDW + BIN_WL * self.PRDW
-        PRWG_i         = self.PRWG + BIN_L * self.LPRWG + BIN_W * self.WPRWG + BIN_WL * self.PPRWG
-        PRWB_i         = self.PRWB + BIN_L * self.LPRWB + BIN_W * self.WPRWB + BIN_WL * self.PPRWB
-        WR_i           = self.WR + BIN_L * self.LWR + BIN_W * self.WWR + BIN_WL * self.PWR
-        RSWMIN_i       = self.RSWMIN + BIN_L * self.LRSWMIN + BIN_W * self.WRSWMIN + BIN_WL * self.PRSWMIN
-        RDWMIN_i       = self.RDWMIN + BIN_L * self.LRDWMIN + BIN_W * self.WRDWMIN + BIN_WL * self.PRDWMIN
-        RDSW_i         = self.RDSW + BIN_L * self.LRDSW + BIN_W * self.WRDSW + BIN_WL * self.PRDSW
-        RDSWMIN_i      = self.RDSWMIN + BIN_L * self.LRDSWMIN + BIN_W * self.WRDSWMIN + BIN_WL * self.PRDSWMIN
-        PTWG_i         = self.PTWG + BIN_L * self.LPTWG + BIN_W * self.WPTWG + BIN_WL * self.PPTWG
-        PDIBLC_i       = self.PDIBLC + BIN_L * self.LPDIBLC + BIN_W * self.WPDIBLC + BIN_WL * self.PPDIBLC
-        PDIBLCB_i      = self.PDIBLCB + BIN_L * self.LPDIBLCB + BIN_W * self.WPDIBLCB + BIN_WL * self.PPDIBLCB
-        PSCBE1_i       = self.PSCBE1 + BIN_L * self.LPSCBE1 + BIN_W * self.WPSCBE1 + BIN_WL * self.PPSCBE1
-        PSCBE2_i       = self.PSCBE2 + BIN_L * self.LPSCBE2 + BIN_W * self.WPSCBE2 + BIN_WL * self.PPSCBE2
-        PDITS_i        = self.PDITS + BIN_L * self.LPDITS + BIN_W * self.WPDITS + BIN_WL * self.PPDITS
-        PDITSD_i       = self.PDITSD + BIN_L * self.LPDITSD + BIN_W * self.WPDITSD + BIN_WL * self.PPDITSD
-        FPROUT_i       = self.FPROUT + BIN_L * self.LFPROUT + BIN_W * self.WFPROUT + BIN_WL * self.PFPROUT
-        PVAG_i         = self.PVAG + BIN_L * self.LPVAG + BIN_W * self.WPVAG + BIN_WL * self.PPVAG
-        VSAT_i         = self.VSAT + BIN_L * self.LVSAT + BIN_W * self.WVSAT + BIN_WL * self.PVSAT
-        PSAT_i         = self.PSAT + BIN_L * self.LPSAT + BIN_W * self.WPSAT + BIN_WL * self.PPSAT
-        VSATCV_i       = self.VSATCV + BIN_L * self.LVSATCV + BIN_W * self.WVSATCV + BIN_WL * self.PVSATCV
-        CF_i           = self.CF + BIN_L * self.LCF + BIN_W * self.WCF + BIN_WL * self.PCF
-        CGSL_i         = self.CGSL + BIN_L * self.LCGSL + BIN_W * self.WCGSL + BIN_WL * self.PCGSL
-        CGDL_i         = self.CGDL + BIN_L * self.LCGDL + BIN_W * self.WCGDL + BIN_WL * self.PCGDL
-        CKAPPAS_i      = self.CKAPPAS + BIN_L * self.LCKAPPAS + BIN_W * self.WCKAPPAS + BIN_WL * self.PCKAPPAS
-        CKAPPAD_i      = self.CKAPPAD + BIN_L * self.LCKAPPAD + BIN_W * self.WCKAPPAD + BIN_WL * self.PCKAPPAD
-        ALPHA0_i       = self.ALPHA0 + BIN_L * self.LALPHA0 + BIN_W * self.WALPHA0 + BIN_WL * self.PALPHA0
-        BETA0_i        = self.BETA0 + BIN_L * self.LBETA0 + BIN_W * self.WBETA0 + BIN_WL * self.PBETA0
-        KVTH0WE_i      = self.KVTH0WE + BIN_L * self.LKVTH0WE  + BIN_W * self.WKVTH0WE + BIN_WL * self.PKVTH0WE
-        K2WE_i         = self.K2WE + BIN_L * self.LK2WE + BIN_W * self.WK2WE + BIN_WL * self.PK2WE
-        KU0WE_i        = self.KU0WE + BIN_L * self.LKU0WE + BIN_W * self.WKU0WE + BIN_WL * self.PKU0WE
-        AGIDL_i        = self.AGIDL + BIN_L * self.LAGIDL + BIN_W * self.WAGIDL + BIN_WL * self.PAGIDL
-        BGIDL_i        = self.BGIDL + BIN_L * self.LBGIDL + BIN_W * self.WBGIDL + BIN_WL * self.PBGIDL
-        CGIDL_i        = self.CGIDL + BIN_L * self.LCGIDL + BIN_W * self.WCGIDL + BIN_WL * self.PCGIDL
-        EGIDL_i        = self.EGIDL + BIN_L * self.LEGIDL + BIN_W * self.WEGIDL + BIN_WL * self.PEGIDL
-        AGISL_i        = self.AGISL + BIN_L * self.LAGISL + BIN_W * self.WAGISL + BIN_WL * self.PAGISL
-        BGISL_i        = self.BGISL + BIN_L * self.LBGISL + BIN_W * self.WBGISL + BIN_WL * self.PBGISL
-        CGISL_i        = self.CGISL + BIN_L * self.LCGISL + BIN_W * self.WCGISL + BIN_WL * self.PCGISL
-        EGISL_i        = self.EGISL + BIN_L * self.LEGISL + BIN_W * self.WEGISL + BIN_WL * self.PEGISL
-        UTE_i          = self.UTE + BIN_L * self.LUTE + BIN_W * self.WUTE + BIN_WL * self.PUTE
-        UA1_i          = self.UA1 + BIN_L * self.LUA1 + BIN_W * self.WUA1 + BIN_WL * self.PUA1
-        UC1_i          = self.UC1 + BIN_L * self.LUC1 + BIN_W * self.WUC1 + BIN_WL * self.PUC1
-        UD1_i          = self.UD1 + BIN_L * self.LUD1 + BIN_W * self.WUD1 + BIN_WL * self.PUD1
-        EU1_i          = self.EU1 + BIN_L * self.LEU1 + BIN_W * self.WEU1 + BIN_WL * self.PEU1
-        UCSTE_i        = self.UCSTE + BIN_L * self.LUCSTE + BIN_W * self.WUCSTE + BIN_WL * self.PUCSTE
-        PRT_i          = self.PRT + BIN_L * self.LPRT + BIN_W * self.WPRT + BIN_WL * self.PPRT
-        AT_i           = self.AT + BIN_L * self.LAT + BIN_W * self.WAT + BIN_WL * self.PAT
-        PTWGT_i        = self.PTWGT + BIN_L * self.LPTWGT + BIN_W * self.WPTWGT + BIN_WL * self.PPTWGT
-        IIT_i          = self.IIT + BIN_L * self.LIIT + BIN_W * self.WIIT + BIN_WL * self.PIIT
-        TGIDL_i        = self.TGIDL + BIN_L * self.LTGIDL + BIN_W * self.WTGIDL + BIN_WL * self.PTGIDL
-        IGT_i          = self.IGT + BIN_L * self.LIGT + BIN_W * self.WIGT + BIN_WL * self.PIGT
-        AIGBINV_i      = self.AIGBINV + BIN_L * self.LAIGBINV + BIN_W * self.WAIGBINV + BIN_WL * self.PAIGBINV
-        BIGBINV_i      = self.BIGBINV + BIN_L * self.LBIGBINV + BIN_W * self.WBIGBINV + BIN_WL * self.PBIGBINV
-        CIGBINV_i      = self.CIGBINV + BIN_L * self.LCIGBINV + BIN_W * self.WCIGBINV + BIN_WL * self.PCIGBINV
-        EIGBINV_i      = self.EIGBINV + BIN_L * self.LEIGBINV + BIN_W * self.WEIGBINV + BIN_WL * self.PEIGBINV
-        NIGBINV_i      = self.NIGBINV + BIN_L * self.LNIGBINV + BIN_W * self.WNIGBINV + BIN_WL * self.PNIGBINV
-        AIGBACC_i      = self.AIGBACC + BIN_L * self.LAIGBACC + BIN_W * self.WAIGBACC + BIN_WL * self.PAIGBACC
-        BIGBACC_i      = self.BIGBACC + BIN_L * self.LBIGBACC + BIN_W * self.WBIGBACC + BIN_WL * self.PBIGBACC
-        CIGBACC_i      = self.CIGBACC + BIN_L * self.LCIGBACC + BIN_W * self.WCIGBACC + BIN_WL * self.PCIGBACC
-        NIGBACC_i      = self.NIGBACC + BIN_L * self.LNIGBACC + BIN_W * self.WNIGBACC + BIN_WL * self.PNIGBACC
-        AIGC_i         = self.AIGC + BIN_L * self.LAIGC + BIN_W * self.WAIGC + BIN_WL * self.PAIGC
-        BIGC_i         = self.BIGC + BIN_L * self.LBIGC + BIN_W * self.WBIGC + BIN_WL * self.PBIGC
-        CIGC_i         = self.CIGC + BIN_L * self.LCIGC + BIN_W * self.WCIGC + BIN_WL * self.PCIGC
-        AIGS_i         = self.AIGS + BIN_L * self.LAIGS + BIN_W * self.WAIGS + BIN_WL * self.PAIGS
-        BIGS_i         = self.BIGS + BIN_L * self.LBIGS + BIN_W * self.WBIGS + BIN_WL * self.PBIGS
-        CIGS_i         = self.CIGS + BIN_L * self.LCIGS + BIN_W * self.WCIGS + BIN_WL * self.PCIGS
-        AIGD_i         = self.AIGD + BIN_L * self.LAIGD + BIN_W * self.WAIGD + BIN_WL * self.PAIGD
-        BIGD_i         = self.BIGD + BIN_L * self.LBIGD + BIN_W * self.WBIGD + BIN_WL * self.PBIGD
-        CIGD_i         = self.CIGD + BIN_L * self.LCIGD + BIN_W * self.WCIGD + BIN_WL * self.PCIGD
-        POXEDGE_i      = self.POXEDGE + BIN_L * self.LPOXEDGE + BIN_W * self.WPOXEDGE + BIN_WL * self.PPOXEDGE
-        DLCIG_i        = self.DLCIG + BIN_L * self.LDLCIG + BIN_W * self.WDLCIG + BIN_WL * self.PDLCIG
-        DLCIGD_i       = self.DLCIGD + BIN_L * self.LDLCIGD + BIN_W * self.WDLCIGD + BIN_WL * self.PDLCIGD
-        NTOX_i         = self.NTOX + BIN_L * self.LNTOX + BIN_W * self.WNTOX + BIN_WL * self.PNTOX
-        KT1_i          = self.KT1 + BIN_L * self.LKT1 + BIN_W * self.WKT1 + BIN_WL * self.PKT1
-        KT2_i          = self.KT2 + BIN_L * self.LKT2 + BIN_W * self.WKT2 + BIN_WL * self.PKT2
-        PSATB_i        = self.PSATB + BIN_L * self.LPSATB + BIN_W * self.WPSATB + BIN_WL * self.PPSATB
-        A1_i           = self.A1 + BIN_L * self.LA1 + BIN_W * self.WA1 + BIN_WL * self.PA1
-        A11_i          = self.A11 + BIN_L * self.LA11 + BIN_W * self.WA11 + BIN_WL * self.PA11
-        A2_i           = self.A2 + BIN_L * self.LA2 + BIN_W * self.WA2 + BIN_WL * self.PA2
-        A21_i          = self.A21 + BIN_L * self.LA21 + BIN_W * self.WA21 + BIN_WL * self.PA21
-        K0_i           = self.K0 + BIN_L * self.LK0 + BIN_W * self.WK0 + BIN_WL * self.PK0
-        M0_i           = self.M0 + BIN_L * self.LM0 + BIN_W * self.WM0 + BIN_WL * self.PM0
-        K01_i          = self.K01 + BIN_L * self.LK01 + BIN_W * self.WK01 + BIN_WL * self.PK01
-        M01_i          = self.M01 + BIN_L * self.LM01 + BIN_W * self.WM01 + BIN_WL * self.PM01
-        NFACTOREDGE_i  = self.NFACTOREDGE + BIN_L * self.LNFACTOREDGE + BIN_W * self.WNFACTOREDGE + BIN_WL * self.PNFACTOREDGE
-        NDEPEDGE_i     = self.NDEPEDGE + BIN_L * self.LNDEPEDGE + BIN_W * self.WNDEPEDGE + BIN_WL * self.PNDEPEDGE
-        CITEDGE_i      = self.CITEDGE + BIN_L * self.LCITEDGE + BIN_W * self.WCITEDGE + BIN_WL * self.PCITEDGE
-        CDSCDEDGE_i    = self.CDSCDEDGE + BIN_L * self.LCDSCDEDGE + BIN_W * self.WCDSCDEDGE + BIN_WL * self.PCDSCDEDGE
-        CDSCBEDGE_i    = self.CDSCBEDGE + BIN_L * self.LCDSCBEDGE + BIN_W * self.WCDSCBEDGE + BIN_WL * self.PCDSCBEDGE
-        ETA0EDGE_i     = self.ETA0EDGE + BIN_L * self.LETA0EDGE + BIN_W * self.WETA0EDGE + BIN_WL * self.PETA0EDGE
-        ETABEDGE_i     = self.ETABEDGE + BIN_L * self.LETABEDGE + BIN_W * self.WETABEDGE + BIN_WL * self.PETABEDGE
-        KT1EDGE_i      = self.KT1EDGE + BIN_L * self.LKT1EDGE + BIN_W * self.WKT1EDGE + BIN_WL * self.PKT1EDGE
-        KT1LEDGE_i     = self.KT1LEDGE + BIN_L * self.LKT1LEDGE + BIN_W * self.WKT1LEDGE + BIN_WL * self.PKT1LEDGE
-        KT2EDGE_i      = self.KT2EDGE + BIN_L * self.LKT2EDGE + BIN_W * self.WKT2EDGE + BIN_WL * self.PKT2EDGE
-        KT1EXPEDGE_i   = self.KT1EXPEDGE + BIN_L * self.LKT1EXPEDGE + BIN_W * self.WKT1EXPEDGE + BIN_WL * self.PKT1EXPEDGE
-        TNFACTOREDGE_i = self.TNFACTOREDGE + BIN_L * self.LTNFACTOREDGE + BIN_W * self.WTNFACTOREDGE + BIN_WL * self.PTNFACTOREDGE
-        TETA0EDGE_i    = self.TETA0EDGE + BIN_L * self.LTETA0EDGE + BIN_W * self.WTETA0EDGE + BIN_WL * self.PTETA0EDGE
-        K2EDGE_i       = self.K2EDGE + BIN_L * self.LK2EDGE + BIN_W * self.WK2EDGE + BIN_WL * self.PK2EDGE
-        KVTH0EDGE_i    = self.KVTH0EDGE + BIN_L * self.LKVTH0EDGE + BIN_W * self.WKVTH0EDGE + BIN_WL * self.PKVTH0EDGE
-        STK2EDGE_i     = self.STK2EDGE + BIN_L * self.LSTK2EDGE + BIN_W * self.WSTK2EDGE + BIN_WL * self.PSTK2EDGE
-        STETA0EDGE_i   = self.STETA0EDGE + BIN_L * self.LSTETA0EDGE + BIN_W * self.WSTETA0EDGE + BIN_WL * self.PSTETA0EDGE
-        C0_i           = self.C0 + BIN_L * self.LC0 + BIN_W * self.WC0 + BIN_WL * self.PC0
-        C01_i          = self.C01 + BIN_L * self.LC01 + BIN_W * self.WC01 + BIN_WL * self.PC01
-        C0SI_i         = self.C0SI + BIN_L * self.LC0SI + BIN_W * self.WC0SI + BIN_WL * self.PC0SI
-        C0SI1_i        = self.C0SI1 + BIN_L * self.LC0SI1 + BIN_W * self.WC0SI1 + BIN_WL * self.PC0SI1
-        C0SISAT_i      = self.C0SISAT + BIN_L * self.LC0SISAT + BIN_W * self.WC0SISAT + BIN_WL * self.PC0SISAT
-        C0SISAT1_i     = self.C0SISAT1 + BIN_L * self.LC0SISAT1 + BIN_W * self.WC0SISAT1 + BIN_WL * self.PC0SISAT1
+            self.BIN_L = 1.0 / self.Leff1
+            self.BIN_W = 1.0 / self.Weff1
+        self.BIN_WL         = self.BIN_L * self.BIN_W
+        self.VFB_i          = self.VFB + self.BIN_L * self.LVFB + self.BIN_W * self.WVFB + self.BIN_WL * self.PVFB
+        self.VFBCV_i        = self.VFBCV + self.BIN_L * self.LVFBCV + self.BIN_W * self.WVFBCV + self.BIN_WL * self.PVFBCV
+        self.NSD_i          = self.NSD + self.BIN_L * self.LNSD + self.BIN_W * self.WNSD + self.BIN_WL * self.PNSD
+        self.NDEP_i         = self.NDEP + self.BIN_L * self.LNDEP + self.BIN_W * self.WNDEP + self.BIN_WL * self.PNDEP
+        self.NDEPCV_i       = self.NDEPCV + self.BIN_L * self.LNDEPCV + self.BIN_W * self.WNDEPCV + self.BIN_WL * self.PNDEPCV
+        self.NGATE_i        = self.NGATE + self.BIN_L * self.LNGATE + self.BIN_W * self.WNGATE + self.BIN_WL * self.PNGATE
+        self.CIT_i          = self.CIT + self.BIN_L * self.LCIT + self.BIN_W * self.WCIT + self.BIN_WL * self.PCIT
+        self.NFACTOR_i      = self.NFACTOR + self.BIN_L * self.LNFACTOR + self.BIN_W * self.WNFACTOR + self.BIN_WL * self.PNFACTOR
+        self.CDSCD_i        = self.CDSCD + self.BIN_L * self.LCDSCD + self.BIN_W * self.WCDSCD + self.BIN_WL * self.PCDSCD
+        self.CDSCB_i        = self.CDSCB + self.BIN_L * self.LCDSCB + self.BIN_W * self.WCDSCB + self.BIN_WL * self.PCDSCB
+        self.DVTP0_i        = self.DVTP0 + self.BIN_L * self.LDVTP0 + self.BIN_W * self.WDVTP0 + self.BIN_WL * self.PDVTP0
+        self.DVTP1_i        = self.DVTP1 + self.BIN_L * self.LDVTP1 + self.BIN_W * self.WDVTP1 + self.BIN_WL * self.PDVTP1
+        self.DVTP2_i        = self.DVTP2 + self.BIN_L * self.LDVTP2 + self.BIN_W * self.WDVTP2 + self.BIN_WL * self.PDVTP2
+        self.DVTP3_i        = self.DVTP3 + self.BIN_L * self.LDVTP3 + self.BIN_W * self.WDVTP3 + self.BIN_WL * self.PDVTP3
+        self.DVTP4_i        = self.DVTP4 + self.BIN_L * self.LDVTP4 + self.BIN_W * self.WDVTP4 + self.BIN_WL * self.PDVTP4
+        self.DVTP5_i        = self.DVTP5 + self.BIN_L * self.LDVTP5 + self.BIN_W * self.WDVTP5 + self.BIN_WL * self.PDVTP5
+        self.K2_i           = self.K2 + self.BIN_L * self.LK2 + self.BIN_W * self.WK2 + self.BIN_WL * self.PK2
+        self.K1_i           = self.K1 + self.BIN_L * self.LK1 + self.BIN_W * self.WK1 + self.BIN_WL * self.PK1
+        self.XJ_i           = self.XJ + self.BIN_L * self.LXJ + self.BIN_W * self.WXJ + self.BIN_WL * self.PXJ
+        self.PHIN_i         = self.PHIN + self.BIN_L * self.LPHIN + self.BIN_W * self.WPHIN + self.BIN_WL * self.PPHIN
+        self.ETA0_i         = self.ETA0 + self.BIN_L * self.LETA0 + self.BIN_W * self.WETA0 + self.BIN_WL * self.PETA0
+        self.ETAB_i         = self.ETAB + self.BIN_L * self.LETAB + self.BIN_W * self.WETAB + self.BIN_WL * self.PETAB
+        self.DELTA_i        = self.DELTA + self.BIN_L * self.LDELTA + self.BIN_W * self.WDELTA + self.BIN_WL * self.PDELTA
+        self.U0_i           = self.U0 + self.BIN_L * self.LU0 + self.BIN_W * self.WU0 + self.BIN_WL * self.PU0
+        self.UA_i           = self.UA + self.BIN_L * self.LUA + self.BIN_W * self.WUA + self.BIN_WL * self.PUA
+        self.UD_i           = self.UD + self.BIN_L * self.LUD + self.BIN_W * self.WUD + self.BIN_WL * self.PUD
+        self.EU_i           = self.EU + self.BIN_L * self.LEU + self.BIN_W * self.WEU + self.BIN_WL * self.PEU
+        self.UCS_i          = self.UCS + self.BIN_L * self.LUCS + self.BIN_W * self.WUCS + self.BIN_WL * self.PUCS
+        self.UC_i           = self.UC + self.BIN_L * self.LUC + self.BIN_W * self.WUC + self.BIN_WL * self.PUC
+        self.PCLM_i         = self.PCLM + self.BIN_L * self.LPCLM + self.BIN_W * self.WPCLM + self.BIN_WL * self.PPCLM
+        self.PCLMCV_i       = self.PCLMCV + self.BIN_L * self.LPCLMCV + self.BIN_W * self.WPCLMCV + self.BIN_WL * self.PPCLMCV
+        self.RSW_i          = self.RSW + self.BIN_L * self.LRSW + self.BIN_W * self.WRSW + self.BIN_WL * self.PRSW
+        self.RDW_i          = self.RDW + self.BIN_L * self.LRDW + self.BIN_W * self.WRDW + self.BIN_WL * self.PRDW
+        self.PRWG_i         = self.PRWG + self.BIN_L * self.LPRWG + self.BIN_W * self.WPRWG + self.BIN_WL * self.PPRWG
+        self.PRWB_i         = self.PRWB + self.BIN_L * self.LPRWB + self.BIN_W * self.WPRWB + self.BIN_WL * self.PPRWB
+        self.WR_i           = self.WR + self.BIN_L * self.LWR + self.BIN_W * self.WWR + self.BIN_WL * self.PWR
+        self.RSWMIN_i       = self.RSWMIN + self.BIN_L * self.LRSWMIN + self.BIN_W * self.WRSWMIN + self.BIN_WL * self.PRSWMIN
+        self.RDWMIN_i       = self.RDWMIN + self.BIN_L * self.LRDWMIN + self.BIN_W * self.WRDWMIN + self.BIN_WL * self.PRDWMIN
+        self.RDSW_i         = self.RDSW + self.BIN_L * self.LRDSW + self.BIN_W * self.WRDSW + self.BIN_WL * self.PRDSW
+        self.RDSWMIN_i      = self.RDSWMIN + self.BIN_L * self.LRDSWMIN + self.BIN_W * self.WRDSWMIN + self.BIN_WL * self.PRDSWMIN
+        self.PTWG_i         = self.PTWG + self.BIN_L * self.LPTWG + self.BIN_W * self.WPTWG + self.BIN_WL * self.PPTWG
+        self.PDIBLC_i       = self.PDIBLC + self.BIN_L * self.LPDIBLC + self.BIN_W * self.WPDIBLC + self.BIN_WL * self.PPDIBLC
+        self.PDIBLCB_i      = self.PDIBLCB + self.BIN_L * self.LPDIBLCB + self.BIN_W * self.WPDIBLCB + self.BIN_WL * self.PPDIBLCB
+        self.PSCBE1_i       = self.PSCBE1 + self.BIN_L * self.LPSCBE1 + self.BIN_W * self.WPSCBE1 + self.BIN_WL * self.PPSCBE1
+        self.PSCBE2_i       = self.PSCBE2 + self.BIN_L * self.LPSCBE2 + self.BIN_W * self.WPSCBE2 + self.BIN_WL * self.PPSCBE2
+        self.PDITS_i        = self.PDITS + self.BIN_L * self.LPDITS + self.BIN_W * self.WPDITS + self.BIN_WL * self.PPDITS
+        self.PDITSD_i       = self.PDITSD + self.BIN_L * self.LPDITSD + self.BIN_W * self.WPDITSD + self.BIN_WL * self.PPDITSD
+        self.FPROUT_i       = self.FPROUT + self.BIN_L * self.LFPROUT + self.BIN_W * self.WFPROUT + self.BIN_WL * self.PFPROUT
+        self.PVAG_i         = self.PVAG + self.BIN_L * self.LPVAG + self.BIN_W * self.WPVAG + self.BIN_WL * self.PPVAG
+        self.VSAT_i         = self.VSAT + self.BIN_L * self.LVSAT + self.BIN_W * self.WVSAT + self.BIN_WL * self.PVSAT
+        self.PSAT_i         = self.PSAT + self.BIN_L * self.LPSAT + self.BIN_W * self.WPSAT + self.BIN_WL * self.PPSAT
+        self.VSATCV_i       = self.VSATCV + self.BIN_L * self.LVSATCV + self.BIN_W * self.WVSATCV + self.BIN_WL * self.PVSATCV
+        self.CF_i           = self.CF + self.BIN_L * self.LCF + self.BIN_W * self.WCF + self.BIN_WL * self.PCF
+        self.CGSL_i         = self.CGSL + self.BIN_L * self.LCGSL + self.BIN_W * self.WCGSL + self.BIN_WL * self.PCGSL
+        self.CGDL_i         = self.CGDL + self.BIN_L * self.LCGDL + self.BIN_W * self.WCGDL + self.BIN_WL * self.PCGDL
+        self.CKAPPAS_i      = self.CKAPPAS + self.BIN_L * self.LCKAPPAS + self.BIN_W * self.WCKAPPAS + self.BIN_WL * self.PCKAPPAS
+        self.CKAPPAD_i      = self.CKAPPAD + self.BIN_L * self.LCKAPPAD + self.BIN_W * self.WCKAPPAD + self.BIN_WL * self.PCKAPPAD
+        self.ALPHA0_i       = self.ALPHA0 + self.BIN_L * self.LALPHA0 + self.BIN_W * self.WALPHA0 + self.BIN_WL * self.PALPHA0
+        self.BETA0_i        = self.BETA0 + self.BIN_L * self.LBETA0 + self.BIN_W * self.WBETA0 + self.BIN_WL * self.PBETA0
+        self.KVTH0WE_i      = self.KVTH0WE + self.BIN_L * self.LKVTH0WE  + self.BIN_W * self.WKVTH0WE + self.BIN_WL * self.PKVTH0WE
+        self.K2WE_i         = self.K2WE + self.BIN_L * self.LK2WE + self.BIN_W * self.WK2WE + self.BIN_WL * self.PK2WE
+        self.KU0WE_i        = self.KU0WE + self.BIN_L * self.LKU0WE + self.BIN_W * self.WKU0WE + self.BIN_WL * self.PKU0WE
+        self.AGIDL_i        = self.AGIDL + self.BIN_L * self.LAGIDL + self.BIN_W * self.WAGIDL + self.BIN_WL * self.PAGIDL
+        self.BGIDL_i        = self.BGIDL + self.BIN_L * self.LBGIDL + self.BIN_W * self.WBGIDL + self.BIN_WL * self.PBGIDL
+        self.CGIDL_i        = self.CGIDL + self.BIN_L * self.LCGIDL + self.BIN_W * self.WCGIDL + self.BIN_WL * self.PCGIDL
+        self.EGIDL_i        = self.EGIDL + self.BIN_L * self.LEGIDL + self.BIN_W * self.WEGIDL + self.BIN_WL * self.PEGIDL
+        self.AGISL_i        = self.AGISL + self.BIN_L * self.LAGISL + self.BIN_W * self.WAGISL + self.BIN_WL * self.PAGISL
+        self.BGISL_i        = self.BGISL + self.BIN_L * self.LBGISL + self.BIN_W * self.WBGISL + self.BIN_WL * self.PBGISL
+        self.CGISL_i        = self.CGISL + self.BIN_L * self.LCGISL + self.BIN_W * self.WCGISL + self.BIN_WL * self.PCGISL
+        self.EGISL_i        = self.EGISL + self.BIN_L * self.LEGISL + self.BIN_W * self.WEGISL + self.BIN_WL * self.PEGISL
+        self.UTE_i          = self.UTE + self.BIN_L * self.LUTE + self.BIN_W * self.WUTE + self.BIN_WL * self.PUTE
+        self.UA1_i          = self.UA1 + self.BIN_L * self.LUA1 + self.BIN_W * self.WUA1 + self.BIN_WL * self.PUA1
+        self.UC1_i          = self.UC1 + self.BIN_L * self.LUC1 + self.BIN_W * self.WUC1 + self.BIN_WL * self.PUC1
+        self.UD1_i          = self.UD1 + self.BIN_L * self.LUD1 + self.BIN_W * self.WUD1 + self.BIN_WL * self.PUD1
+        self.EU1_i          = self.EU1 + self.BIN_L * self.LEU1 + self.BIN_W * self.WEU1 + self.BIN_WL * self.PEU1
+        self.UCSTE_i        = self.UCSTE + self.BIN_L * self.LUCSTE + self.BIN_W * self.WUCSTE + self.BIN_WL * self.PUCSTE
+        self.PRT_i          = self.PRT + self.BIN_L * self.LPRT + self.BIN_W * self.WPRT + self.BIN_WL * self.PPRT
+        self.AT_i           = self.AT + self.BIN_L * self.LAT + self.BIN_W * self.WAT + self.BIN_WL * self.PAT
+        self.PTWGT_i        = self.PTWGT + self.BIN_L * self.LPTWGT + self.BIN_W * self.WPTWGT + self.BIN_WL * self.PPTWGT
+        self.IIT_i          = self.IIT + self.BIN_L * self.LIIT + self.BIN_W * self.WIIT + self.BIN_WL * self.PIIT
+        self.TGIDL_i        = self.TGIDL + self.BIN_L * self.LTGIDL + self.BIN_W * self.WTGIDL + self.BIN_WL * self.PTGIDL
+        self.IGT_i          = self.IGT + self.BIN_L * self.LIGT + self.BIN_W * self.WIGT + self.BIN_WL * self.PIGT
+        self.AIGBINV_i      = self.AIGBINV + self.BIN_L * self.LAIGBINV + self.BIN_W * self.WAIGBINV + self.BIN_WL * self.PAIGBINV
+        self.BIGBINV_i      = self.BIGBINV + self.BIN_L * self.LBIGBINV + self.BIN_W * self.WBIGBINV + self.BIN_WL * self.PBIGBINV
+        self.CIGBINV_i      = self.CIGBINV + self.BIN_L * self.LCIGBINV + self.BIN_W * self.WCIGBINV + self.BIN_WL * self.PCIGBINV
+        self.EIGBINV_i      = self.EIGBINV + self.BIN_L * self.LEIGBINV + self.BIN_W * self.WEIGBINV + self.BIN_WL * self.PEIGBINV
+        self.NIGBINV_i      = self.NIGBINV + self.BIN_L * self.LNIGBINV + self.BIN_W * self.WNIGBINV + self.BIN_WL * self.PNIGBINV
+        self.AIGBACC_i      = self.AIGBACC + self.BIN_L * self.LAIGBACC + self.BIN_W * self.WAIGBACC + self.BIN_WL * self.PAIGBACC
+        self.BIGBACC_i      = self.BIGBACC + self.BIN_L * self.LBIGBACC + self.BIN_W * self.WBIGBACC + self.BIN_WL * self.PBIGBACC
+        self.CIGBACC_i      = self.CIGBACC + self.BIN_L * self.LCIGBACC + self.BIN_W * self.WCIGBACC + self.BIN_WL * self.PCIGBACC
+        self.NIGBACC_i      = self.NIGBACC + self.BIN_L * self.LNIGBACC + self.BIN_W * self.WNIGBACC + self.BIN_WL * self.PNIGBACC
+        self.AIGC_i         = self.AIGC + self.BIN_L * self.LAIGC + self.BIN_W * self.WAIGC + self.BIN_WL * self.PAIGC
+        self.BIGC_i         = self.BIGC + self.BIN_L * self.LBIGC + self.BIN_W * self.WBIGC + self.BIN_WL * self.PBIGC
+        self.CIGC_i         = self.CIGC + self.BIN_L * self.LCIGC + self.BIN_W * self.WCIGC + self.BIN_WL * self.PCIGC
+        self.AIGS_i         = self.AIGS + self.BIN_L * self.LAIGS + self.BIN_W * self.WAIGS + self.BIN_WL * self.PAIGS
+        self.BIGS_i         = self.BIGS + self.BIN_L * self.LBIGS + self.BIN_W * self.WBIGS + self.BIN_WL * self.PBIGS
+        self.CIGS_i         = self.CIGS + self.BIN_L * self.LCIGS + self.BIN_W * self.WCIGS + self.BIN_WL * self.PCIGS
+        self.AIGD_i         = self.AIGD + self.BIN_L * self.LAIGD + self.BIN_W * self.WAIGD + self.BIN_WL * self.PAIGD
+        self.BIGD_i         = self.BIGD + self.BIN_L * self.LBIGD + self.BIN_W * self.WBIGD + self.BIN_WL * self.PBIGD
+        self.CIGD_i         = self.CIGD + self.BIN_L * self.LCIGD + self.BIN_W * self.WCIGD + self.BIN_WL * self.PCIGD
+        self.POXEDGE_i      = self.POXEDGE + self.BIN_L * self.LPOXEDGE + self.BIN_W * self.WPOXEDGE + self.BIN_WL * self.PPOXEDGE
+        self.DLCIG_i        = self.DLCIG + self.BIN_L * self.LDLCIG + self.BIN_W * self.WDLCIG + self.BIN_WL * self.PDLCIG
+        self.DLCIGD_i       = self.DLCIGD + self.BIN_L * self.LDLCIGD + self.BIN_W * self.WDLCIGD + self.BIN_WL * self.PDLCIGD
+        self.NTOX_i         = self.NTOX + self.BIN_L * self.LNTOX + self.BIN_W * self.WNTOX + self.BIN_WL * self.PNTOX
+        self.KT1_i          = self.KT1 + self.BIN_L * self.LKT1 + self.BIN_W * self.WKT1 + self.BIN_WL * self.PKT1
+        self.KT2_i          = self.KT2 + self.BIN_L * self.LKT2 + self.BIN_W * self.WKT2 + self.BIN_WL * self.PKT2
+        self.PSATB_i        = self.PSATB + self.BIN_L * self.LPSATB + self.BIN_W * self.WPSATB + self.BIN_WL * self.PPSATB
+        self.A1_i           = self.A1 + self.BIN_L * self.LA1 + self.BIN_W * self.WA1 + self.BIN_WL * self.PA1
+        self.A11_i          = self.A11 + self.BIN_L * self.LA11 + self.BIN_W * self.WA11 + self.BIN_WL * self.PA11
+        self.A2_i           = self.A2 + self.BIN_L * self.LA2 + self.BIN_W * self.WA2 + self.BIN_WL * self.PA2
+        self.A21_i          = self.A21 + self.BIN_L * self.LA21 + self.BIN_W * self.WA21 + self.BIN_WL * self.PA21
+        self.K0_i           = self.K0 + self.BIN_L * self.LK0 + self.BIN_W * self.WK0 + self.BIN_WL * self.PK0
+        self.M0_i           = self.M0 + self.BIN_L * self.LM0 + self.BIN_W * self.WM0 + self.BIN_WL * self.PM0
+        self.K01_i          = self.K01 + self.BIN_L * self.LK01 + self.BIN_W * self.WK01 + self.BIN_WL * self.PK01
+        self.M01_i          = self.M01 + self.BIN_L * self.LM01 + self.BIN_W * self.WM01 + self.BIN_WL * self.PM01
+        self.NFACTOREDGE_i  = self.NFACTOREDGE + self.BIN_L * self.LNFACTOREDGE + self.BIN_W * self.WNFACTOREDGE + self.BIN_WL * self.PNFACTOREDGE
+        self.NDEPEDGE_i     = self.NDEPEDGE + self.BIN_L * self.LNDEPEDGE + self.BIN_W * self.WNDEPEDGE + self.BIN_WL * self.PNDEPEDGE
+        self.CITEDGE_i      = self.CITEDGE + self.BIN_L * self.LCITEDGE + self.BIN_W * self.WCITEDGE + self.BIN_WL * self.PCITEDGE
+        self.CDSCDEDGE_i    = self.CDSCDEDGE + self.BIN_L * self.LCDSCDEDGE + self.BIN_W * self.WCDSCDEDGE + self.BIN_WL * self.PCDSCDEDGE
+        self.CDSCBEDGE_i    = self.CDSCBEDGE + self.BIN_L * self.LCDSCBEDGE + self.BIN_W * self.WCDSCBEDGE + self.BIN_WL * self.PCDSCBEDGE
+        self.ETA0EDGE_i     = self.ETA0EDGE + self.BIN_L * self.LETA0EDGE + self.BIN_W * self.WETA0EDGE + self.BIN_WL * self.PETA0EDGE
+        self.ETABEDGE_i     = self.ETABEDGE + self.BIN_L * self.LETABEDGE + self.BIN_W * self.WETABEDGE + self.BIN_WL * self.PETABEDGE
+        self.KT1EDGE_i      = self.KT1EDGE + self.BIN_L * self.LKT1EDGE + self.BIN_W * self.WKT1EDGE + self.BIN_WL * self.PKT1EDGE
+        self.KT1LEDGE_i     = self.KT1LEDGE + self.BIN_L * self.LKT1LEDGE + self.BIN_W * self.WKT1LEDGE + self.BIN_WL * self.PKT1LEDGE
+        self.KT2EDGE_i      = self.KT2EDGE + self.BIN_L * self.LKT2EDGE + self.BIN_W * self.WKT2EDGE + self.BIN_WL * self.PKT2EDGE
+        self.KT1EXPEDGE_i   = self.KT1EXPEDGE + self.BIN_L * self.LKT1EXPEDGE + self.BIN_W * self.WKT1EXPEDGE + self.BIN_WL * self.PKT1EXPEDGE
+        self.TNFACTOREDGE_i = self.TNFACTOREDGE + self.BIN_L * self.LTNFACTOREDGE + self.BIN_W * self.WTNFACTOREDGE + self.BIN_WL * self.PTNFACTOREDGE
+        self.TETA0EDGE_i    = self.TETA0EDGE + self.BIN_L * self.LTETA0EDGE + self.BIN_W * self.WTETA0EDGE + self.BIN_WL * self.PTETA0EDGE
+        self.K2EDGE_i       = self.K2EDGE + self.BIN_L * self.LK2EDGE + self.BIN_W * self.WK2EDGE + self.BIN_WL * self.PK2EDGE
+        self.KVTH0EDGE_i    = self.KVTH0EDGE + self.BIN_L * self.LKVTH0EDGE + self.BIN_W * self.WKVTH0EDGE + self.BIN_WL * self.PKVTH0EDGE
+        self.STK2EDGE_i     = self.STK2EDGE + self.BIN_L * self.LSTK2EDGE + self.BIN_W * self.WSTK2EDGE + self.BIN_WL * self.PSTK2EDGE
+        self.STETA0EDGE_i   = self.STETA0EDGE + self.BIN_L * self.LSTETA0EDGE + self.BIN_W * self.WSTETA0EDGE + self.BIN_WL * self.PSTETA0EDGE
+        self.C0_i           = self.C0 + self.BIN_L * self.LC0 + self.BIN_W * self.WC0 + self.BIN_WL * self.PC0
+        self.C01_i          = self.C01 + self.BIN_L * self.LC01 + self.BIN_W * self.WC01 + self.BIN_WL * self.PC01
+        self.C0SI_i         = self.C0SI + self.BIN_L * self.LC0SI + self.BIN_W * self.WC0SI + self.BIN_WL * self.PC0SI
+        self.C0SI1_i        = self.C0SI1 + self.BIN_L * self.LC0SI1 + self.BIN_W * self.WC0SI1 + self.BIN_WL * self.PC0SI1
+        self.C0SISAT_i      = self.C0SISAT + self.BIN_L * self.LC0SISAT + self.BIN_W * self.WC0SISAT + self.BIN_WL * self.PC0SISAT
+        self.C0SISAT1_i     = self.C0SISAT1 + self.BIN_L * self.LC0SISAT1 + self.BIN_W * self.WC0SISAT1 + self.BIN_WL * self.PC0SISAT1
 
         if (self.ASYMMOD != 0):
-            CDSCDR_i  = self.CDSCDR + BIN_L * self.LCDSCDR + BIN_W * self.WCDSCDR + BIN_WL * self.PCDSCDR
-            ETA0R_i   = self.ETA0R + BIN_L * self.LETA0R + BIN_W * self.WETA0R + BIN_WL * self.PETA0R
-            U0R_i     = self.U0R + BIN_L * self.LU0R + BIN_W * self.WU0R + BIN_WL * self.PU0R
-            UAR_i     = self.UAR + BIN_L * self.LUAR + BIN_W * self.WUAR + BIN_WL * self.PUAR
-            UDR_i     = self.UDR + BIN_L * self.LUDR + BIN_W * self.WUDR + BIN_WL * self.PUDR
-            UCSR_i    = self.UCSR + BIN_L * self.LUCSR + BIN_W * self.WUCSR + BIN_WL * self.PUCSR
-            UCR_i     = self.UCR + BIN_L * self.LUCR + BIN_W * self.WUCR + BIN_WL * self.PUCR
-            PCLMR_i   = self.PCLMR + BIN_L * self.LPCLMR + BIN_W * self.WPCLMR + BIN_WL * self.PPCLMR
-            PDIBLCR_i = self.PDIBLCR + BIN_L * self.LPDIBLCR + BIN_W * self.WPDIBLCR + BIN_WL * self.PPDIBLCR
-            VSATR_i   = self.VSATR + BIN_L * self.LVSATR + BIN_W * self.WVSATR + BIN_WL * self.PVSATR
-            PSATR_i   = self.PSATR + BIN_L * self.LPSATR + BIN_W * self.WPSATR + BIN_WL * self.PPSATR
-            PTWGR_i   = self.PTWGR + BIN_L * self.LPTWGR + BIN_W * self.WPTWGR + BIN_WL * self.PPTWGR
+            self.CDSCDR_i  = self.CDSCDR + self.BIN_L * self.LCDSCDR + self.BIN_W * self.WCDSCDR + self.BIN_WL * self.PCDSCDR
+            self.ETA0R_i   = self.ETA0R + self.BIN_L * self.LETA0R + self.BIN_W * self.WETA0R + self.BIN_WL * self.PETA0R
+            self.U0R_i     = self.U0R + self.BIN_L * self.LU0R + self.BIN_W * self.WU0R + self.BIN_WL * self.PU0R
+            self.UAR_i     = self.UAR + self.BIN_L * self.LUAR + self.BIN_W * self.WUAR + self.BIN_WL * self.PUAR
+            self.UDR_i     = self.UDR + self.BIN_L * self.LUDR + self.BIN_W * self.WUDR + self.BIN_WL * self.PUDR
+            self.UCSR_i    = self.UCSR + self.BIN_L * self.LUCSR + self.BIN_W * self.WUCSR + self.BIN_WL * self.PUCSR
+            self.UCR_i     = self.UCR + self.BIN_L * self.LUCR + self.BIN_W * self.WUCR + self.BIN_WL * self.PUCR
+            self.PCLMR_i   = self.PCLMR + self.BIN_L * self.LPCLMR + self.BIN_W * self.WPCLMR + self.BIN_WL * self.PPCLMR
+            self.PDIBLCR_i = self.PDIBLCR + self.BIN_L * self.LPDIBLCR + self.BIN_W * self.WPDIBLCR + self.BIN_WL * self.PPDIBLCR
+            self.VSATR_i   = self.VSATR + self.BIN_L * self.LVSATR + self.BIN_W * self.WVSATR + self.BIN_WL * self.PVSATR
+            self.PSATR_i   = self.PSATR + self.BIN_L * self.LPSATR + self.BIN_W * self.WPSATR + self.BIN_WL * self.PPSATR
+            self.PTWGR_i   = self.PTWGR + self.BIN_L * self.LPTWGR + self.BIN_W * self.WPTWGR + self.BIN_WL * self.PPTWGR
         else:
-            CDSCDR_i  = 0.0
-            ETA0R_i   = 0.0
-            U0R_i     = 0.0
-            UAR_i     = 0.0
-            UDR_i     = 0.0
-            UCSR_i    = 0.0
-            UCR_i     = 0.0
-            PCLMR_i   = 0.0
-            PDIBLCR_i = 0.0
-            VSATR_i   = 0.0
-            PSATR_i   = 0.0
-            PTWGR_i   = 0.0
+            self.CDSCDR_i  = 0.0
+            self.ETA0R_i   = 0.0
+            self.U0R_i     = 0.0
+            self.UAR_i     = 0.0
+            self.UDR_i     = 0.0
+            self.UCSR_i    = 0.0
+            self.UCR_i     = 0.0
+            self.PCLMR_i   = 0.0
+            self.PDIBLCR_i = 0.0
+            self.VSATR_i   = 0.0
+            self.PSATR_i   = 0.0
+            self.PTWGR_i   = 0.0
 
         # Geometrical scaling
-        T0        = self.NDEPL1 * max(Inv_L**self.NDEPLEXP1 - Inv_Llong**self.NDEPLEXP1, 0.0) + self.NDEPL2 * max(Inv_L**self.NDEPLEXP2 - Inv_Llong**self.NDEPLEXP2, 0.0)
-        T1        = self.NDEPW * max(Inv_W**self.NDEPWEXP - Inv_Wwide**self.NDEPWEXP, 0.0) + self.NDEPWL * (Inv_W * Inv_L)**self.NDEPWLEXP
-        NDEP_i    = NDEP_i * (1.0 + T0 + T1)
-        T0        = self.NFACTORL * max(Inv_L**self.NFACTORLEXP - Inv_Llong**self.NFACTORLEXP, 0.0)
-        T1        = self.NFACTORW * max(Inv_W**self.NFACTORWEXP - Inv_Wwide**self.NFACTORWEXP, 0.0) + self.NFACTORWL * Inv_WL**self.NFACTORWLEXP
-        NFACTOR_i = NFACTOR_i * (1.0 + T0 + T1)
-        T0        = (1.0 + self.CDSCDL * max(Inv_L**self.CDSCDLEXP - Inv_Llong**self.CDSCDLEXP, 0.0))
-        CDSCD_i   = CDSCD_i * T0
+        self.T0        = self.NDEPL1 * max(self.Inv_L**self.NDEPLEXP1 - self.Inv_Llong**self.NDEPLEXP1, 0.0) + self.NDEPL2 * max(self.Inv_L**self.NDEPLEXP2 - self.Inv_Llong**self.NDEPLEXP2, 0.0)
+        self.T1        = self.NDEPW * max(self.Inv_W**self.NDEPWEXP - self.Inv_Wwide**self.NDEPWEXP, 0.0) + self.NDEPWL * (self.Inv_W * self.Inv_L)**self.NDEPWLEXP
+        self.NDEP_i    = self.NDEP_i * (1.0 + self.T0 + self.T1)
+        self.T0        = self.NFACTORL * max(self.Inv_L**self.NFACTORLEXP - self.Inv_Llong**self.NFACTORLEXP, 0.0)
+        self.T1        = self.NFACTORW * max(self.Inv_W**self.NFACTORWEXP - self.Inv_Wwide**self.NFACTORWEXP, 0.0) + self.NFACTORWL * self.Inv_WL**self.NFACTORWLEXP
+        self.NFACTOR_i = self.NFACTOR_i * (1.0 + self.T0 + self.T1)
+        self.T0        = (1.0 + self.CDSCDL * max(self.Inv_L**self.CDSCDLEXP - self.Inv_Llong**self.CDSCDLEXP, 0.0))
+        self.CDSCD_i   = self.CDSCD_i * self.T0
         if (self.ASYMMOD != 0):
-            CDSCDR_i = CDSCDR_i * T0
-        CDSCB_i = CDSCB_i * (1.0 + self.CDSCBL * max(Inv_L**self.CDSCBLEXP - Inv_Llong**self.CDSCBLEXP, 0.0))
-        U0_i    = self.MULU0 * U0_i
+            self.CDSCDR_i = self.CDSCDR_i * self.T0
+        self.CDSCB_i = self.CDSCB_i * (1.0 + self.CDSCBL * max(self.Inv_L**self.CDSCBLEXP - self.Inv_Llong**self.CDSCBLEXP, 0.0))
+        self.U0_i    = self.MULU0 * self.U0_i
         if (self.MOBSCALE != 1):
             if (self.U0LEXP > 0.0):
-                U0_i = U0_i * (1.0 - self.U0L * max(Inv_L**self.U0LEXP - Inv_Llong**self.U0LEXP, 0.0))
+                self.U0_i = self.U0_i * (1.0 - self.U0L * max(self.Inv_L**self.U0LEXP - self.Inv_Llong**self.U0LEXP, 0.0))
                 if (self.ASYMMOD != 0):
-                    U0R_i = U0R_i * (1.0 - self.U0L * max(Inv_L**self.U0LEXP - Inv_Llong**self.U0LEXP, 0.0))
+                    self.U0R_i = self.U0R_i * (1.0 - self.U0L * max(self.Inv_L**self.U0LEXP - self.Inv_Llong**self.U0LEXP, 0.0))
             else:
-                U0_i = U0_i * (1.0 - self.U0L)
+                self.U0_i = self.U0_i * (1.0 - self.U0L)
                 if (self.ASYMMOD != 0):
-                    U0R_i = U0R_i * (1.0 - self.U0L)
+                    self.U0R_i = self.U0R_i * (1.0 - self.U0L)
         else:
-            U0_i = U0_i * (1.0 - (self.UP1 * self.lexp(-Leff / self.LP1)) - (self.UP2 * self.lexp(-Leff / self.LP2)))
+            self.U0_i = self.U0_i * (1.0 - (self.UP1 * self.lexp(-self.Leff / self.LP1)) - (self.UP2 * self.lexp(-self.Leff / self.LP2)))
             if (self.ASYMMOD != 0):
-                U0R_i = U0R_i * (1.0 - (self.UP1 * self.lexp(-Leff / self.LP1)) - (self.UP2 * self.lexp(-Leff / self.LP2)))
-        T0   = self.UAL * max(Inv_L**self.UALEXP - Inv_Llong**self.UALEXP, 0.0)
-        T1   = self.UAW * max(Inv_W**self.UAWEXP - Inv_Wwide**self.UAWEXP, 0.0) + self.UAWL * Inv_WL**self.UAWLEXP
-        UA_i = UA_i * (1.0 + T0 + T1)
+                self.U0R_i = self.U0R_i * (1.0 - (self.UP1 * self.lexp(-self.Leff / self.LP1)) - (self.UP2 * self.lexp(-self.Leff / self.LP2)))
+        self.T0   = self.UAL * max(self.Inv_L**self.UALEXP - self.Inv_Llong**self.UALEXP, 0.0)
+        self.T1   = self.UAW * max(self.Inv_W**self.UAWEXP - self.Inv_Wwide**self.UAWEXP, 0.0) + self.UAWL * self.Inv_WL**self.UAWLEXP
+        self.UA_i = self.UA_i * (1.0 + self.T0 + self.T1)
         if (self.ASYMMOD != 0):
-            UAR_i = UAR_i * (1.0 + T0 + T1)
-        T0   = self.EUL * max(Inv_L**self.EULEXP - Inv_Llong**self.EULEXP, 0.0)
-        T1   = self.EUW * max(Inv_W**self.EUWEXP - Inv_Wwide**self.EUWEXP, 0.0) + self.EUWL * Inv_WL**self.EUWLEXP
-        EU_i = EU_i * (1.0 + T0 + T1)
-        T0   = 1.0 + self.UDL * max(Inv_L**self.UDLEXP - Inv_Llong**self.UDLEXP, 0.0)
-        UD_i = UD_i * T0
+            self.UAR_i = self.UAR_i * (1.0 + self.T0 + self.T1)
+        self.T0   = self.EUL * max(self.Inv_L**self.EULEXP - self.Inv_Llong**self.EULEXP, 0.0)
+        self.T1   = self.EUW * max(self.Inv_W**self.EUWEXP - self.Inv_Wwide**self.EUWEXP, 0.0) + self.EUWL * self.Inv_WL**self.EUWLEXP
+        self.EU_i = self.EU_i * (1.0 + self.T0 + self.T1)
+        self.T0   = 1.0 + self.UDL * max(self.Inv_L**self.UDLEXP - self.Inv_Llong**self.UDLEXP, 0.0)
+        self.UD_i = self.UD_i * self.T0
         if (self.ASYMMOD != 0):
-            UDR_i = UDR_i * T0
-        T0   = self.UCL * max(Inv_L**self.UCLEXP - Inv_Llong**self.UCLEXP, 0.0)
-        T1   = self.UCW * max(Inv_W**self.UCWEXP - Inv_Wwide**self.UCWEXP, 0.0) + self.UCWL * Inv_WL**self.UCWLEXP
-        UC_i = UC_i * (1.0 + T0 + T1)
+            self.UDR_i = self.UDR_i * self.T0
+        self.T0   = self.UCL * max(self.Inv_L**self.UCLEXP - self.Inv_Llong**self.UCLEXP, 0.0)
+        self.T1   = self.UCW * max(self.Inv_W**self.UCWEXP - self.Inv_Wwide**self.UCWEXP, 0.0) + self.UCWL * self.Inv_WL**self.UCWLEXP
+        self.UC_i = self.UC_i * (1.0 + self.T0 + self.T1)
         if (self.ASYMMOD != 0):
-            UCR_i = UCR_i * (1.0 + T0 + T1)
-        T0     = max(Inv_L**self.DSUB - Inv_Llong**self.DSUB, 0.0)
-        ETA0_i = ETA0_i * T0
+            self.UCR_i = self.UCR_i * (1.0 + self.T0 + self.T1)
+        self.T0     = max(self.Inv_L**self.DSUB - self.Inv_Llong**self.DSUB, 0.0)
+        self.ETA0_i = self.ETA0_i * self.T0
         if (self.ASYMMOD != 0):
-            ETA0R_i = ETA0R_i * T0
-        ETAB_i   = ETAB_i * max(Inv_L**self.ETABEXP - Inv_Llong**self.ETABEXP, 0.0)
-        T0       = 1.0 + self.PDIBLCL * max(Inv_L**self.PDIBLCLEXP - Inv_Llong**self.PDIBLCLEXP, 0.0)
-        PDIBLC_i = PDIBLC_i * T0
+            self.ETA0R_i = self.ETA0R_i * self.T0
+        self.ETAB_i   = self.ETAB_i * max(self.Inv_L**self.ETABEXP - self.Inv_Llong**self.ETABEXP, 0.0)
+        self.T0       = 1.0 + self.PDIBLCL * max(self.Inv_L**self.PDIBLCLEXP - self.Inv_Llong**self.PDIBLCLEXP, 0.0)
+        self.PDIBLC_i = self.PDIBLC_i * self.T0
         if (self.ASYMMOD != 0):
-            PDIBLCR_i = PDIBLCR_i * T0
-        T0       = DELTA_i * (1.0 + self.DELTAL * max(Inv_L**self.DELTALEXP - Inv_Llong**self.DELTALEXP, 0.0))
-        DELTA_i  = min(T0, 0.5)
-        FPROUT_i = FPROUT_i * (1.0 + self.FPROUTL * max(Inv_L**self.FPROUTLEXP - Inv_Llong**self.FPROUTLEXP, 0.0))
-        T0       = (1.0 + self.PCLML * max(Inv_L**self.PCLMLEXP - Inv_Llong**self.PCLMLEXP, 0.0))
-        PCLM_i   = PCLM_i * T0
-        PCLM_i   = max(PCLM_i, 0.0)
+            self.PDIBLCR_i = self.PDIBLCR_i * self.T0
+        self.T0       = self.DELTA_i * (1.0 + self.DELTAL * max(self.Inv_L**self.DELTALEXP - self.Inv_Llong**self.DELTALEXP, 0.0))
+        self.DELTA_i  = min(self.T0, 0.5)
+        self.FPROUT_i = self.FPROUT_i * (1.0 + self.FPROUTL * max(self.Inv_L**self.FPROUTLEXP - self.Inv_Llong**self.FPROUTLEXP, 0.0))
+        self.T0       = (1.0 + self.PCLML * max(self.Inv_L**self.PCLMLEXP - self.Inv_Llong**self.PCLMLEXP, 0.0))
+        self.PCLM_i   = self.PCLM_i * self.T0
+        self.PCLM_i   = max(self.PCLM_i, 0.0)
         if (self.ASYMMOD != 0):
-            PCLMR_i = PCLMR_i * T0
-            PCLMR_i = max(PCLMR_i, 0.0)
-        T0     = self.VSATL * max(Inv_L**self.VSATLEXP - Inv_Llong**self.VSATLEXP, 0.0)
-        T1     = self.VSATW * max(Inv_W**self.VSATWEXP - Inv_Wwide**self.VSATWEXP, 0.0) + self.VSATWL * Inv_WL**self.VSATWLEXP
-        VSAT_i = VSAT_i * (1.0 + T0 + T1)
+            self.PCLMR_i = self.PCLMR_i * self.T0
+            self.PCLMR_i = max(self.PCLMR_i, 0.0)
+        self.T0     = self.VSATL * max(self.Inv_L**self.VSATLEXP - self.Inv_Llong**self.VSATLEXP, 0.0)
+        self.T1     = self.VSATW * max(self.Inv_W**self.VSATWEXP - self.Inv_Wwide**self.VSATWEXP, 0.0) + self.VSATWL * self.Inv_WL**self.VSATWLEXP
+        self.VSAT_i = self.VSAT_i * (1.0 + self.T0 + self.T1)
         if (self.ASYMMOD != 0):
-            VSATR_i = VSATR_i * (1.0 + T0 + T1)
-        PSAT_i = max(PSAT_i * (1.0 + self.PSATL * max(Inv_L**self.PSATLEXP - Inv_Llong**self.PSATLEXP, 0.0)), 0.25)
+            self.VSATR_i = self.VSATR_i * (1.0 + self.T0 + self.T1)
+        self.PSAT_i = max(self.PSAT_i * (1.0 + self.PSATL * max(self.Inv_L**self.PSATLEXP - self.Inv_Llong**self.PSATLEXP, 0.0)), 0.25)
         if (self.ASYMMOD != 0):
-            PSATR_i = max(PSATR_i * (1.0 + self.PSATL * max(Inv_L**self.PSATLEXP - Inv_Llong**self.PSATLEXP, 0.0)), 0.25)
-        T0     = (1.0 + self.PTWGL * max(Inv_L**self.PTWGLEXP - Inv_Llong**self.PTWGLEXP, 0.0))
-        PTWG_i = PTWG_i * T0
+            self.PSATR_i = max(self.PSATR_i * (1.0 + self.PSATL * max(self.Inv_L**self.PSATLEXP - self.Inv_Llong**self.PSATLEXP, 0.0)), 0.25)
+        self.T0     = (1.0 + self.PTWGL * max(self.Inv_L**self.PTWGLEXP - self.Inv_Llong**self.PTWGLEXP, 0.0))
+        self.PTWG_i = self.PTWG_i * self.T0
         if (self.ASYMMOD != 0):
-            PTWGR_i = PTWGR_i * T0
-        ALPHA0_i = ALPHA0_i * (1.0 + self.ALPHA0L * max(Inv_L**self.ALPHA0LEXP - Inv_Llong**self.ALPHA0LEXP, 0.0))
-        AGIDL_i  = AGIDL_i * (1.0 + self.AGIDLL * Inv_L + self.AGIDLW * Inv_W)
-        AGISL_i  = AGISL_i * (1.0 + self.AGISLL * Inv_L + self.AGISLW * Inv_W)
-        AIGC_i   = AIGC_i * (1.0 + self.AIGCL * Inv_L + self.AIGCW * Inv_W)
-        AIGS_i   = AIGS_i * (1.0 + self.AIGSL * Inv_L + self.AIGSW * Inv_W)
-        AIGD_i   = AIGD_i * (1.0 + self.AIGDL * Inv_L + self.AIGDW * Inv_W)
-        PIGCD_i  = self.PIGCD * (1.0 + self.PIGCDL * Inv_L)
-        T0       = self.NDEPCVL1 * max(Inv_Lact**self.NDEPCVLEXP1 - Inv_Llong**self.NDEPCVLEXP1, 0.0) + self.NDEPCVL2 * max(Inv_Lact**self.NDEPCVLEXP2 - Inv_Llong**self.NDEPCVLEXP2, 0.0)
-        T1       = self.NDEPCVW * max(Inv_Wact**self.NDEPCVWEXP - Inv_Wwide**self.NDEPCVWEXP, 0.0) + self.NDEPCVWL * (Inv_Wact * Inv_Lact)**self.NDEPCVWLEXP
-        NDEPCV_i = NDEPCV_i * (1.0 + T0 + T1)
-        T0       = self.VFBCVL * max(Inv_Lact**self.VFBCVLEXP - Inv_Llong**self.VFBCVLEXP, 0.0)
-        T1       = self.VFBCVW * max(Inv_Wact**self.VFBCVWEXP - Inv_Wwide**self.VFBCVWEXP, 0.0) + self.VFBCVWL * Inv_WL**self.VFBCVWLEXP
-        VFBCV_i  = VFBCV_i * (1.0 + T0 + T1)
-        T0       = self.VSATCVL * max(Inv_Lact**self.VSATCVLEXP - Inv_Llong**self.VSATCVLEXP, 0.0)
-        T1       = self.VSATCVW * max(Inv_W**self.VSATCVWEXP - Inv_Wwide**self.VSATCVWEXP, 0.0) + self.VSATCVWL * Inv_WL**self.VSATCVWLEXP
-        VSATCV_i = VSATCV_i * (1.0 + T0 + T1)
-        PCLMCV_i = PCLMCV_i * (1.0 + self.PCLMCVL * max(Inv_Lact**self.PCLMCVLEXP - Inv_Llong**self.PCLMCVLEXP, 0.0))
-        PCLMCV_i = max(PCLMCV_i, 0.0)
-        T0       = self.K1L * max(Inv_L**self.K1LEXP - Inv_Llong**self.K1LEXP, 0.0)
-        T1       = self.K1W * max(Inv_W**self.K1WEXP - Inv_Wwide**self.K1WEXP, 0.0) + self.K1WL * Inv_WL**self.K1WLEXP
-        K1_i     = K1_i * (1.0 + T0 + T1)
-        T0       = self.K2L * max(Inv_L**self.K2LEXP - Inv_Llong**self.K2LEXP, 0.0)
-        T1       = self.K2W * max(Inv_W**self.K2WEXP - Inv_Wwide**self.K2WEXP, 0.0) + self.K2WL * Inv_WL**self.K2WLEXP
-        K2_i     = K2_i * (1.0 + T0 + T1)
-        PRWB_i   = PRWB_i * (1.0 + self.PRWBL * max(Inv_L**self.PRWBLEXP - Inv_Llong**self.PRWBLEXP, 0.0))
+            self.PTWGR_i = self.PTWGR_i * self.T0
+        self.ALPHA0_i = self.ALPHA0_i * (1.0 + self.ALPHA0L * max(self.Inv_L**self.ALPHA0LEXP - self.Inv_Llong**self.ALPHA0LEXP, 0.0))
+        self.AGIDL_i  = self.AGIDL_i * (1.0 + self.AGIDLL * self.Inv_L + self.AGIDLW * self.Inv_W)
+        self.AGISL_i  = self.AGISL_i * (1.0 + self.AGISLL * self.Inv_L + self.AGISLW * self.Inv_W)
+        self.AIGC_i   = self.AIGC_i * (1.0 + self.AIGCL * self.Inv_L + self.AIGCW * self.Inv_W)
+        self.AIGS_i   = self.AIGS_i * (1.0 + self.AIGSL * self.Inv_L + self.AIGSW * self.Inv_W)
+        self.AIGD_i   = self.AIGD_i * (1.0 + self.AIGDL * self.Inv_L + self.AIGDW * self.Inv_W)
+        self.PIGCD_i  = self.PIGCD * (1.0 + self.PIGCDL * self.Inv_L)
+        self.T0       = self.NDEPCVL1 * max(self.Inv_Lact**self.NDEPCVLEXP1 - self.Inv_Llong**self.NDEPCVLEXP1, 0.0) + self.NDEPCVL2 * max(self.Inv_Lact**self.NDEPCVLEXP2 - self.Inv_Llong**self.NDEPCVLEXP2, 0.0)
+        self.T1       = self.NDEPCVW * max(self.Inv_Wact**self.NDEPCVWEXP - self.Inv_Wwide**self.NDEPCVWEXP, 0.0) + self.NDEPCVWL * (self.Inv_Wact * self.Inv_Lact)**self.NDEPCVWLEXP
+        self.NDEPCV_i = self.NDEPCV_i * (1.0 + self.T0 + self.T1)
+        self.T0       = self.VFBCVL * max(self.Inv_Lact**self.VFBCVLEXP - self.Inv_Llong**self.VFBCVLEXP, 0.0)
+        self.T1       = self.VFBCVW * max(self.Inv_Wact**self.VFBCVWEXP - self.Inv_Wwide**self.VFBCVWEXP, 0.0) + self.VFBCVWL * self.Inv_WL**self.VFBCVWLEXP
+        self.VFBCV_i  = self.VFBCV_i * (1.0 + self.T0 + self.T1)
+        self.T0       = self.VSATCVL * max(self.Inv_Lact**self.VSATCVLEXP - self.Inv_Llong**self.VSATCVLEXP, 0.0)
+        self.T1       = self.VSATCVW * max(self.Inv_W**self.VSATCVWEXP - self.Inv_Wwide**self.VSATCVWEXP, 0.0) + self.VSATCVWL * self.Inv_WL**self.VSATCVWLEXP
+        self.VSATCV_i = self.VSATCV_i * (1.0 + self.T0 + self.T1)
+        self.PCLMCV_i = self.PCLMCV_i * (1.0 + self.PCLMCVL * max(self.Inv_Lact**self.PCLMCVLEXP - self.Inv_Llong**self.PCLMCVLEXP, 0.0))
+        self.PCLMCV_i = max(self.PCLMCV_i, 0.0)
+        self.T0       = self.K1L * max(self.Inv_L**self.K1LEXP - self.Inv_Llong**self.K1LEXP, 0.0)
+        self.T1       = self.K1W * max(self.Inv_W**self.K1WEXP - self.Inv_Wwide**self.K1WEXP, 0.0) + self.K1WL * self.Inv_WL**self.K1WLEXP
+        self.K1_i     = self.K1_i * (1.0 + self.T0 + self.T1)
+        self.T0       = self.K2L * max(self.Inv_L**self.K2LEXP - self.Inv_Llong**self.K2LEXP, 0.0)
+        self.T1       = self.K2W * max(self.Inv_W**self.K2WEXP - self.Inv_Wwide**self.K2WEXP, 0.0) + self.K2WL * self.Inv_WL**self.K2WLEXP
+        self.K2_i     = self.K2_i * (1.0 + self.T0 + self.T1)
+        self.PRWB_i   = self.PRWB_i * (1.0 + self.PRWBL * max(self.Inv_L**self.PRWBLEXP - self.Inv_Llong**self.PRWBLEXP, 0.0))
 
         # Global scaling parameters for temperature
-        UTE_i   = UTE_i * (1.0 + Inv_L * self.UTEL)
-        UA1_i   = UA1_i * (1.0 + Inv_L * self.UA1L)
-        UD1_i   = UD1_i * (1.0 + Inv_L * self.UD1L)
-        AT_i    = AT_i * (1.0 + Inv_L * self.ATL)
-        PTWGT_i = PTWGT_i * (1.0 + Inv_L * self.PTWGTL)
+        self.UTE_i   = self.UTE_i * (1.0 + self.Inv_L * self.UTEL)
+        self.UA1_i   = self.UA1_i * (1.0 + self.Inv_L * self.UA1L)
+        self.UD1_i   = self.UD1_i * (1.0 + self.Inv_L * self.UD1L)
+        self.AT_i    = self.AT_i * (1.0 + self.Inv_L * self.ATL)
+        self.PTWGT_i = self.PTWGT_i * (1.0 + self.Inv_L * self.PTWGTL)
 
         if (self.RDSMOD == 1):
-            RSW_i = RSW_i * (1.0 + self.RSWL * max(Inv_L**self.RSWLEXP - Inv_Llong**self.RSWLEXP, 0.0))
-            RDW_i = RDW_i * (1.0 + self.RDWL * max(Inv_L**self.RDWLEXP - Inv_Llong**self.RDWLEXP, 0.0))
+            self.RSW_i = self.RSW_i * (1.0 + self.RSWL * max(self.Inv_L**self.RSWLEXP - self.Inv_Llong**self.RSWLEXP, 0.0))
+            self.RDW_i = self.RDW_i * (1.0 + self.RDWL * max(self.Inv_L**self.RDWLEXP - self.Inv_Llong**self.RDWLEXP, 0.0))
         else:
-            RDSW_i = RDSW_i * (1.0 + self.RDSWL * max(Inv_L**self.RDSWLEXP - Inv_Llong**self.RDSWLEXP, 0.0))
+            self.RDSW_i = self.RDSW_i * (1.0 + self.RDSWL * max(self.Inv_L**self.RDSWLEXP - self.Inv_Llong**self.RDSWLEXP, 0.0))
 
         # Parameter checking
-        if (UCS_i < 1.0):
-            UCS_i = 1.0
-        elif (UCS_i > 2.0):
-            UCS_i = 2.0
+        if (self.UCS_i < 1.0):
+            self.UCS_i = 1.0
+        elif (self.UCS_i > 2.0):
+            self.UCS_i = 2.0
         if (self.ASYMMOD != 0):
-            if (UCSR_i < 1.0):
-                UCSR_i = 1.0
-            elif (UCSR_i > 2.0):
-                UCSR_i = 2.0
-        if (CGIDL_i < 0.0):
+            if (self.UCSR_i < 1.0):
+                self.UCSR_i = 1.0
+            elif (self.UCSR_i > 2.0):
+                self.UCSR_i = 2.0
+        if (self.CGIDL_i < 0.0):
             print("Fatal: CGIDL_i = %e is negative.", CGIDL_i)
-        if (CGISL_i < 0.0):
+        if (self.CGISL_i < 0.0):
             print("Fatal: CGISL_i = %e is negative.", CGISL_i)
-        if (CKAPPAD_i <= 0.0):
+        if (self.CKAPPAD_i <= 0.0):
             print("Fatal: CKAPPAD_i = %e is non-positive.", CKAPPAD_i)
-        if (CKAPPAS_i <= 0.0):
+        if (self.CKAPPAS_i <= 0.0):
             print("Fatal: CKAPPAS_i = %e is non-positive.", CKAPPAS_i)
-        if (PDITS_i < 0.0):
+        if (self.PDITS_i < 0.0):
             print("Fatal: PDITS_i = %e is negative.", PDITS_i)
-        if (CIT_i < 0.0):
+        if (self.CIT_i < 0.0):
             print("Fatal: CIT_i = %e is negative.", CIT_i)
-        if (NFACTOR_i < 0.0):
+        if (self.NFACTOR_i < 0.0):
             print("Fatal: NFACTOR_i = %e is negative.", NFACTOR_i)
-        if (K1_i < 0.0):
+        if (self.K1_i < 0.0):
             print("Fatal: K1_i = %e is negative.", K1_i)
-        if (NSD_i <= 0.0):
+        if (self.NSD_i <= 0.0):
             print("Fatal: NSD_i = %e is non-positive.", NSD_i)
-        if (NDEP_i <= 0.0):
+        if (self.NDEP_i <= 0.0):
             print("Fatal: NDEP_i = %e is non-positive.", NDEP_i)
-        if (NDEPCV_i <= 0.0):
+        if (self.NDEPCV_i <= 0.0):
             print("Fatal: NDEPCV_i = %e is non-positive.", NDEPCV_i)
         if (self.IGBMOD != 0):
-            if (NIGBINV_i <= 0.0):
+            if (self.NIGBINV_i <= 0.0):
                 print("Fatal: NIGBINV_i = %e is non-positive.", NIGBINV_i)
-            if (NIGBACC_i <= 0.0):
+            if (self.NIGBACC_i <= 0.0):
                 print("Fatal: NIGBACC_i = %e is non-positive.", NIGBACC_i)
         if (self.IGCMOD != 0):
-            if (POXEDGE_i <= 0.0):
+            if (self.POXEDGE_i <= 0.0):
                 print("Fatal: POXEDGE_i = %e is non-positive.", POXEDGE_i)
-        if (CDSCD_i < 0.0):
+        if (self.CDSCD_i < 0.0):
             print("Fatal: CDSCD_i = %e is negative.", CDSCD_i)
         if (self.ASYMMOD != 0):
-            if (CDSCDR_i < 0.0):
+            if (self.CDSCDR_i < 0.0):
                 print("Fatal: CDSCDR_i = %e is negative.", CDSCDR_i)
-        if (DLCIG_i < 0.0):
+        if (self.DLCIG_i < 0.0):
             print("Warning: DLCIG = %e is negative, setting it to 0.", DLCIG_i)
-            DLCIG_i = 0.0
-        if (DLCIGD_i < 0.0):
+            self.DLCIG_i = 0.0
+        if (self.DLCIGD_i < 0.0):
             print("Warning: DLCIGD = %e is negative, setting it to 0.", DLCIGD_i)
-            DLCIGD_i = 0.0
-        if (M0_i < 0.0):
+            self.DLCIGD_i = 0.0
+        if (self.M0_i < 0.0):
             print("Warning: M0_i = %e is negative, setting it to 0.", M0_i)
-            M0_i = 0.0
-        if (U0_i <= 0.0):
+            self.M0_i = 0.0
+        if (self.U0_i <= 0.0):
             print("Warning: U0_i = %e is non-positive, setting it to the default value.", U0_i)
-            U0_i = 0.067
-        if (UA_i < 0.0):
+            self.U0_i = 0.067
+        if (self.UA_i < 0.0):
             print("Warning: UA_i = %e is negative, setting it to 0.", UA_i)
-            UA_i = 0.0
-        if (EU_i < 0.0):
+            self.UA_i = 0.0
+        if (self.EU_i < 0.0):
             print("Warning: EU_i = %e is negative, setting it to 0.", EU_i)
-            EU_i = 0.0
-        if (UD_i < 0.0):
+            self.EU_i = 0.0
+        if (self.UD_i < 0.0):
             print("Warning: UD_i = %e is negative, setting it to 0.", UD_i)
-            UD_i = 0.0
-        if (UCS_i < 0.0):
+            self.UD_i = 0.0
+        if (self.UCS_i < 0.0):
             print("Warning: UCS_i = %e is negative, setting it to 0.", UCS_i)
-            UCS_i = 0.0
+            self.UCS_i = 0.0
 
         # Process drain series resistance
-        DMCGeff = self.DMCG - self.DMCGT
-        DMCIeff = self.DMCI
-        DMDGeff = self.DMDG - self.DMCGT
+        self.DMCGeff = self.DMCG - self.DMCGT
+        self.DMCIeff = self.DMCI
+        self.DMDGeff = self.DMDG - self.DMCGT
 
         # Processing S/D resistances and conductances
-        if self.NRSgiven == True:
-            RSourceGeo = self.RSH * self.NRS
+        if "NRS" in param.keys():
+            self.RSourceGeo = self.RSH * self.NRS
         elif (self.RGEOMOD > 0 and self.RSH > 0.0):
-            RSourceGeo = self.BSIMBULKRdseffGeo(self.NF, self.GEOMOD, self.RGEOMOD, self.MINZ, Weff, self.RSH, DMCGeff, DMCIeff, DMDGeff, 1)
+            self.RSourceGeo = self.BSIMBULKRdseffGeo(self.NF, self.GEOMOD, self.RGEOMOD, self.MINZ, self.Weff, self.RSH, self.DMCGeff, self.DMCIeff, self.DMDGeff, 1)
         else:
-            RSourceGeo = 0.0
+            self.RSourceGeo = 0.0
 
-        if self.NRDgiven == True:
-            RDrainGeo = self.RSH * self.NRD
+        if "NRD" in param.keys():
+            self.RDrainGeo = self.RSH * self.NRD
         elif (self.RGEOMOD > 0 and self.RSH > 0.0):
-            RDrainGeo = self.BSIMBULKRdseffGeo(self.NF, self.GEOMOD, self.RGEOMOD, self.MINZ, Weff, self.RSH, DMCGeff, DMCIeff, DMDGeff, 0)
+            self.RDrainGeo = self.BSIMBULKRdseffGeo(self.NF, self.GEOMOD, self.RGEOMOD, self.MINZ, self.Weff, self.RSH, self.DMCGeff, self.DMCIeff, self.DMDGeff, 0)
         else:
-            RDrainGeo = 0.0
+            self.RDrainGeo = 0.0
 
         # Clamping of S/D resistances
         if (self.RDSMOD == 0):
-            if (RSourceGeo < self.minr):
-                RSourceGeo = 0.0
-            if (RDrainGeo < self.minr):
-                RDrainGeo = 0.0
+            if (self.RSourceGeo < self.minr):
+                self.RSourceGeo = 0.0
+            if (self.RDrainGeo < self.minr):
+                self.RDrainGeo = 0.0
         else:
-            if (RSourceGeo <= self.minr):
-                RSourceGeo = self.minr
-            if (RDrainGeo <= self.minr):
-                RDrainGeo = self.minr
+            if (self.RSourceGeo <= self.minr):
+                self.RSourceGeo = self.minr
+            if (self.RDrainGeo <= self.minr):
+                self.RDrainGeo = self.minr
         if (self.RDSMOD == 1):
-            if (RSWMIN_i <= 0.0):
-                RSWMIN_i = 0.0
-            if (RDWMIN_i <= 0.0):
-                RDWMIN_i = 0.0
-            if (RSW_i <= 0.0):
-                RSW_i = 0.0
-            if (RDW_i <= 0.0):
-                RDW_i = 0.0
+            if (self.RSWMIN_i <= 0.0):
+                self.RSWMIN_i = 0.0
+            if (self.RDWMIN_i <= 0.0):
+                self.RDWMIN_i = 0.0
+            if (self.RSW_i <= 0.0):
+                self.RSW_i = 0.0
+            if (self.RDW_i <= 0.0):
+                self.RDW_i = 0.0
         else:
-            if (RDSWMIN_i <= 0.0):
-                RDSWMIN_i = 0.0
-            if (RDSW_i <= 0.0):
-                RDSW_i = 0.0
+            if (self.RDSWMIN_i <= 0.0):
+                self.RDSWMIN_i = 0.0
+            if (self.RDSW_i <= 0.0):
+                self.RDSW_i = 0.0
 
         # Body resistance network
         if (self.RBODYMOD != 0):
-            Lnl  = self.lln(Leff * 1.0e6)
-            Lnw  = self.lln(Weff * 1.0e6)
-            Lnnf = self.lln(self.NF)
-            Bodymode = 5
-            Rbpb = self.RBPB
-            Rbpd = self.RBPD
-            Rbps = self.RBPS
-            Rbdb = self.RBDB
-            Rbsb = self.RBSB
-            if self.RBPS0given == False or self.RBPD0given == False:
-                Bodymode = 1
-            elif self.RBSBX0given == False and self.RBSBY0given == False or self.RBDBX0given == False and self.RBDBY0given == False:
-                Bodymode = 3
+            self.Lnl  = self.lln(self.Leff * 1.0e6)
+            self.Lnw  = self.lln(self.Weff * 1.0e6)
+            self.Lnnf = self.lln(self.NF)
+            self.Bodymode = 5
+            self.Rbpb = self.RBPB
+            self.Rbpd = self.RBPD
+            self.Rbps = self.RBPS
+            self.Rbdb = self.RBDB
+            self.Rbsb = self.RBSB
+            if ("RBPS0" not in param.keys()) or ("RBPD0" not in param.keys()):
+                self.Bodymode = 1
+            elif ("RBSBX0" not in param.keys()) and ("RBSBY0" not in param.keys()) or ("RBDBX0" not in param.keys()) and ("RBDBY0" not in param.keys()):
+                self.Bodymode = 3
             if (self.RBODYMOD == 2):
-                if (Bodymode == 5):
-                    Rbsbx = self.RBSBX0 * self.lexp(self.RBSDBXL * Lnl + self.RBSDBXW * Lnw + self.RBSDBXNF * Lnnf)
-                    Rbsby = self.RBSBY0 * self.lexp(self.RBSDBYL * Lnl + self.RBSDBYW * Lnw + self.RBSDBYNF * Lnnf)
-                    Rbsb  = Rbsbx * Rbsby / (Rbsbx + Rbsby)
-                    Rbdbx = self.RBDBX0 * self.lexp(self.RBSDBXL * Lnl + self.RBSDBXW * Lnw + self.RBSDBXNF * Lnnf)
-                    Rbdby = self.RBDBY0 * self.lexp(self.RBSDBYL * Lnl + self.RBSDBYW * Lnw + self.RBSDBYNF * Lnnf)
-                    Rbdb  = Rbdbx * Rbdby / (Rbdbx + Rbdby)
-                if (Bodymode == 3 or Bodymode == 5):
-                    Rbps = self.RBPS0 * self.lexp(self.RBPSL * Lnl + self.RBPSW * Lnw + self.RBPSNF * Lnnf)
-                    Rbpd = self.RBPD0 * self.lexp(self.RBPDL * Lnl + self.RBPDW * Lnw + self.RBPDNF * Lnnf)
-                Rbpbx = self.RBPBX0 * self.lexp(self.RBPBXL * Lnl + self.RBPBXW * Lnw + self.RBPBXNF * Lnnf)
-                Rbpby = self.RBPBY0 * self.lexp(self.RBPBYL * Lnl + self.RBPBYW * Lnw + self.RBPBYNF * Lnnf)
-                Rbpb  = Rbpbx * Rbpby / (Rbpbx + Rbpby)
-            if (self.RBODYMOD == 1 or (self.RBODYMOD == 2 and Bodymode == 5)):
-                if (Rbdb < 1.0e-3):
+                if (self.Bodymode == 5):
+                    self.Rbsbx = self.RBSBX0 * self.lexp(self.RBSDBXL * self.Lnl + self.RBSDBXW * self.Lnw + self.RBSDBXNF * self.Lnnf)
+                    self.Rbsby = self.RBSBY0 * self.lexp(self.RBSDBYL * self.Lnl + self.RBSDBYW * self.Lnw + self.RBSDBYNF * self.Lnnf)
+                    self.Rbsb  = self.Rbsbx * self.Rbsby / (self.Rbsbx + self.Rbsby)
+                    self.Rbdbx = self.RBDBX0 * self.lexp(self.RBSDBXL * self.Lnl + self.RBSDBXW * self.Lnw + self.RBSDBXNF * self.Lnnf)
+                    self.Rbdby = self.RBDBY0 * self.lexp(self.RBSDBYL * self.Lnl + self.RBSDBYW * self.Lnw + self.RBSDBYNF * self.Lnnf)
+                    self.Rbdb  = self.Rbdbx * self.Rbdby / (self.Rbdbx + self.Rbdby)
+                if (self.Bodymode == 3 or self.Bodymode == 5):
+                    self.Rbps = self.RBPS0 * self.lexp(self.RBPSL * self.Lnl + self.RBPSW * self.Lnw + self.RBPSNF * self.Lnnf)
+                    self.Rbpd = self.RBPD0 * self.lexp(self.RBPDL * self.Lnl + self.RBPDW * self.Lnw + self.RBPDNF * self.Lnnf)
+                self.Rbpbx = self.RBPBX0 * self.lexp(self.RBPBXL * self.Lnl + self.RBPBXW * self.Lnw + self.RBPBXNF * self.Lnnf)
+                self.Rbpby = self.RBPBY0 * self.lexp(self.RBPBYL * self.Lnl + self.RBPBYW * self.Lnw + self.RBPBYNF * self.Lnnf)
+                self.Rbpb  = self.Rbpbx * self.Rbpby / (self.Rbpbx + self.Rbpby)
+            if (self.RBODYMOD == 1 or (self.RBODYMOD == 2 and self.Bodymode == 5)):
+                if (self.Rbdb < 1.0e-3):
                     Grbdb = 1.0e3  # in mho
                 else:
-                    Grbdb = self.GBMIN + 1.0 / Rbdb
-                if (Rbpb < 1.0e-3):
-                    Grbpb = 1.0e3
+                    self.Grbdb = self.GBMIN + 1.0 / self.Rbdb
+                if (self.Rbpb < 1.0e-3):
+                    self.Grbpb = 1.0e3
                 else:
-                    Grbpb = self.GBMIN + 1.0 / Rbpb
-                if (Rbps < 1.0e-3):
-                    Grbps = 1.0e3
+                    self.Grbpb = self.GBMIN + 1.0 / self.Rbpb
+                if (self.Rbps < 1.0e-3):
+                    self.Grbps = 1.0e3
                 else:
-                    Grbps = self.GBMIN + 1.0 / Rbps
-                if (Rbsb < 1.0e-3):
-                    Grbsb = 1.0e3
+                    self.Grbps = self.GBMIN + 1.0 / self.Rbps
+                if (self.Rbsb < 1.0e-3):
+                    self.Grbsb = 1.0e3
                 else:
-                    Grbsb = self.GBMIN + 1.0 / Rbsb
-                if (Rbpd < 1.0e-3):
-                    Grbpd = 1.0e3
+                    self.Grbsb = self.GBMIN + 1.0 / self.Rbsb
+                if (self.Rbpd < 1.0e-3):
+                    self.Grbpd = 1.0e3
                 else:
-                    Grbpd = self.GBMIN + 1.0 / Rbpd
-            elif (self.RBODYMOD == 2 and Bodymode == 3):
-                Grbdb = self.GBMIN
-                Grbsb = self.GBMIN
-                if (Rbpb < 1.0e-3):
-                    Grbpb = 1.0e3
+                    self.Grbpd = self.GBMIN + 1.0 / self.Rbpd
+            elif (self.RBODYMOD == 2 and self.Bodymode == 3):
+                self.Grbdb = self.GBMIN
+                self.Grbsb = self.GBMIN
+                if (self.Rbpb < 1.0e-3):
+                    self.Grbpb = 1.0e3
                 else:
-                    Grbpb = self.GBMIN + 1.0 / Rbpb
-                if (Rbps < 1.0e-3):
-                    Grbps = 1.0e3
+                    self.Grbpb = self.GBMIN + 1.0 / self.Rbpb
+                if (self.Rbps < 1.0e-3):
+                    self.Grbps = 1.0e3
                 else:
-                    Grbps = self.GBMIN + 1.0 / Rbps
-                if (Rbpd < 1.0e-3):
-                    Grbpd = 1.0e3
+                    self.Grbps = self.GBMIN + 1.0 / self.Rbps
+                if (self.Rbpd < 1.0e-3):
+                    self.Grbpd = 1.0e3
                 else:
-                    Grbpd = self.GBMIN + 1.0 / Rbpd
-            elif (self.RBODYMOD == 2 and Bodymode == 1):
-                Grbdb = self.GBMIN
-                Grbsb = self.GBMIN
-                Grbps = 1.0e3
-                Grbpd = 1.0e3
-                if (Rbpb < 1.0e-3):
-                    Grbpb = 1.0e3
+                    self.Grbpd = self.GBMIN + 1.0 / self.Rbpd
+            elif (self.RBODYMOD == 2 and self.Bodymode == 1):
+                self.Grbdb = self.GBMIN
+                self.Grbsb = self.GBMIN
+                self.Grbps = 1.0e3
+                self.Grbpd = 1.0e3
+                if (self.Rbpb < 1.0e-3):
+                    self.Grbpb = 1.0e3
                 else:
-                    Grbpb = self.GBMIN + 1.0 / Rbpb
+                    self.Grbpb = self.GBMIN + 1.0 / self.Rbpb
 
         # Gate process resistance
-        Grgeltd = self.RSHG * (self.XGW + Weffcj / 3.0 / self.NGCON) / (self.NGCON * self.NF * (Lnew - self.XGL))
-        if (Grgeltd > 0.0):
-            Grgeltd = 1.0 / Grgeltd
+        self.Grgeltd = self.RSHG * (self.XGW + self.Weffcj / 3.0 / self.NGCON) / (self.NGCON * self.NF * (self.Lnew - self.XGL))
+        if (self.Grgeltd > 0.0):
+            self.Grgeltd = 1.0 / self.Grgeltd
         else:
-            Grgeltd = 1.0e3
+            self.Grgeltd = 1.0e3
             if (self.RGATEMOD != 0):
                 print("Warning: (instance %M) The gate conductance reset to 1.0e3 mho.")
 
-        T0           = self.TOXE * self.TOXE
-        T1           = self.TOXE * POXEDGE_i
-        T2           = T1 * T1
-        ToxRatio     = self.lexp(NTOX_i * self.lln(self.TOXREF / self.TOXE)) / T0
-        ToxRatioEdge = self.lexp(NTOX_i * self.lln(self.TOXREF / T1)) / T2
-        Aechvb       = 4.97232e-7 if (self.TYPE == self.ntype) else 3.42537e-7
-        Bechvb       = 7.45669e11 if (self.TYPE == self.ntype) else 1.16645e12
-        AechvbEdge   = Aechvb * Weff * ToxRatioEdge
-        BechvbEdge   = -Bechvb * self.TOXE * POXEDGE_i
-        Aechvb       = Aechvb * (Weff * Leff * ToxRatio)
-        Bechvb       = -Bechvb * self.TOXE
-        Weff_SH      = self.WTH0 + Weff
+        self.T0           = self.TOXE * self.TOXE
+        self.T1           = self.TOXE * self.POXEDGE_i
+        self.T2           = self.T1 * self.T1
+        self.ToxRatio     = self.lexp(self.NTOX_i * self.lln(self.TOXREF / self.TOXE)) / self.T0
+        self.ToxRatioEdge = self.lexp(self.NTOX_i * self.lln(self.TOXREF / self.T1)) / self.T2
+        self.Aechvb       = 4.97232e-7 if (self.TYPE == self.ntype) else 3.42537e-7
+        self.Bechvb       = 7.45669e11 if (self.TYPE == self.ntype) else 1.16645e12
+        self.AechvbEdge   = self.Aechvb * self.Weff * self.ToxRatioEdge
+        self.BechvbEdge   = -self.Bechvb * self.TOXE * self.POXEDGE_i
+        self.Aechvb       = self.Aechvb * (self.Weff * self.Leff * self.ToxRatio)
+        self.Bechvb       = -self.Bechvb * self.TOXE
+        self.Weff_SH      = self.WTH0 + self.Weff
 
         # Parameters for self-heating effects
-        if (self.SHMOD != 0) and (self.RTH0 > 0.0) and (Weff_SH > 0.0):
-            gth = Weff_SH * self.NF / self.RTH0
-            cth = self.CTH0 * Weff_SH * self.NF
+        if (self.SHMOD != 0) and (self.RTH0 > 0.0) and (self.Weff_SH > 0.0):
+            self.gth = self.Weff_SH * self.NF / self.RTH0
+            self.cth = self.CTH0 * self.Weff_SH * self.NF
         else:
             # Set gth to some value to prevent a singular G matrix
-            gth = 1.0
-            cth = 0.0
+            self.gth = 1.0
+            self.cth = 0.0
 
         # Temperature-dependent calculations
         if (self.TNOM <= -self.P_CELSIUS0):
-            T0 = self.REFTEMP - self.P_CELSIUS0
+            self.T0 = self.REFTEMP - self.P_CELSIUS0
             print("Warning: TNOM = %e C <= %e C. Setting TNOM to %e C.", TNOM, -P_CELSIUS0, T0)
-            Tnom = self.REFTEMP
+            self.Tnom = self.REFTEMP
         else:
-            Tnom = self.TNOM + self.P_CELSIUS0
-        DevTemp = self.TEMP + self.P_CELSIUS0 + self.DTEMP
+            self.Tnom = self.TNOM + self.P_CELSIUS0
+        self.DevTemp = self.TEMP + self.P_CELSIUS0 + self.DTEMP
 
-        Vt         = self.KboQ * DevTemp
-        inv_Vt     = 1.0 / Vt
-        TRatio     = DevTemp / Tnom
-        delTemp    = DevTemp - Tnom
-        Vtm        = self.KboQ * DevTemp
-        Vtm0       = self.KboQ * Tnom
-        Eg         = self.BG0SUB - self.TBGASUB * DevTemp * DevTemp / (DevTemp + self.TBGBSUB)
-        Eg0        = self.BG0SUB - self.TBGASUB * Tnom * Tnom / (Tnom + self.TBGBSUB)
-        T1         = (DevTemp / Tnom) * sqrt(DevTemp / Tnom)
-        ni         = self.NI0SUB * T1 * self.lexp(Eg / (2.0 * Vtm0) - Eg / (2.0 * Vtm))
-        if ((self.SHMOD != 0) and (self.RTH0 > 0.0) and (Weff_SH > 0.0)):
-            T0   = self.lln(NDEP_i / ni)
-            phib = sqrt(T0 * T0 + 1.0e-6)
+        self.Vt         = self.KboQ * self.DevTemp
+        self.inv_Vt     = 1.0 / self.Vt
+        self.TRatio     = self.DevTemp / self.Tnom
+        self.delTemp    = self.DevTemp - self.Tnom
+        self.Vtm        = self.KboQ * self.DevTemp
+        self.Vtm0       = self.KboQ * self.Tnom
+        self.Eg         = self.BG0SUB - self.TBGASUB * self.DevTemp * self.DevTemp / (self.DevTemp + self.TBGBSUB)
+        self.Eg0        = self.BG0SUB - self.TBGASUB * self.Tnom * self.Tnom / (self.Tnom + self.TBGBSUB)
+        self.T1         = (self.DevTemp / self.Tnom) * sqrt(self.DevTemp / self.Tnom)
+        self.ni         = self.NI0SUB * self.T1 * self.lexp(self.Eg / (2.0 * self.Vtm0) - self.Eg / (2.0 * self.Vtm))
+        if ((self.SHMOD != 0) and (self.RTH0 > 0.0) and (self.Weff_SH > 0.0)):
+            self.T0   = self.lln(self.NDEP_i / self.ni)
+            self.phib = sqrt(self.T0 * self.T0 + 1.0e-6)
         else:
-            phib = self.lln(NDEP_i / ni)
-        if ((self.SHMOD != 0) and (self.RTH0 > 0.0) and (Weff_SH > 0.0)):
-            T0  = self.lln(NDEPEDGE_i * NSD_i / (ni * ni))
-            Vbi_edge = sqrt(T0 * T0 + 1.0e-6)
+            self.phib = self.lln(self.NDEP_i / self.ni)
+        if ((self.SHMOD != 0) and (self.RTH0 > 0.0) and (self.Weff_SH > 0.0)):
+            self.T0  = self.lln(self.NDEPEDGE_i * self.NSD_i / (self.ni * self.ni))
+            self.Vbi_edge = sqrt(self.T0 * self.T0 + 1.0e-6)
         else:
-            Vbi_edge = self.lln(NDEPEDGE_i * NSD_i / (ni * ni))
-        if (NGATE_i > 0.0):
-            Vfbsdr = -devsign * Vt * self.lln(NGATE_i / NSD_i) + self.VFBSDOFF
+            self.Vbi_edge = self.lln(self.NDEPEDGE_i * self.NSD_i / (self.ni * self.ni))
+        if (self.NGATE_i > 0.0):
+            self.Vfbsdr = -self.devsign * self.Vt * self.lln(self.NGATE_i / self.NSD_i) + self.VFBSDOFF
         else:
-            Vfbsdr = 0.0
+            self.Vfbsdr = 0.0
 
         # Short channel effects
-        Phist     = max(0.4 + Vt * phib + PHIN_i, 0.4)
-        sqrtPhist = sqrt(Phist)
-        T1DEP     = sqrt(2.0 * epssi / (self.q * NDEP_i))
-        litl      = sqrt((epssi / epsox) * self.TOXE * XJ_i)
-        NFACTOR_t = NFACTOR_i * self.hypsmooth((1.0 + self.TNFACTOR * (TRatio - 1.0)), 1e-3)
-        ETA0_t    = ETA0_i * (1.0 + self.TETA0 * (TRatio - 1.0))
+        self.Phist     = max(0.4 + self.Vt * self.phib + self.PHIN_i, 0.4)
+        self.sqrtPhist = sqrt(self.Phist)
+        self.T1DEP     = sqrt(2.0 * self.epssi / (self.q * self.NDEP_i))
+        self.litl      = sqrt((self.epssi / self.epsox) * self.TOXE * self.XJ_i)
+        self.NFACTOR_t = self.NFACTOR_i * self.hypsmooth((1.0 + self.TNFACTOR * (self.TRatio - 1.0)), 1e-3)
+        self.ETA0_t    = self.ETA0_i * (1.0 + self.TETA0 * (self.TRatio - 1.0))
         if (self.ASYMMOD != 0):
-            ETA0R_t = ETA0R_i * (1.0 + self.TETA0 * (TRatio - 1.0))
+            self.ETA0R_t = self.ETA0R_i * (1.0 + self.TETA0 * (self.TRatio - 1.0))
 
         # Mobility degradation
-        eta_mu = (self.Oneby3 * self.ETAMOB) if (self.TYPE != self.ntype) else (0.5 * self.ETAMOB)
-        U0_t   = U0_i * TRatio**UTE_i
-        UA_t   = UA_i * self.hypsmooth(1.0 + UA1_i * delTemp - 1.0e-6, 1.0e-3)
-        UC_t   = UC_i * self.hypsmooth(1.0 + UC1_i * delTemp - 1.0e-6, 1.0e-3)
-        UD_t   = UD_i * TRatio**UD1_i
-        UCS_t  = UCS_i * TRatio**UCSTE_i
-        EU_t   = EU_i * self.hypsmooth((1.0 + EU1_i * (TRatio - 1.0)), 1e-3)
+        self.eta_mu = (self.Oneby3 * self.ETAMOB) if (self.TYPE != self.ntype) else (0.5 * self.ETAMOB)
+        self.U0_t   = self.U0_i * self.TRatio**self.UTE_i
+        self.UA_t   = self.UA_i * self.hypsmooth(1.0 + self.UA1_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.UC_t   = self.UC_i * self.hypsmooth(1.0 + self.UC1_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.UD_t   = self.UD_i * self.TRatio**self.UD1_i
+        self.UCS_t  = self.UCS_i * self.TRatio**self.UCSTE_i
+        self.EU_t   = self.EU_i * self.hypsmooth((1.0 + self.EU1_i * (self.TRatio - 1.0)), 1e-3)
         if (self.ASYMMOD != 0):
-            U0R_t  = U0R_i * TRatio**UTE_i
-            UAR_t  = UAR_i * self.hypsmooth(1.0 + UA1_i * delTemp - 1.0e-6, 1.0e-3)
-            UCR_t  = UCR_i * self.hypsmooth(1.0 + UC1_i * delTemp - 1.0e-6, 1.0e-3)
-            UDR_t  = UDR_i * TRatio**UD1_i
-            UCSR_t = UCSR_i * TRatio**UCSTE_i
+            self.U0R_t  = self.U0R_i * self.TRatio**self.UTE_i
+            self.UAR_t  = self.UAR_i * self.hypsmooth(1.0 + self.UA1_i * self.delTemp - 1.0e-6, 1.0e-3)
+            self.UCR_t  = self.UCR_i * self.hypsmooth(1.0 + self.UC1_i * self.delTemp - 1.0e-6, 1.0e-3)
+            self.UDR_t  = self.UDR_i * self.TRatio**self.UD1_i
+            self.UCSR_t = self.UCSR_i * self.TRatio**self.UCSTE_i
         else:
-            U0R_t  = 0.0
-            UAR_t  = 0.0
-            UCR_t  = 0.0
-            UDR_t  = 0.0
-            UCSR_t = 0.0
-        rdstemp = TRatio**PRT_i
-        VSAT_t  = VSAT_i * TRatio**-AT_i
-        if (VSAT_t < 100.0):
+            self.U0R_t  = 0.0
+            self.UAR_t  = 0.0
+            self.UCR_t  = 0.0
+            self.UDR_t  = 0.0
+            self.UCSR_t = 0.0
+        self.rdstemp = self.TRatio**self.PRT_i
+        self.VSAT_t  = self.VSAT_i * self.TRatio**-self.AT_i
+        if (self.VSAT_t < 100.0):
             print("Warning: VSAT(%f) = %e is less than 100, setting it to 100.", DevTemp, VSAT_t)
-            VSAT_t = 100.0
+            self.VSAT_t = 100.0
         if (self.HVMOD == 1):
-            rdstemphv = TRatio**self.PRTHV
-            VDRIFT_t  = self.VDRIFT * TRatio**-self.ATHV
+            self.rdstemphv = self.TRatio**self.PRTHV
+            self.VDRIFT_t  = self.VDRIFT * self.TRatio**-self.ATHV
         if (self.ASYMMOD != 0):
-            VSATR_t = VSATR_i * TRatio**-AT_i
-            if(VSATR_t < 100.0):
+            self.VSATR_t = self.VSATR_i * self.TRatio**-self.AT_i
+            if(self.VSATR_t < 100.0):
                 print("Warning: VSATR(%f) = %e is less than 100, setting it to 100.", DevTemp, VSATR_t)
-                VSATR_t = 100.0
+                self.VSATR_t = 100.0
 
-        VSATCV_t = VSATCV_i * TRatio**-AT_i
-        if (VSATCV_t < 100.0):
+        self.VSATCV_t = self.VSATCV_i * self.TRatio**-self.AT_i
+        if (self.VSATCV_t < 100.0):
             print("Warning: VSATCV(%f) = %e is less than 100, setting it to 100.", DevTemp, VSATCV_t)
-            VSATCV_t = 100.0
-        DELTA_t = 1.0 / ( self.hypsmooth((1.0 / DELTA_i) * (1.0 + self.TDELTA * delTemp) - 2.0 , 1.0e-3) + 2.0)
-        PTWG_t  = PTWG_i * self.hypsmooth(1.0 - PTWGT_i * delTemp - 1.0e-6, 1.0e-3)
+            self.VSATCV_t = 100.0
+        self.DELTA_t = 1.0 / ( self.hypsmooth((1.0 / self.DELTA_i) * (1.0 + self.TDELTA * self.delTemp) - 2.0 , 1.0e-3) + 2.0)
+        self.PTWG_t  = self.PTWG_i * self.hypsmooth(1.0 - self.PTWGT_i * self.delTemp - 1.0e-6, 1.0e-3)
         if (self.ASYMMOD != 0):
-            PTWGR_t = PTWGR_i * self.hypsmooth(1.0 - PTWGT_i * delTemp - 1.0e-6, 1.0e-3)
-        A1_t    = A1_i * self.hypsmooth(1.0 + A11_i * delTemp - 1.0e-6, 1.0e-3)
-        A2_t    = A2_i * self.hypsmooth(1.0 + A21_i * delTemp - 1.0e-6, 1.0e-3)
-        BETA0_t = BETA0_i * TRatio**IIT_i
-        BGIDL_t = BGIDL_i * self.hypsmooth(1.0 + TGIDL_i * delTemp - 1.0e-6, 1.0e-3)
-        BGISL_t = BGISL_i * self.hypsmooth(1.0 + TGIDL_i * delTemp - 1.0e-6, 1.0e-3)
-        igtemp  = self.lexp(IGT_i * self.lln(TRatio))
-        K0_t    = K0_i * self.hypsmooth(1.0 + K01_i * delTemp - 1.0e-6, 1.0e-3)
-        M0_t    = M0_i * self.hypsmooth(1.0 + M01_i * delTemp - 1.0e-6, 1.0e-3)
-        C0_t    = C0_i * self.hypsmooth(1.0 + C01_i * delTemp - 1.0e-6, 1.0e-3)
-        C0SI_t  = C0SI_i * self.hypsmooth(1.0 + C0SI1_i * delTemp - 1.0e-6, 1.0e-3)
-        C0SISAT_t = C0SISAT_i * self.hypsmooth(1.0 + C0SISAT1_i * delTemp - 1.0e-6, 1.0e-3)
+            self.PTWGR_t = self.PTWGR_i * self.hypsmooth(1.0 - self.PTWGT_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.A1_t    = self.A1_i * self.hypsmooth(1.0 + self.A11_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.A2_t    = self.A2_i * self.hypsmooth(1.0 + self.A21_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.BETA0_t = self.BETA0_i * self.TRatio**self.IIT_i
+        self.BGIDL_t = self.BGIDL_i * self.hypsmooth(1.0 + self.TGIDL_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.BGISL_t = self.BGISL_i * self.hypsmooth(1.0 + self.TGIDL_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.igtemp  = self.lexp(self.IGT_i * self.lln(self.TRatio))
+        self.K0_t    = self.K0_i * self.hypsmooth(1.0 + self.K01_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.M0_t    = self.M0_i * self.hypsmooth(1.0 + self.M01_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.C0_t    = self.C0_i * self.hypsmooth(1.0 + self.C01_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.C0SI_t  = self.C0SI_i * self.hypsmooth(1.0 + self.C0SI1_i * self.delTemp - 1.0e-6, 1.0e-3)
+        self.C0SISAT_t = self.C0SISAT_i * self.hypsmooth(1.0 + self.C0SISAT1_i * self.delTemp - 1.0e-6, 1.0e-3)
 
         # Diode model temperature effects
-        CJS_t     = self.CJS * self.hypsmooth(1.0 + self.TCJ * delTemp - 1.0e-6, 1.0e-3)
-        CJD_t     = self.CJD * self.hypsmooth(1.0 + self.TCJ * delTemp - 1.0e-6, 1.0e-3)
-        CJSWS_t   = self.CJSWS * self.hypsmooth(1.0 + self.TCJSW * delTemp - 1.0e-6, 1.0e-3)
-        CJSWD_t   = self.CJSWD * self.hypsmooth(1.0 + self.TCJSW * delTemp - 1.0e-6, 1.0e-3)
-        CJSWGS_t  = self.CJSWGS * self.hypsmooth(1.0 + self.TCJSWG * delTemp - 1.0e-6, 1.0e-3)
-        CJSWGD_t  = self.CJSWGD * self.hypsmooth(1.0 + self.TCJSWG * delTemp - 1.0e-6, 1.0e-3)
-        PBS_t     = self.hypsmooth(self.PBS - self.TPB * delTemp - 0.01, 1.0e-3) + 0.01
-        PBD_t     = self.hypsmooth(self.PBD - self.TPB * delTemp - 0.01, 1.0e-3) + 0.01
-        PBSWS_t   = self.hypsmooth(self.PBSWS - self.TPBSW * delTemp - 0.01, 1.0e-3) + 0.01
-        PBSWD_t   = self.hypsmooth(self.PBSWD - self.TPBSW * delTemp - 0.01, 1.0e-3) + 0.01
-        PBSWGS_t  = self.hypsmooth(self.PBSWGS - self.TPBSWG * delTemp - 0.01, 1.0e-3) + 0.01
-        PBSWGD_t  = self.hypsmooth(self.PBSWGD - self.TPBSWG * delTemp - 0.01, 1.0e-3) + 0.01
-        T0        = Eg0 / Vtm0 - Eg / Vtm
-        T1        = self.lln(TRatio)
-        T3        = self.lexp((T0 + self.XTIS * T1) / self.NJS)
-        JSS_t     = self.JSS * T3
-        JSWS_t    = self.JSWS * T3
-        JSWGS_t   = self.JSWGS * T3
-        T3        = self.lexp((T0 + self.XTID * T1) / self.NJD)
-        JSD_t     = self.JSD * T3
-        JSWD_t    = self.JSWD * T3
-        JSWGD_t   = self.JSWGD * T3
-        JTSS_t    = self.JTSS * self.lexp(Eg0 * self.XTSS * (TRatio - 1.0) / Vtm)
-        JTSSWS_t  = self.JTSSWS * self.lexp(Eg0 * self.XTSSWS * (TRatio - 1.0) / Vtm)
-        JTSSWGS_t = self.JTSSWGS * (sqrt(self.JTWEFF / Weffcj) + 1.0) * self.lexp(Eg0 * self.XTSSWGS * (TRatio - 1) / Vtm)
-        JTSD_t    = self.JTSD * self.lexp(Eg0 * self.XTSD * (TRatio - 1.0) / Vtm)
-        JTSSWD_t  = self.JTSSWD * self.lexp(Eg0 * self.XTSSWD * (TRatio - 1.0) / Vtm)
-        JTSSWGD_t = self.JTSSWGD * (sqrt(self.JTWEFF / Weffcj) + 1.0) * self.lexp(Eg0 * self.XTSSWGD * (TRatio - 1) / Vtm)
+        self.CJS_t     = self.CJS * self.hypsmooth(1.0 + self.TCJ * self.delTemp - 1.0e-6, 1.0e-3)
+        self.CJD_t     = self.CJD * self.hypsmooth(1.0 + self.TCJ * self.delTemp - 1.0e-6, 1.0e-3)
+        self.CJSWS_t   = self.CJSWS * self.hypsmooth(1.0 + self.TCJSW * self.delTemp - 1.0e-6, 1.0e-3)
+        self.CJSWD_t   = self.CJSWD * self.hypsmooth(1.0 + self.TCJSW * self.delTemp - 1.0e-6, 1.0e-3)
+        self.CJSWGS_t  = self.CJSWGS * self.hypsmooth(1.0 + self.TCJSWG * self.delTemp - 1.0e-6, 1.0e-3)
+        self.CJSWGD_t  = self.CJSWGD * self.hypsmooth(1.0 + self.TCJSWG * self.delTemp - 1.0e-6, 1.0e-3)
+        self.PBS_t     = self.hypsmooth(self.PBS - self.TPB * self.delTemp - 0.01, 1.0e-3) + 0.01
+        self.PBD_t     = self.hypsmooth(self.PBD - self.TPB * self.delTemp - 0.01, 1.0e-3) + 0.01
+        self.PBSWS_t   = self.hypsmooth(self.PBSWS - self.TPBSW * self.delTemp - 0.01, 1.0e-3) + 0.01
+        self.PBSWD_t   = self.hypsmooth(self.PBSWD - self.TPBSW * self.delTemp - 0.01, 1.0e-3) + 0.01
+        self.PBSWGS_t  = self.hypsmooth(self.PBSWGS - self.TPBSWG * self.delTemp - 0.01, 1.0e-3) + 0.01
+        self.PBSWGD_t  = self.hypsmooth(self.PBSWGD - self.TPBSWG * self.delTemp - 0.01, 1.0e-3) + 0.01
+        self.T0        = self.Eg0 / self.Vtm0 - self.Eg / self.Vtm
+        self.T1        = self.lln(self.TRatio)
+        self.T3        = self.lexp((self.T0 + self.XTIS * self.T1) / self.NJS)
+        self.JSS_t     = self.JSS * self.T3
+        self.JSWS_t    = self.JSWS * self.T3
+        self.JSWGS_t   = self.JSWGS * self.T3
+        self.T3        = self.lexp((self.T0 + self.XTID * self.T1) / self.NJD)
+        self.JSD_t     = self.JSD * self.T3
+        self.JSWD_t    = self.JSWD * self.T3
+        self.JSWGD_t   = self.JSWGD * self.T3
+        self.JTSS_t    = self.JTSS * self.lexp(self.Eg0 * self.XTSS * (self.TRatio - 1.0) / self.Vtm)
+        self.JTSSWS_t  = self.JTSSWS * self.lexp(self.Eg0 * self.XTSSWS * (self.TRatio - 1.0) / self.Vtm)
+        self.JTSSWGS_t = self.JTSSWGS * (sqrt(self.JTWEFF / self.Weffcj) + 1.0) * self.lexp(self.Eg0 * self.XTSSWGS * (self.TRatio - 1) / self.Vtm)
+        self.JTSD_t    = self.JTSD * self.lexp(self.Eg0 * self.XTSD * (self.TRatio - 1.0) / self.Vtm)
+        self.JTSSWD_t  = self.JTSSWD * self.lexp(self.Eg0 * self.XTSSWD * (self.TRatio - 1.0) / self.Vtm)
+        self.JTSSWGD_t = self.JTSSWGD * (sqrt(self.JTWEFF / self.Weffcj) + 1.0) * self.lexp(self.Eg0 * self.XTSSWGD * (self.TRatio - 1) / self.Vtm)
 
         # All NJT*'s smoothed to 0.01 to prevent divide by zero/negative values
-        NJTS_t     = self.hypsmooth(self.NJTS * (1.0 + self.TNJTS * (TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
-        NJTSSW_t   = self.hypsmooth(self.NJTSSW * (1.0 + self.TNJTSSW * (TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
-        NJTSSWG_t  = self.hypsmooth(self.NJTSSWG * (1.0 + self.TNJTSSWG * (TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
-        NJTSD_t    = self.hypsmooth(self.NJTSD * (1.0 + self.TNJTSD * (TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
-        NJTSSWD_t  = self.hypsmooth(self.NJTSSWD * (1.0 + self.TNJTSSWD * (TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
-        NJTSSWGD_t = self.hypsmooth(self.NJTSSWGD * (1.0 + self.TNJTSSWGD * (TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
+        self.NJTS_t     = self.hypsmooth(self.NJTS * (1.0 + self.TNJTS * (self.TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
+        self.NJTSSW_t   = self.hypsmooth(self.NJTSSW * (1.0 + self.TNJTSSW * (self.TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
+        self.NJTSSWG_t  = self.hypsmooth(self.NJTSSWG * (1.0 + self.TNJTSSWG * (self.TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
+        self.NJTSD_t    = self.hypsmooth(self.NJTSD * (1.0 + self.TNJTSD * (self.TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
+        self.NJTSSWD_t  = self.hypsmooth(self.NJTSSWD * (1.0 + self.TNJTSSWD * (self.TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
+        self.NJTSSWGD_t = self.hypsmooth(self.NJTSSWGD * (1.0 + self.TNJTSSWGD * (self.TRatio - 1.0)) - 0.01, 1.0e-3) + 0.01
 
         # Effective S/D junction area and perimeters
-        temp_PSeff, temp_PDeff, temp_ASeff, temp_ADeff = self.BSIMBULKPAeffGeo(self.NF, self.GEOMOD, self.MINZ, Weffcj, DMCGeff, DMCIeff, DMDGeff)
-        if self.ASgiven == True:
-            ASeff = self.AS * self.WMLT * self.LMLT
+        self.temp_PSeff, self.temp_PDeff, self.temp_ASeff, self.temp_ADeff = self.BSIMBULKPAeffGeo(self.NF, self.GEOMOD, self.MINZ, self.Weffcj, self.DMCGeff, self.DMCIeff, self.DMDGeff)
+        if "AS" in param.keys():
+            self.ASeff = self.AS * self.WMLT * self.LMLT
         else:
-            ASeff = temp_ASeff
-        if (ASeff < 0.0):
+            self.ASeff = self.temp_ASeff
+        if (self.ASeff < 0.0):
             print("Warning: (instance %M) ASeff = %e is negative. Set to 0.0.", ASeff)
-            ASeff = 0.0
-        if self.ADgiven == True:
-            ADeff = self.AD * self.WMLT * self.LMLT
+            self.ASeff = 0.0
+        if "AD" in param.keys():
+            self.ADeff = self.AD * self.WMLT * self.LMLT
         else:
-            ADeff = temp_ADeff
-        if (ADeff < 0.0):
+            self.ADeff = self.temp_ADeff
+        if (self.ADeff < 0.0):
             print("Warning: (instance %M) ADeff = %e is negative. Set to 0.0.", ADeff)
-            ADeff = 0.0
-        if self.PSgiven == True:
+            self.ADeff = 0.0
+        if "PS" in param.keys():
             if (self.PERMOD == 0):
-                # self.PS does not include gate-edge perimeters
-                PSeff = self.PS * self.WMLT
+                # PS does not include gate-edge perimeters
+                self.PSeff = self.PS * self.WMLT
             else:
-                # self.PS includes gate-edge perimeters
-                PSeff = max(self.PS * self.WMLT - Weffcj * self.NF, 0.0)
+                # PS includes gate-edge perimeters
+                self.PSeff = max(self.PS * self.WMLT - self.Weffcj * self.NF, 0.0)
         else:
-            PSeff = temp_PSeff
-            if (PSeff < 0.0):
+            self.PSeff = self.temp_PSeff
+            if (self.PSeff < 0.0):
                 print("Warning: (instance %M) PSeff = %e is negative. Set to 0.0.", PSeff)
-                PSeff = 0.0
-        if self.PDgiven == True:
+                self.PSeff = 0.0
+        if "PD" in param.keys():
             if (self.PERMOD == 0):
-                # self.PD does not include gate-edge perimeters
-                PDeff = self.PD * self.WMLT
+                # PD does not include gate-edge perimeters
+                self.PDeff = self.PD * self.WMLT
             else:
-                # self.PD includes gate-edge perimeters
-                PDeff = max(self.PD * self.WMLT - Weffcj * self.NF, 0.0)
+                # PD includes gate-edge perimeters
+                self.PDeff = max(self.PD * self.WMLT - self.Weffcj * self.NF, 0.0)
         else:
-            PDeff = temp_PDeff
-            if (PDeff < 0.0):
+            self.PDeff = self.temp_PDeff
+            if (self.PDeff < 0.0):
                 print("Warning: (instance %M) PDeff = %e is negative. Set to 0.0.", PDeff)
-                PDeff = 0.0
+                self.PDeff = 0.0
 
-        Isbs = ASeff * JSS_t + PSeff * JSWS_t + Weffcj * self.NF * JSWGS_t
-        if (Isbs > 0.0):
-            Nvtms    = Vtm * self.NJS
-            XExpBVS  = self.lexp(-self.BVS / Nvtms) * self.XJBVS
-            T2       = max(self.IJTHSFWD / Isbs, 10.0)
-            Tb       = 1.0 + T2 - XExpBVS
-            VjsmFwd  = Nvtms * self.lln(0.5 * (Tb + sqrt(Tb * Tb + 4.0 * XExpBVS)))
-            T0       = self.lexp(VjsmFwd / Nvtms)
-            IVjsmFwd = Isbs * (T0 - XExpBVS / T0 + XExpBVS - 1.0)
-            SslpFwd  = Isbs * (T0 + XExpBVS / T0) / Nvtms
-            T2       = self.hypsmooth(self.IJTHSREV / Isbs - 10.0, 1.0e-3) + 10.0
-            VjsmRev  = -self.BVS - Nvtms * self.lln((T2 - 1.0) / self.XJBVS)
-            T1       = self.XJBVS * self.lexp(-(self.BVS + VjsmRev) / Nvtms)
-            IVjsmRev = Isbs * (1.0 + T1)
-            SslpRev  = -Isbs * T1 / Nvtms
+        self.Isbs = self.ASeff * self.JSS_t + self.PSeff * self.JSWS_t + self.Weffcj * self.NF * self.JSWGS_t
+        if (self.Isbs > 0.0):
+            self.Nvtms    = self.Vtm * self.NJS
+            self.XExpBVS  = self.lexp(-self.BVS / self.Nvtms) * self.XJBVS
+            self.T2       = max(self.IJTHSFWD / self.Isbs, 10.0)
+            self.Tb       = 1.0 + self.T2 - self.XExpBVS
+            self.VjsmFwd  = self.Nvtms * self.lln(0.5 * (self.Tb + sqrt(self.Tb * self.Tb + 4.0 * self.XExpBVS)))
+            self.T0       = self.lexp(self.VjsmFwd / self.Nvtms)
+            self.IVjsmFwd = self.Isbs * (self.T0 - self.XExpBVS / self.T0 + self.XExpBVS - 1.0)
+            self.SslpFwd  = self.Isbs * (self.T0 + self.XExpBVS / self.T0) / self.Nvtms
+            self.T2       = self.hypsmooth(self.IJTHSREV / self.Isbs - 10.0, 1.0e-3) + 10.0
+            self.VjsmRev  = -self.BVS - self.Nvtms * self.lln((self.T2 - 1.0) / self.XJBVS)
+            self.T1       = self.XJBVS * self.lexp(-(self.BVS + self.VjsmRev) / self.Nvtms)
+            self.IVjsmRev = self.Isbs * (1.0 + self.T1)
+            self.SslpRev  = -self.Isbs * self.T1 / self.Nvtms
         else:
-            Nvtms    = 0.0
-            XExpBVS  = 0.0
-            VjsmFwd  = 0.0
-            IVjsmFwd = 0.0
-            SslpFwd  = 0.0
-            VjsmRev  = 0.0
-            IVjsmRev = 0.0
-            SslpRev  = 0.0
+            self.Nvtms    = 0.0
+            self.XExpBVS  = 0.0
+            self.VjsmFwd  = 0.0
+            self.IVjsmFwd = 0.0
+            self.SslpFwd  = 0.0
+            self.VjsmRev  = 0.0
+            self.IVjsmRev = 0.0
+            self.SslpRev  = 0.0
 
         # Drain-side junction currents
-        Isbd = ADeff * JSD_t + PDeff * JSWD_t + Weffcj * self.NF * JSWGD_t
-        if (Isbd > 0.0):
-            Nvtmd    = Vtm * self.NJD
-            XExpBVD  = self.lexp(-self.BVD / Nvtmd) * self.XJBVD
-            T2       = max(self.IJTHDFWD / Isbd, 10.0)
-            Tb       = 1.0 + T2 - XExpBVD
-            VjdmFwd  = Nvtmd * self.lln(0.5 * (Tb + sqrt(Tb * Tb + 4.0 * XExpBVD)))
-            T0       = self.lexp(VjdmFwd / Nvtmd)
-            IVjdmFwd = Isbd * (T0 - XExpBVD / T0 + XExpBVD - 1.0)
-            DslpFwd  = Isbd * (T0 + XExpBVD / T0) / Nvtmd
-            T2       = self.hypsmooth(self.IJTHDREV / Isbd - 10.0, 1.0e-3) + 10.0
-            VjdmRev  = -self.BVD - Nvtmd * self.lln((T2 - 1.0) / self.XJBVD)
-            T1       = self.XJBVD * self.lexp(-(self.BVD + VjdmRev) / Nvtmd)
-            IVjdmRev = Isbd * (1.0 + T1)
-            DslpRev  = -Isbd * T1 / Nvtmd
+        self.Isbd = self.ADeff * self.JSD_t + self.PDeff * self.JSWD_t + self.Weffcj * self.NF * self.JSWGD_t
+        if (self.Isbd > 0.0):
+            self.Nvtmd    = self.Vtm * self.NJD
+            self.XExpBVD  = self.lexp(-self.BVD / self.Nvtmd) * self.XJBVD
+            self.T2       = max(self.IJTHDFWD / self.Isbd, 10.0)
+            self.Tb       = 1.0 + self.T2 - self.XExpBVD
+            self.VjdmFwd  = self.Nvtmd * self.lln(0.5 * (self.Tb + sqrt(self.Tb * self.Tb + 4.0 * self.XExpBVD)))
+            self.T0       = self.lexp(self.VjdmFwd / self.Nvtmd)
+            self.IVjdmFwd = self.Isbd * (self.T0 - self.XExpBVD / self.T0 + self.XExpBVD - 1.0)
+            self.DslpFwd  = self.Isbd * (self.T0 + self.XExpBVD / self.T0) / self.Nvtmd
+            self.T2       = self.hypsmooth(self.IJTHDREV / self.Isbd - 10.0, 1.0e-3) + 10.0
+            self.VjdmRev  = -self.BVD - self.Nvtmd * self.lln((self.T2 - 1.0) / self.XJBVD)
+            self.T1       = self.XJBVD * self.lexp(-(self.BVD + self.VjdmRev) / self.Nvtmd)
+            self.IVjdmRev = self.Isbd * (1.0 + self.T1)
+            self.DslpRev  = -self.Isbd * self.T1 / self.Nvtmd
         else:
-            Nvtmd    = 0.0
-            XExpBVD  = 0.0
-            VjdmFwd  = 0.0
-            IVjdmFwd = 0.0
-            DslpFwd  = 0.0
-            VjdmRev  = 0.0
-            IVjdmRev = 0.0
-            DslpRev  = 0.0
+            self.Nvtmd    = 0.0
+            self.XExpBVD  = 0.0
+            self.VjdmFwd  = 0.0
+            self.IVjdmFwd = 0.0
+            self.DslpFwd  = 0.0
+            self.VjdmRev  = 0.0
+            self.IVjdmRev = 0.0
+            self.DslpRev  = 0.0
 
         # STI stress equations
         if ((self.SA > 0.0) and (self.SB > 0.0) and ((self.NF == 1.0) or ((self.NF > 1.0) and (self.SD > 0.0)))):
-            T0              = Lnew**self.LLODKU0
-            W_tmp_stress    = Wnew + self.WLOD
-            T1              = W_tmp_stress**self.WLODKU0
-            tmp1_stress     = self.LKU0 / T0 + self.WKU0 / T1 + self.PKU0 / (T0 * T1)
-            kstress_u0      = 1.0 + tmp1_stress
-            T0              = Lnew**self.LLODVTH
-            T1              = W_tmp_stress**self.WLODVTH
-            tmp1_stress_vth = self.LKVTH0 / T0 + self.WKVTH0 / T1 + self.PKVTH0 / (T0 * T1)
-            kstress_vth0    = 1.0 + tmp1_stress_vth
-            T0              = TRatio - 1.0
-            ku0_temp        = kstress_u0 * (1.0 + self.TKU0 * T0) + 1.0e-9
+            self.T0              = self.Lnew**self.LLODKU0
+            self.W_tmp_stress    = self.Wnew + self.WLOD
+            self.T1              = self.W_tmp_stress**self.WLODKU0
+            self.tmp1_stress     = self.LKU0 / self.T0 + self.WKU0 / self.T1 + self.PKU0 / (self.T0 * self.T1)
+            self.kstress_u0      = 1.0 + self.tmp1_stress
+            self.T0              = self.Lnew**self.LLODVTH
+            self.T1              = self.W_tmp_stress**self.WLODVTH
+            self.tmp1_stress_vth = self.LKVTH0 / self.T0 + self.WKVTH0 / self.T1 + self.PKVTH0 / (self.T0 * self.T1)
+            self.kstress_vth0    = 1.0 + self.tmp1_stress_vth
+            self.T0              = self.TRatio - 1.0
+            self.ku0_temp        = self.kstress_u0 * (1.0 + self.TKU0 * self.T0) + 1.0e-9
             for i in range(self.NF):
-                T0     = 1.0 / self.NF / (self.SA + 0.5 * L_mult + i * (self.SD + L_mult))
-                T1     = 1.0 / self.NF / (self.SB + 0.5 * L_mult + i * (self.SD + L_mult))
-                Inv_sa = Inv_sa + T0
-                Inv_sb = Inv_sb + T1
-            Inv_saref   = 1.0 / (self.SAREF + 0.5 * L_mult)
-            Inv_sbref   = 1.0 / (self.SBREF + 0.5 * L_mult)
-            Inv_odref   = Inv_saref + Inv_sbref
-            rho_ref     = (self.KU0 / ku0_temp) * Inv_odref
-            Inv_od      = Inv_sa + Inv_sb
-            rho         = (self.KU0 / ku0_temp) * Inv_od
-            mu0_mult    = (1.0 + rho) / (1.0 + rho_ref)
-            vsat_mult   = (1.0 + rho * self.KVSAT) / (1.0 + rho_ref * self.KVSAT)
-            vth0_stress = (self.KVTH0 / kstress_vth0) * (Inv_od - Inv_odref)
-            k2_stress   = (self.STK2 / kstress_vth0**self.LODK2) * (Inv_od - Inv_odref)
-            eta_stress  = (self.STETA0 / kstress_vth0**self.LODETA0) * (Inv_od - Inv_odref)
-            U0_t        = U0_t * mu0_mult
-            VSAT_t      = VSAT_t * vsat_mult
-            K2_i        = K2_i + k2_stress
-            ETA0_t      = ETA0_t + eta_stress
+                self.T0     = 1.0 / self.NF / (self.SA + 0.5 * self.L_mult + i * (self.SD + self.L_mult))
+                self.T1     = 1.0 / self.NF / (self.SB + 0.5 * self.L_mult + i * (self.SD + self.L_mult))
+                self.Inv_sa = self.Inv_sa + self.T0
+                self.Inv_sb = self.Inv_sb + self.T1
+            self.Inv_saref   = 1.0 / (self.SAREF + 0.5 * self.L_mult)
+            self.Inv_sbref   = 1.0 / (self.SBREF + 0.5 * self.L_mult)
+            self.Inv_odref   = self.Inv_saref + self.Inv_sbref
+            self.rho_ref     = (self.KU0 / self.ku0_temp) * self.Inv_odref
+            self.Inv_od      = self.Inv_sa + self.Inv_sb
+            self.rho         = (self.KU0 / self.ku0_temp) * self.Inv_od
+            self.mu0_mult    = (1.0 + self.rho) / (1.0 + self.rho_ref)
+            self.vsat_mult   = (1.0 + self.rho * self.KVSAT) / (1.0 + self.rho_ref * self.KVSAT)
+            self.vth0_stress = (self.KVTH0 / self.kstress_vth0) * (self.Inv_od - self.Inv_odref)
+            self.k2_stress   = (self.STK2 / self.kstress_vth0**self.LODK2) * (self.Inv_od - self.Inv_odref)
+            self.eta_stress  = (self.STETA0 / self.kstress_vth0**self.LODETA0) * (self.Inv_od - self.Inv_odref)
+            self.U0_t        = self.U0_t * self.mu0_mult
+            self.VSAT_t      = self.VSAT_t * self.vsat_mult
+            self.K2_i        = self.K2_i + self.k2_stress
+            self.ETA0_t      = self.ETA0_t + self.eta_stress
             if (self.EDGEFET == 1):
-                vth0_stress_EDGE = (KVTH0EDGE_i / kstress_vth0) * (Inv_od - Inv_odref)
-                k2_stress_EDGE   = (STK2EDGE_i / kstress_vth0**self.LODK2) * (Inv_od - Inv_odref)
-                eta_stress_EDGE  = (STETA0EDGE_i / kstress_vth0**self.LODETA0) * (Inv_od - Inv_odref)
-            K2EDGE_i   = K2EDGE_i + k2_stress_EDGE
-            ETA0EDGE_i = ETA0EDGE_i + eta_stress_EDGE
+                self.vth0_stress_EDGE = (self.KVTH0EDGE_i / self.kstress_vth0) * (self.Inv_od - self.Inv_odref)
+                self.k2_stress_EDGE   = (self.STK2EDGE_i / self.kstress_vth0**self.LODK2) * (self.Inv_od - self.Inv_odref)
+                self.eta_stress_EDGE  = (self.STETA0EDGE_i / self.kstress_vth0**self.LODETA0) * (self.Inv_od - self.Inv_odref)
+            self.K2EDGE_i   = self.K2EDGE_i + self.k2_stress_EDGE
+            self.ETA0EDGE_i = self.ETA0EDGE_i + self.eta_stress_EDGE
         else:
-            vth0_stress = 0.0
-            vth0_stress_EDGE = 0.0
+            self.vth0_stress = 0.0
+            self.vth0_stress_EDGE = 0.0
 
         # Well proximity effect
         if (self.WPEMOD == 1):
-            Wdrn      = self.W / self.NF
-            local_sca = self.SCA
-            local_scb = self.SCB
-            local_scc = self.SCC
-            if self.SCAgiven == False and self.SCBgiven == False and self.SCCgiven == False:
-                if self.SCgiven == True and self.SC > 0.0:
-                    T1        = self.SC + Wdrn
-                    T2        = 1.0 / self.SCREF
-                    local_sca = self.SCREF * self.SCREF / (self.SC * T1)
-                    local_scb = ((0.1 * self.SC + 0.01 * self.SCREF) * self.lexp(-10.0 * self.SC * T2)  - (0.1 * T1 + 0.01 * self.SCREF) * self.lexp(-10.0 * T1 * T2)) / Wdrn
-                    local_scc = ((0.05 * self.SC + 0.0025 * self.SCREF) * self.lexp(-20.0 * self.SC * T2)  - (0.05 * T1 + 0.0025 * self.SCREF) * self.lexp(-20.0 * T1 * T2)) / Wdrn
+            self.Wdrn      = self.W / self.NF
+            self.local_sca = self.SCA
+            self.local_scb = self.SCB
+            self.local_scc = self.SCC
+            if ("SCA" not in param.keys()) and ("SCB" not in param.keys()) and ("SCC" not in param.keys()):
+                if ("SC" in param.keys()) and (self.SC > 0.0):
+                    self.T1        = self.SC + self.Wdrn
+                    self.T2        = 1.0 / self.SCREF
+                    self.local_sca = self.SCREF * self.SCREF / (self.SC * self.T1)
+                    self.local_scb = ((0.1 * self.SC + 0.01 * self.SCREF) * self.lexp(-10.0 * self.SC * self.T2)  - (0.1 * self.T1 + 0.01 * self.SCREF) * self.lexp(-10.0 * self.T1 * self.T2)) / self.Wdrn
+                    self.local_scc = ((0.05 * self.SC + 0.0025 * self.SCREF) * self.lexp(-20.0 * self.SC * self.T2)  - (0.05 * self.T1 + 0.0025 * self.SCREF) * self.lexp(-20.0 * self.T1 * self.T2)) / self.Wdrn
                 else:
                     print("Warning: (Instance %M) No WPE as none of SCA, SCB, SCC, SC is given and/or SC not positive.")
         else:
-            local_sca = 0.0
-            local_scb = 0.0
-            local_scc = 0.0
+            self.local_sca = 0.0
+            self.local_scb = 0.0
+            self.local_scc = 0.0
 
-        vth0_well = KVTH0WE_i * (local_sca + self.WEB * local_scb + self.WEC * local_scc)
-        k2_well   = K2WE_i * (local_sca + self.WEB * local_scb + self.WEC * local_scc)
-        mu_well   = 1.0 + KU0WE_i * (local_sca + self.WEB * local_scb + self.WEC * local_scc)
-        U0_t      = U0_t * mu_well
-        K2_i      = K2_i + k2_well
+        self.vth0_well = self.KVTH0WE_i * (self.local_sca + self.WEB * self.local_scb + self.WEC * self.local_scc)
+        self.k2_well   = self.K2WE_i * (self.local_sca + self.WEB * self.local_scb + self.WEC * self.local_scc)
+        self.mu_well   = 1.0 + self.KU0WE_i * (self.local_sca + self.WEB * self.local_scb + self.WEC * self.local_scc)
+        self.U0_t      = self.U0_t * self.mu_well
+        self.K2_i      = self.K2_i + self.k2_well
 
         # Load terminal voltages
-        Vg            = devsign * (self.VG - self.VB)
-        Vd            = devsign * (self.VD - self.VB)
-        Vs            = devsign * (self.VS - self.VB)
-        Vds           = Vd - Vs
-        Vds_noswap    = Vds
-        Vsb_noswap    = Vs
-        Vdb_noswap    = Vd
-        Vbs_jct       = devsign * (self.VB - self.VS)
-        Vbd_jct       = devsign * (self.VB - self.VD)
-        Vgd_noswap    = Vg - Vd
-        Vgs_noswap    = Vg - Vs
-        Vgd_ov_noswap = devsign * (self.VG - self.VD)
-        Vgs_ov_noswap = devsign * (self.VG - self.VS)
+        self.Vg            = self.devsign * (self.VG - self.VB)
+        self.Vd            = self.devsign * (self.VD - self.VB)
+        self.Vs            = self.devsign * (self.VS - self.VB)
+        self.Vds           = self.Vd - self.Vs
+        self.Vds_noswap    = self.Vds
+        self.Vsb_noswap    = self.Vs
+        self.Vdb_noswap    = self.Vd
+        self.Vbs_jct       = self.devsign * (self.VB - self.VS)
+        self.Vbd_jct       = self.devsign * (self.VB - self.VD)
+        self.Vgd_noswap    = self.Vg - self.Vd
+        self.Vgs_noswap    = self.Vg - self.Vs
+        self.Vgd_ov_noswap = self.devsign * (self.VG - self.VD)
+        self.Vgs_ov_noswap = self.devsign * (self.VG - self.VS)
 
         # Terminal voltage conditioning
         # Source-drain interchange
-        sigvds = 1.0
-        if (Vds < 0.0):
-            sigvds = -1.0
-            Vd = devsign * (self.VS - self.VB)
-            Vs = devsign * (self.VD - self.VB)
-        Vds  = Vd - Vs
-        T0   = self.AVDSX * Vds
-        if (T0 > self.EXPL_THRESHOLD):
-           T1 = T0
+        self.sigvds = 1.0
+        if (self.Vds < 0.0):
+            self.sigvds = -1.0
+            self.Vd = self.devsign * (self.VS - self.VB)
+            self.Vs = self.devsign * (self.VD - self.VB)
+        self.Vds  = self.Vd - self.Vs
+        self.T0   = self.AVDSX * self.Vds
+        if (self.T0 > self.EXPL_THRESHOLD):
+           self.T1 = self.T0
         else:
-           T1 = log(1.0 + exp(T0))
-        Vdsx = ((2.0 / self.AVDSX) * T1) - Vds - ((2.0 / self.AVDSX) * log(2.0))
-        Vbsx = -(Vs + 0.5 * (Vds - Vdsx))
+           self.T1 = log(1.0 + exp(self.T0))
+        self.Vdsx = ((2.0 / self.AVDSX) * self.T1) - self.Vds - ((2.0 / self.AVDSX) * log(2.0))
+        self.Vbsx = -(self.Vs + 0.5 * (self.Vds - self.Vdsx))
 
         # Asymmetry model
-        T0 = tanh(0.6 * Vds_noswap / Vtm)
-        wf = 0.5 + 0.5 * T0
-        wr = 1.0 - wf
+        self.T0 = tanh(0.6 * self.Vds_noswap / self.Vtm)
+        self.wf = 0.5 + 0.5 * self.T0
+        self.wr = 1.0 - self.wf
         if (self.ASYMMOD != 0):
-            CDSCD_a  = CDSCDR_i * wr + CDSCD_i * wf
-            ETA0_a   = ETA0R_t * wr + ETA0_t * wf
-            PDIBLC_a = PDIBLCR_i * wr + PDIBLC_i * wf
-            PCLM_a   = PCLMR_i * wr + PCLM_i * wf
-            PSAT_a   = PSATR_i * wr + PSAT_i * wf
-            VSAT_a   = VSATR_t * wr + VSAT_t * wf
-            PTWG_a   = PTWGR_t * wr + PTWG_t * wf
-            U0_a     = U0R_t * wr + U0_t * wf
-            UA_a     = UAR_t * wr + UA_t * wf
-            UC_a     = UCR_t * wr + UC_t * wf
-            UD_a     = UDR_t * wr + UD_t * wf
-            UCS_a    = UCSR_t * wr + UCS_t * wf
+            self.CDSCD_a  = self.CDSCDR_i * self.wr + self.CDSCD_i * self.wf
+            self.ETA0_a   = self.ETA0R_t * self.wr + self.ETA0_t * self.wf
+            self.PDIBLC_a = self.PDIBLCR_i * self.wr + self.PDIBLC_i * self.wf
+            self.PCLM_a   = self.PCLMR_i * self.wr + self.PCLM_i * self.wf
+            self.PSAT_a   = self.PSATR_i * self.wr + self.PSAT_i * self.wf
+            self.VSAT_a   = self.VSATR_t * self.wr + self.VSAT_t * self.wf
+            self.PTWG_a   = self.PTWGR_t * self.wr + self.PTWG_t * self.wf
+            self.U0_a     = self.U0R_t * self.wr + self.U0_t * self.wf
+            self.UA_a     = self.UAR_t * self.wr + self.UA_t * self.wf
+            self.UC_a     = self.UCR_t * self.wr + self.UC_t * self.wf
+            self.UD_a     = self.UDR_t * self.wr + self.UD_t * self.wf
+            self.UCS_a    = self.UCSR_t * self.wr + self.UCS_t * self.wf
         else:
-            CDSCD_a  = CDSCD_i
-            ETA0_a   = ETA0_t
-            PDIBLC_a = PDIBLC_i
-            PCLM_a   = PCLM_i
-            PSAT_a   = PSAT_i
-            VSAT_a   = VSAT_t
-            PTWG_a   = PTWG_t
-            U0_a     = U0_t
-            UA_a     = UA_t
-            UC_a     = UC_t
-            UD_a     = UD_t
-            UCS_a    = UCS_t
+            self.CDSCD_a  = self.CDSCD_i
+            self.ETA0_a   = self.ETA0_t
+            self.PDIBLC_a = self.PDIBLC_i
+            self.PCLM_a   = self.PCLM_i
+            self.PSAT_a   = self.PSAT_i
+            self.VSAT_a   = self.VSAT_t
+            self.PTWG_a   = self.PTWG_t
+            self.U0_a     = self.U0_t
+            self.UA_a     = self.UA_t
+            self.UC_a     = self.UC_t
+            self.UD_a     = self.UD_t
+            self.UCS_a    = self.UCS_t
 
         # SCE, DIBL, SS degradation effects, Ref: BSIM4
-        PhistVbs = self.Smooth(Phist - Vbsx, 0.05, 0.1)
-        sqrtPhistVbs = sqrt(PhistVbs)
-        Xdep         = T1DEP * sqrtPhistVbs
-        Cdep         = epssi / Xdep
-        cdsc         = CIT_i + NFACTOR_t + CDSCD_a * Vdsx - CDSCB_i * Vbsx
-        T1           = 1.0 + cdsc/Cox
-        n = self.Smooth(T1, 1.0, 0.05)
-        nVt     = n * Vt
-        inv_nVt = 1.0 / nVt
+        self.PhistVbs = self.Smooth(self.Phist - self.Vbsx, 0.05, 0.1)
+        self.sqrtPhistVbs = sqrt(self.PhistVbs)
+        self.Xdep         = self.T1DEP * self.sqrtPhistVbs
+        self.Cdep         = self.epssi / self.Xdep
+        self.cdsc         = self.CIT_i + self.NFACTOR_t + self.CDSCD_a * self.Vdsx - self.CDSCB_i * self.Vbsx
+        self.T1           = 1.0 + self.cdsc/self.Cox
+        self.n = self.Smooth(self.T1, 1.0, 0.05)
+        self.nVt     = self.n * self.Vt
+        self.inv_nVt = 1.0 / self.nVt
 
         # Vth shift for DIBL
-        dVth_dibl = -(ETA0_a + ETAB_i * Vbsx) * Vdsx
-        dVth_dibl = self.Smooth2(dVth_dibl, 0.0, 5.0e-5)
+        self.dVth_dibl = -(self.ETA0_a + self.ETAB_i * self.Vbsx) * self.Vdsx
+        self.dVth_dibl = self.Smooth2(self.dVth_dibl, 0.0, 5.0e-5)
 
         # Vth shift with temperature
-        dvth_temp = (KT1_i + self.KT1L / Leff + KT2_i * Vbsx) * (TRatio**self.KT1EXP - 1.0)
+        self.dvth_temp = (self.KT1_i + self.KT1L / self.Leff + self.KT2_i * self.Vbsx) * (self.TRatio**self.KT1EXP - 1.0)
 
         # Vth correction for pocket implants
-        if (DVTP0_i > 0.0):
-            T0 = -DVTP1_i * Vdsx
-            if (T0 < -self.EXPL_THRESHOLD):
-                T2 = self.MIN_EXPL
+        if (self.DVTP0_i > 0.0):
+            self.T0 = -self.DVTP1_i * self.Vdsx
+            if (self.T0 < -self.EXPL_THRESHOLD):
+                self.T2 = self.MIN_EXPL
             else:
-                T2 = self.lexp(T0)
-            T3        = Leff + DVTP0_i * (1.0 + T2)
-            dVth_ldop = -nVt * self.lln(Leff / T3)
+                self.T2 = self.lexp(self.T0)
+            self.T3        = self.Leff + self.DVTP0_i * (1.0 + self.T2)
+            self.dVth_ldop = -self.nVt * self.lln(self.Leff / self.T3)
         else:
-            dVth_ldop = 0.0
-        T4        = DVTP5_i + DVTP2_i / Leff**DVTP3_i
-        dVth_ldop = dVth_ldop - T4 * tanh(DVTP4_i * Vdsx)
+            self.dVth_ldop = 0.0
+        self.T4        = self.DVTP5_i + self.DVTP2_i / self.Leff**self.DVTP3_i
+        self.dVth_ldop = self.dVth_ldop - self.T4 * tanh(self.DVTP4_i * self.Vdsx)
 
         # Normalization of terminal and flatband voltage by nVt
-        VFB_i = VFB_i + self.DELVTO
-        vg    = Vg * inv_nVt
-        vs    = Vs * inv_nVt
-        vfb   = VFB_i * inv_nVt
+        self.VFB_i = self.VFB_i + self.DELVTO
+        self.vg    = self.Vg * self.inv_nVt
+        self.vs    = self.Vs * self.inv_nVt
+        self.vfb   = self.VFB_i * self.inv_nVt
 
         # Compute dVth_VNUD with "first-order" and "second-order" body-bias effect
-        dVth_VNUD = K1_i * (sqrtPhistVbs - sqrtPhist) - K2_i * Vbsx
-        Vth_shift = dVth_dibl + dVth_ldop + dVth_VNUD - dvth_temp + vth0_stress + vth0_well
-        vgfb      = vg - vfb - Vth_shift * inv_nVt
+        self.dVth_VNUD = self.K1_i * (self.sqrtPhistVbs - self.sqrtPhist) - self.K2_i * self.Vbsx
+        self.Vth_shift = self.dVth_dibl + self.dVth_ldop + self.dVth_VNUD - self.dvth_temp + self.vth0_stress + self.vth0_well
+        self.vgfb      = self.vg - self.vfb - self.Vth_shift * self.inv_nVt
 
         # Threshold voltage for operating point information
-        gam     = sqrt(2.0 * self.q * epssi * NDEP_i * inv_Vt) / Cox
-        q_vth   = 0.5
-        T0      = self.hypsmooth((2.0 * phib + Vs * inv_Vt), 1.0e-3)
-        nq      = 1.0 + gam / (2.0 * sqrt(T0))
-        psip_th = self.hypsmooth((Vs * inv_Vt + 2.0 * phib + self.lln(q_vth) + 2.0 * q_vth + self.lln(2.0 * nq / gam * (2.0 * q_vth * nq / gam + 2.0 * sqrt(T0)))), 1.0e-3)
-        VTH     = devsign * (VFB_i + (psip_th - Vs * inv_Vt) * Vt + Vt * gam * sqrt(psip_th) + Vth_shift)
+        self.gam     = sqrt(2.0 * self.q * self.epssi * self.NDEP_i * self.inv_Vt) / self.Cox
+        self.q_vth   = 0.5
+        self.T0      = self.hypsmooth((2.0 * self.phib + self.Vs * self.inv_Vt), 1.0e-3)
+        self.nq      = 1.0 + self.gam / (2.0 * sqrt(self.T0))
+        self.psip_th = self.hypsmooth((self.Vs * self.inv_Vt + 2.0 * self.phib + self.lln(self.q_vth) + 2.0 * self.q_vth + self.lln(2.0 * self.nq / self.gam * (2.0 * self.q_vth * self.nq / self.gam + 2.0 * sqrt(self.T0)))), 1.0e-3)
+        self.VTH     = self.devsign * (self.VFB_i + (self.psip_th - self.Vs * self.inv_Vt) * self.Vt + self.Vt * self.gam * sqrt(self.psip_th) + self.Vth_shift)
 
         # Normalized body factor
-        gam     = sqrt(2.0 * self.q * epssi * NDEP_i * inv_nVt) / Cox
-        inv_gam = 1.0 / gam
+        self.gam     = sqrt(2.0 * self.q * self.epssi * self.NDEP_i * self.inv_nVt) / self.Cox
+        self.inv_gam = 1.0 / self.gam
 
         # psip: pinch-off voltage
-        phib_n = phib / n
-        psip = self.PO_psip(vgfb, gam, 0.0)
+        self.phib_n = self.phib / self.n
+        self.psip = self.PO_psip(self.vgfb, self.gam, 0.0)
 
         # Normalized inversion charge at source end of channel
-        qs = self.BSIM_q(psip, phib_n, vs, gam)
+        self.qs = self.BSIM_q(self.psip, self.phib_n, self.vs, self.gam)
 
         # Average charge-surface potential slope, Ref: Charge-based MOS Transistor Modeling by C. Enz & E. Vittoz
-        psipclamp = self.Smooth(psip, 1.0, 2.0)
-        sqrtpsip = sqrt(psipclamp)
+        self.psipclamp = self.Smooth(self.psip, 1.0, 2.0)
+        self.sqrtpsip = sqrt(self.psipclamp)
 
         # Source side surface potential
-        psiavg = psip - 2.0 * qs
-        T0 = self.Smooth(psiavg, 1.0, 2.0)
-        nq = 1.0 + gam / (sqrtpsip + sqrt(T0))
+        self.psiavg = self.psip - 2.0 * self.qs
+        self.T0 = self.Smooth(self.psiavg, 1.0, 2.0)
+        self.nq = 1.0 + self.gam / (self.sqrtpsip + sqrt(self.T0))
 
         # Drain saturation voltage
-        EeffFactor = 1.0e-8 / (epsratio * self.TOXE)
-        T0 = nVt * (vgfb - psip - 2.0 * qs * (nq - 1.0))
-        qbs = self.Smooth(T0, 0.0, 0.1)
+        self.EeffFactor = 1.0e-8 / (self.epsratio * self.TOXE)
+        self.T0 = self.nVt * (self.vgfb - self.psip - 2.0 * self.qs * (self.nq - 1.0))
+        self.qbs = self.Smooth(self.T0, 0.0, 0.1)
 
         # Source side qi and qb for Vdsat- normalized to Cox
-        qis = 2.0 * nq * nVt * qs
-        Eeffs = EeffFactor * (qbs + eta_mu * qis)
+        self.qis = 2.0 * self.nq * self.nVt * self.qs
+        self.Eeffs = self.EeffFactor * (self.qbs + self.eta_mu * self.qis)
 
         # Ref: BSIM4 mobility model
-        T2 = (0.5 * (1.0 + (qis / qbs)))**UCS_a
-        T3 = (UA_a + UC_a * Vbsx) * Eeffs**EU_t + UD_a / T2
-        T4 = 1.0 + T3
-        Dmobs = self.Smooth(T4, 1.0, 0.0015)
-        WeffWRFactor = 1.0 / ((Weff * 1.0e6)**WR_i * self.NF)
+        self.T2 = (0.5 * (1.0 + (self.qis / self.qbs)))**self.UCS_a
+        self.T3 = (self.UA_a + self.UC_a * self.Vbsx) * self.Eeffs**self.EU_t + self.UD_a / self.T2
+        self.T4 = 1.0 + self.T3
+        self.Dmobs = self.Smooth(self.T4, 1.0, 0.0015)
+        self.WeffWRFactor = 1.0 / ((self.Weff * 1.0e6)**self.WR_i * self.NF)
 
         if (self.RDSMOD == 1):
-            Rdss = 0.0
+            self.Rdss = 0.0
         else:
-            T0   = 1.0 + PRWG_i * qis
-            T1   = PRWB_i * (sqrtPhistVbs - sqrtPhist)
-            T2   = 1.0 / T0 + T1
-            T3   = T2 + sqrt(T2 * T2 + 0.01)
-            Rdss = (RDSWMIN_i + RDSW_i * T3) * WeffWRFactor * self.NF * rdstemp
+            self.T0   = 1.0 + self.PRWG_i * self.qis
+            self.T1   = self.PRWB_i * (self.sqrtPhistVbs - self.sqrtPhist)
+            self.T2   = 1.0 / self.T0 + self.T1
+            self.T3   = self.T2 + sqrt(self.T2 * self.T2 + 0.01)
+            self.Rdss = (self.RDSWMIN_i + self.RDSW_i * self.T3) * self.WeffWRFactor * self.NF * self.rdstemp
             if (self.RDSMOD == 2):
-                Rdss = (RSourceGeo + (RDSWMIN_i + RDSW_i * T3) * WeffWRFactor * self.NF + RDrainGeo) * rdstemp
+                self.Rdss = (self.RSourceGeo + (self.RDSWMIN_i + self.RDSW_i * self.T3) * self.WeffWRFactor * self.NF + self.RDrainGeo) * self.rdstemp
 
-        T0  = Dmobs**(1.0 / PSAT_a)
-        T11 = PSATB_i * Vbsx
-        T12 = sqrt(0.1 + T11 * T11)
-        T1  = 0.5*(1 - T11 + sqrt((1 - T11) * (1 - T11) + T12))
-        T2  = 10.0 * self.PSATX * qs * T1 / (10.0 * self.PSATX + qs * T1)
-        if (PTWG_a < 0.0):
-            LambdaC = 2.0 * ((U0_a / T0) * nVt / (VSAT_a * Leff)) * (1.0 / (1.0 - PTWG_a * T2))
+        self.T0  = self.Dmobs**(1.0 / self.PSAT_a)
+        self.T11 = self.PSATB_i * self.Vbsx
+        self.T12 = sqrt(0.1 + self.T11 * self.T11)
+        self.T1  = 0.5*(1 - self.T11 + sqrt((1 - self.T11) * (1 - self.T11) + self.T12))
+        self.T2  = 10.0 * self.PSATX * self.qs * self.T1 / (10.0 * self.PSATX + self.qs * self.T1)
+        if (self.PTWG_a < 0.0):
+            self.LambdaC = 2.0 * ((self.U0_a / self.T0) * self.nVt / (self.VSAT_a * self.Leff)) * (1.0 / (1.0 - self.PTWG_a * self.T2))
         else:
-            LambdaC = 2.0 * ((U0_a / T0) * nVt / (VSAT_a * Leff)) * (1.0 + PTWG_a * T2)
+            self.LambdaC = 2.0 * ((self.U0_a / self.T0) * self.nVt / (self.VSAT_a * self.Leff)) * (1.0 + self.PTWG_a * self.T2)
 
         # qdsat for external Rds
-        if (Rdss == 0):
+        if (self.Rdss == 0):
             # Accurate qdsat derived from consistent I-V
-            T0 = 0.5 * LambdaC * (qs * qs + qs) / (1.0 + 0.5 * LambdaC * (1.0 + qs))
-            T1 = 2.0 * LambdaC * (qs - T0)
-            T2 = sqrt(1.0 + T1 * T1)
-            ln_T1_T2 = asinh(T1)
-            if (T1 != 0.0):
-                T3 = T2 + (1.0 / T1) * ln_T1_T2
+            self.T0 = 0.5 * self.LambdaC * (self.qs * self.qs + self.qs) / (1.0 + 0.5 * self.LambdaC * (1.0 + self.qs))
+            self.T1 = 2.0 * self.LambdaC * (self.qs - self.T0)
+            self.T2 = sqrt(1.0 + self.T1 * self.T1)
+            self.ln_T1_T2 = asinh(self.T1)
+            if (self.T1 != 0.0):
+                self.T3 = self.T2 + (1.0 / self.T1) * self.ln_T1_T2
             else:
-                T3 = T2 + (1.0 / T2)
-            T4 = T0 * T3 - LambdaC * ((qs * qs + qs) - (T0 * T0 + T0))
-            if (T1 != 0.0):
-                T5 = -2.0 * LambdaC * (T1 * T2 - ln_T1_T2) / (T1 * T1)
+                self.T3 = self.T2 + (1.0 / self.T2)
+            self.T4 = self.T0 * self.T3 - self.LambdaC * ((self.qs * self.qs + self.qs) - (self.T0 * self.T0 + self.T0))
+            if (self.T1 != 0.0):
+                self.T5 = -2.0 * self.LambdaC * (self.T1 * self.T2 - self.ln_T1_T2) / (self.T1 * self.T1)
             else:
-                T5 = -2.0 * LambdaC * (T1/T2) * (T1/T2) *(T1/T2)
+                self.T5 = -2.0 * self.LambdaC * (self.T1/self.T2) * (self.T1/self.T2) *(self.T1/self.T2)
 
-            T6 = T0 * T5 + T3 + LambdaC * (2.0 * T0 + 1.0)
-            T0 = T0 - (T4 / T6)
-            T1 = 2.0 * LambdaC * (qs - T0)
-            T2 = sqrt(1.0 + T1 * T1)
-            ln_T1_T2 = asinh(T1)
-            if (T1 != 0.0):
-                T3 = T2 + (1.0 / T1) * ln_T1_T2
+            self.T6 = self.T0 * self.T5 + self.T3 + self.LambdaC * (2.0 * self.T0 + 1.0)
+            self.T0 = self.T0 - (self.T4 / self.T6)
+            self.T1 = 2.0 * self.LambdaC * (self.qs - self.T0)
+            self.T2 = sqrt(1.0 + self.T1 * self.T1)
+            self.ln_T1_T2 = asinh(self.T1)
+            if (self.T1 != 0.0):
+                self.T3 = self.T2 + (1.0 / self.T1) * self.ln_T1_T2
             else:
-                T3 = T2 + (1.0 / T2)
-            T4 = T0 * T3 - LambdaC * ((qs * qs + qs) - (T0 * T0 + T0))
-            if (T1 != 0.0):
-                T5 = -2.0 * LambdaC * (T1 * T2 - ln_T1_T2) / (T1 * T1)
+                self.T3 = self.T2 + (1.0 / self.T2)
+            self.T4 = self.T0 * self.T3 - self.LambdaC * ((self.qs * self.qs + self.qs) - (self.T0 * self.T0 + self.T0))
+            if (self.T1 != 0.0):
+                self.T5 = -2.0 * self.LambdaC * (self.T1 * self.T2 - self.ln_T1_T2) / (self.T1 * self.T1)
             else:
-                T5 = (T1 / T2) * (T1 / T2) * (T1 / T2)
+                self.T5 = (self.T1 / self.T2) * (self.T1 / self.T2) * (self.T1 / self.T2)
 
-            T6    = T0 * T5 + T3 + LambdaC * (2.0 * T0 + 1.0)
-            qdsat = T0 - (T4/T6)
+            self.T6    = self.T0 * self.T5 + self.T3 + self.LambdaC * (2.0 * self.T0 + 1.0)
+            self.qdsat = self.T0 - (self.T4/self.T6)
         # qdsat for internal Rds, Ref: BSIM4
         else:
             # Accurate qdsat derived from consistent I-V
-            T11 = Weff * 2.0 * nq * Cox * nVt * VSAT_a
-            T12 = T11 * LambdaC * Rdss / (2.0 * nVt)
-            T0  = 0.5 * LambdaC * (qs * qs + qs) / (1.0 + 0.5 * LambdaC * (1.0 + qs))
-            T1  = 2.0 * LambdaC * (qs - T0)
-            T2  = sqrt(1.0 + T1 * T1)
-            ln_T1_T2 = asinh(T1)
-            if (T1 != 0.0):
-                T3 = T2 + (1.0 / T1) * ln_T1_T2
+            self.T11 = self.Weff * 2.0 * self.nq * self.Cox * self.nVt * self.VSAT_a
+            self.T12 = self.T11 * self.LambdaC * self.Rdss / (2.0 * self.nVt)
+            self.T0  = 0.5 * self.LambdaC * (self.qs * self.qs + self.qs) / (1.0 + 0.5 * self.LambdaC * (1.0 + self.qs))
+            self.T1  = 2.0 * self.LambdaC * (self.qs - self.T0)
+            self.T2  = sqrt(1.0 + self.T1 * self.T1)
+            self.ln_T1_T2 = asinh(self.T1)
+            if (self.T1 != 0.0):
+                self.T3 = self.T2 + (1.0 / self.T1) * self.ln_T1_T2
             else:
-                T3 = T2 + (1.0 / T2)
-            T4 = T0 * T3 + T12 * T0 * (qs + T0 + 1.0) - LambdaC * ((qs * qs + qs) - (T0 * T0 + T0))
-            if (T1 != 0.0):
-                T5 = -2.0 * LambdaC * (T1 * T2 - ln_T1_T2) / (T1 * T1)
+                self.T3 = self.T2 + (1.0 / self.T2)
+            self.T4 = self.T0 * self.T3 + self.T12 * self.T0 * (self.qs + self.T0 + 1.0) - self.LambdaC * ((self.qs * self.qs + self.qs) - (self.T0 * self.T0 + self.T0))
+            if (self.T1 != 0.0):
+                self.T5 = -2.0 * self.LambdaC * (self.T1 * self.T2 - self.ln_T1_T2) / (self.T1 * self.T1)
             else:
-                T5 = -2.0 * LambdaC * (T1 / T2) * (T1 / T2) * (T1 / T2)
-            T6 = T0 * T5 + T3 + T12 * (qs + 2.0 * T0 + 1.0) + LambdaC * (2.0 * T0 + 1.0)
-            T0 = T0 - T4 / T6
-            T1 = 2.0 * LambdaC * (qs - T0)
-            T2 = sqrt(1.0 + T1 * T1)
-            ln_T1_T2 = asinh(T1)
-            if (T1 != 0):
-                T3 = T2 + (1.0 / T1) * ln_T1_T2
+                self.T5 = -2.0 * self.LambdaC * (self.T1 / self.T2) * (self.T1 / self.T2) * (self.T1 / self.T2)
+            self.T6 = self.T0 * self.T5 + self.T3 + self.T12 * (self.qs + 2.0 * self.T0 + 1.0) + self.LambdaC * (2.0 * self.T0 + 1.0)
+            self.T0 = self.T0 - self.T4 / self.T6
+            self.T1 = 2.0 * self.LambdaC * (self.qs - self.T0)
+            self.T2 = sqrt(1.0 + self.T1 * self.T1)
+            self.ln_T1_T2 = asinh(self.T1)
+            if (self.T1 != 0):
+                self.T3 = self.T2 + (1.0 / self.T1) * self.ln_T1_T2
             else:
-                T3 = T2 + (1.0 / T2)
-            T4 = T0 * T3 + T12 * T0 * (qs + T0 + 1.0) - LambdaC * ((qs * qs + qs) - (T0 * T0 + T0))
-            if (T1 != 0.0):
-                T5 = -2.0 * LambdaC * (T1 * T2 - ln_T1_T2) / (T1 * T1)
+                self.T3 = self.T2 + (1.0 / self.T2)
+            self.T4 = self.T0 * self.T3 + self.T12 * self.T0 * (self.qs + self.T0 + 1.0) - self.LambdaC * ((self.qs * self.qs + self.qs) - (self.T0 * self.T0 + self.T0))
+            if (self.T1 != 0.0):
+                self.T5 = -2.0 * self.LambdaC * (self.T1 * self.T2 - self.ln_T1_T2) / (self.T1 * self.T1)
             else:
-                T5 = -2.0 * LambdaC * (T1 / T2) * (T1 / T2) * (T1 / T2)
-            T6    = T0 * T5 + T3 + T12 * (qs + 2.0 * T0 + 1.0) + LambdaC * (2.0 * T0 + 1.0)
-            qdsat = T0 - T4 / T6
-        vdsat = psip - 2.0 * phib_n - (2.0 * qdsat + self.lln((qdsat * 2.0 * nq * inv_gam) * ((qdsat * 2.0 * nq * inv_gam) + (gam / (nq - 1.0)))))
-        Vdsat = vdsat * nVt
+                self.T5 = -2.0 * self.LambdaC * (self.T1 / self.T2) * (self.T1 / self.T2) * (self.T1 / self.T2)
+            self.T6    = self.T0 * self.T5 + self.T3 + self.T12 * (self.qs + 2.0 * self.T0 + 1.0) + self.LambdaC * (2.0 * self.T0 + 1.0)
+            self.qdsat = self.T0 - self.T4 / self.T6
+        self.vdsat = self.psip - 2.0 * self.phib_n - (2.0 * self.qdsat + self.lln((self.qdsat * 2.0 * self.nq * self.inv_gam) * ((self.qdsat * 2.0 * self.nq * self.inv_gam) + (self.gam / (self.nq - 1.0)))))
+        self.Vdsat = self.vdsat * self.nVt
 
         # Normalized charge qdeff at drain end of channel
         # Vdssat clamped to avoid negative values during transient simulation
-        Vdssat = self.Smooth(Vdsat - Vs, 0.0, 1.0e-3)
-        T7      = (Vds / Vdssat)**(1.0 / DELTA_t)
-        T8      = (1.0 + T7)**-DELTA_t
-        Vdseff  = Vds * T8
-        vdeff   = (Vdseff + Vs) * inv_nVt
-        qdeff = self.BSIM_q(psip, phib_n, vdeff, gam)
+        self.Vdssat = self.Smooth(self.Vdsat - self.Vs, 0.0, 1.0e-3)
+        self.T7      = (self.Vds / self.Vdssat)**(1.0 / self.DELTA_t)
+        self.T8      = (1.0 + self.T7)**-self.DELTA_t
+        self.Vdseff  = self.Vds * self.T8
+        self.vdeff   = (self.Vdseff + self.Vs) * self.inv_nVt
+        self.qdeff = self.BSIM_q(self.psip, self.phib_n, self.vdeff, self.gam)
 
         # Reevaluation of nq to include qdeff
-        psiavg = psip - qs - qdeff -1.0
-        T0 = self.Smooth(psiavg, 1.0, 2.0)
-        T2 = sqrt(T0)
-        nq = 1.0 + gam / (sqrtpsip + T2)
+        self.psiavg = self.psip - self.qs - self.qdeff -1.0
+        self.T0 = self.Smooth(self.psiavg, 1.0, 2.0)
+        self.T2 = sqrt(self.T0)
+        self.nq = 1.0 + self.gam / (self.sqrtpsip + self.T2)
 
         # Inversion and bulk charge
-        DQSD2 = (qs - qdeff) * (qs - qdeff)
-        T0    = 1.0 / (1.0 + qs + qdeff)
-        T1    = DQSD2 * T0
-        Qb    = vgfb - psip - (nq - 1.0) * (qs + qdeff + self.Oneby3 * T1)
-        T2    = self.Oneby3 * nq
-        T3    = T1 * T0
-        Qs    = T2 * (2.0 * qs + qdeff + 0.5 * (1.0 + 0.8 * qs + 1.2 * qdeff) * T3)
-        Qd    = T2 * (qs + 2.0 * qdeff + 0.5 * (1.0 + 1.2 * qs + 0.8 * qdeff) * T3)
+        self.DQSD2 = (self.qs - self.qdeff) * (self.qs - self.qdeff)
+        self.T0    = 1.0 / (1.0 + self.qs + self.qdeff)
+        self.T1    = self.DQSD2 * self.T0
+        self.Qb    = self.vgfb - self.psip - (self.nq - 1.0) * (self.qs + self.qdeff + self.Oneby3 * self.T1)
+        self.T2    = self.Oneby3 * self.nq
+        self.T3    = self.T1 * self.T0
+        self.Qs    = self.T2 * (2.0 * self.qs + self.qdeff + 0.5 * (1.0 + 0.8 * self.qs + 1.2 * self.qdeff) * self.T3)
+        self.Qd    = self.T2 * (self.qs + 2.0 * self.qdeff + 0.5 * (1.0 + 1.2 * self.qs + 0.8 * self.qdeff) * self.T3)
 
         # Mobility degradation, Ref: BSIM4
         # Average charges (qba and qia) - normalized to Cox
-        qba = self.Smooth(nVt * Qb, 0.0, 0.1)
-        qia   = nVt * (Qs + Qd)
+        self.qba = self.Smooth(self.nVt * self.Qb, 0.0, 0.1)
+        self.qia   = self.nVt * (self.Qs + self.Qd)
 
-        Eeffm = EeffFactor * (qba + eta_mu * qia)
-        T2    = (0.5 * (1.0 + (qia / qba)))**UCS_a
-        T3    = (UA_a + UC_a * Vbsx) * Eeffm**EU_t + UD_a / T2
-        T4    = 1.0 + T3
-        Dmob = self.Smooth(T4, 1.0, 0.0015)
+        self.Eeffm = self.EeffFactor * (self.qba + self.eta_mu * self.qia)
+        self.T2    = (0.5 * (1.0 + (self.qia / self.qba)))**self.UCS_a
+        self.T3    = (self.UA_a + self.UC_a * self.Vbsx) * self.Eeffm**self.EU_t + self.UD_a / self.T2
+        self.T4    = 1.0 + self.T3
+        self.Dmob = self.Smooth(self.T4, 1.0, 0.0015)
 
         # Output conductance
-        Esat  = 2.0 * VSAT_a / (U0_a / Dmob)
-        EsatL = Esat * Leff
-        if (PVAG_i > 0.0):
-            PVAGfactor = 1.0 + PVAG_i * qia / EsatL
+        self.Esat  = 2.0 * self.VSAT_a / (self.U0_a / self.Dmob)
+        self.EsatL = self.Esat * self.Leff
+        if (self.PVAG_i > 0.0):
+            self.PVAGfactor = 1.0 + self.PVAG_i * self.qia / self.EsatL
         else:
-            PVAGfactor = 1.0 / (1.0 - PVAG_i * qia / EsatL)
+            self.PVAGfactor = 1.0 / (1.0 - self.PVAG_i * self.qia / self.EsatL)
 
         # Output conductance due to DIBL, Ref: BSIM4
-        DIBLfactor = PDIBLC_a
-        diffVds    = Vds - Vdseff
-        Vgst2Vtm   = qia + 2.0 * nVt
-        if (DIBLfactor > 0.0):
-            T3     = Vgst2Vtm / (Vdssat + Vgst2Vtm)
-            T4     = self.hypsmooth((1.0 + PDIBLCB_i * Vbsx), 1.0e-3)
-            T5     = 1.0 / T4
-            VaDIBL = Vgst2Vtm / DIBLfactor * T3 * PVAGfactor * T5
-            Moc    = 1.0 + diffVds / VaDIBL
+        self.DIBLfactor = self.PDIBLC_a
+        self.diffVds    = self.Vds - self.Vdseff
+        self.Vgst2Vtm   = self.qia + 2.0 * self.nVt
+        if (self.DIBLfactor > 0.0):
+            self.T3     = self.Vgst2Vtm / (self.Vdssat + self.Vgst2Vtm)
+            self.T4     = self.hypsmooth((1.0 + self.PDIBLCB_i * self.Vbsx), 1.0e-3)
+            self.T5     = 1.0 / self.T4
+            self.VaDIBL = self.Vgst2Vtm / self.DIBLfactor * self.T3 * self.PVAGfactor * self.T5
+            self.Moc    = 1.0 + self.diffVds / self.VaDIBL
         else:
-            Moc = 1.0
+            self.Moc = 1.0
 
         # Degradation factor due to pocket implants, Ref: BSIM4
-        if (FPROUT_i <= 0.0):
-            Fp = 1.0
+        if (self.FPROUT_i <= 0.0):
+            self.Fp = 1.0
         else:
-            T9 = FPROUT_i * sqrt(Leff) / Vgst2Vtm
-            Fp = 1.0 / (1.0 + T9)
+            self.T9 = self.FPROUT_i * sqrt(self.Leff) / self.Vgst2Vtm
+            self.Fp = 1.0 / (1.0 + self.T9)
 
         # Channel length modulation, Ref: BSIM4
-        Vasat = Vdssat + EsatL
-        if (PCLM_a != 0.0):
+        self.Vasat = self.Vdssat + self.EsatL
+        if (self.PCLM_a != 0.0):
             if (self.PCLMG < 0.0):
-                T1 = PCLM_a / (1.0 - self.PCLMG * qia / EsatL) / Fp
+                self.T1 = self.PCLM_a / (1.0 - self.PCLMG * self.qia / self.EsatL) / self.Fp
             else:
-                T1 = PCLM_a * (1.0 + self.PCLMG * qia / EsatL) / Fp
+                self.T1 = self.PCLM_a * (1.0 + self.PCLMG * self.qia / self.EsatL) / self.Fp
 
-            MdL = 1.0 + T1 * self.lln(1.0 + diffVds / T1 / Vasat)
+            self.MdL = 1.0 + self.T1 * self.lln(1.0 + self.diffVds / self.T1 / self.Vasat)
         else:
-            MdL = 1.0
-        Moc = Moc * MdL
+            self.MdL = 1.0
+        self.Moc = self.Moc * self.MdL
 
         # Calculate Va_DITS, Ref: BSIM4
-        T1 = self.lexp(PDITSD_i * Vds)
-        if (PDITS_i > 0.0):
-            T2      = 1.0 + self.PDITSL * Leff
-            VaDITS  = (1.0 + T2 * T1) / PDITS_i
-            VaDITS  = VaDITS * Fp
+        self.T1 = self.lexp(self.PDITSD_i * self.Vds)
+        if (self.PDITS_i > 0.0):
+            self.T2      = 1.0 + self.PDITSL * self.Leff
+            self.VaDITS  = (1.0 + self.T2 * self.T1) / self.PDITS_i
+            self.VaDITS  = self.VaDITS * self.Fp
         else:
-            VaDITS  = self.MAX_EXPL
-        T4  = diffVds / VaDITS
-        T0  = 1.0 + T4
-        Moc = Moc * T0
+            self.VaDITS  = self.MAX_EXPL
+        self.T4  = self.diffVds / self.VaDITS
+        self.T0  = 1.0 + self.T4
+        self.Moc = self.Moc * self.T0
 
         # Calculate Va_SCBE, Ref: BSIM4
-        if (PSCBE2_i > 0.0):
-            if (diffVds > PSCBE1_i * litl / self.EXPL_THRESHOLD):
-                T0     = PSCBE1_i * litl / diffVds
-                VaSCBE = Leff * self.lexp(T0) / PSCBE2_i
+        if (self.PSCBE2_i > 0.0):
+            if (self.diffVds > self.PSCBE1_i * self.litl / self.EXPL_THRESHOLD):
+                self.T0     = self.PSCBE1_i * self.litl / self.diffVds
+                self.VaSCBE = self.Leff * self.lexp(self.T0) / self.PSCBE2_i
             else:
-                VaSCBE = self.MAX_EXPL * Leff/PSCBE2_i
+                self.VaSCBE = self.MAX_EXPL * self.Leff/self.PSCBE2_i
         else:
-            VaSCBE = self.MAX_EXPL
-        Mscbe = 1.0 + (diffVds / VaSCBE)
-        Moc   = Moc * Mscbe
+            self.VaSCBE = self.MAX_EXPL
+        self.Mscbe = 1.0 + (self.diffVds / self.VaSCBE)
+        self.Moc   = self.Moc * self.Mscbe
 
         # Velocity saturation
-        T0  = Dmob**(1.0 / PSAT_a)
-        T11 = PSATB_i * Vbsx
-        T12 = sqrt(0.1+T11*T11)
-        T1  = 0.5*(1-T11+sqrt((1-T11)*(1-T11)+T12))
-        T2  = 10.0 * self.PSATX * qia * T1 / (10.0 * self.PSATX + qia * T1)
-        if (PTWG_a < 0.0):
-            LambdaC = 2.0 * ((U0_a / T0) * nVt / (VSAT_a * Leff)) * (1.0 / (1.0 - PTWG_a * T2))
+        self.T0  = self.Dmob**(1.0 / self.PSAT_a)
+        self.T11 = self.PSATB_i * self.Vbsx
+        self.T12 = sqrt(0.1+self.T11*self.T11)
+        self.T1  = 0.5*(1-self.T11+sqrt((1-self.T11)*(1-self.T11)+self.T12))
+        self.T2  = 10.0 * self.PSATX * self.qia * self.T1 / (10.0 * self.PSATX + self.qia * self.T1)
+        if (self.PTWG_a < 0.0):
+            self.LambdaC = 2.0 * ((self.U0_a / self.T0) * self.nVt / (self.VSAT_a * self.Leff)) * (1.0 / (1.0 - self.PTWG_a * self.T2))
         else:
-            LambdaC = 2.0 * ((U0_a / T0) * nVt / (VSAT_a * Leff)) * (1.0 + PTWG_a * T2)
-        T1 = 2.0 * LambdaC * (qs - qdeff)
-        T2 = sqrt(1.0 + T1 * T1)
-        if (T1 != 0.0):
-            Dvsat = 0.5 * (T2 + (1.0 / T1) * asinh(T1))
+            self.LambdaC = 2.0 * ((self.U0_a / self.T0) * self.nVt / (self.VSAT_a * self.Leff)) * (1.0 + self.PTWG_a * self.T2)
+        self.T1 = 2.0 * self.LambdaC * (self.qs - self.qdeff)
+        self.T2 = sqrt(1.0 + self.T1 * self.T1)
+        if (self.T1 != 0.0):
+            self.Dvsat = 0.5 * (self.T2 + (1.0 / self.T1) * asinh(self.T1))
         else:
-            Dvsat = 0.5 * (T2 + (1.0 / T2))
-        Dptwg = Dvsat
+            self.Dvsat = 0.5 * (self.T2 + (1.0 / self.T2))
+        self.Dptwg = self.Dvsat
 
         # S/D series resistances, Ref: BSIM4
         if (self.RDSMOD == 1):
-            Rdsi = 0.0
-            Dr   = 1.0
+            self.Rdsi = 0.0
+            self.Dr   = 1.0
             # Rs (Source side resistance for all fingers)
-            T2      = Vgs_noswap - Vfbsdr
-            T3      = sqrt(T2 * T2 + 0.01)
-            Vgs_eff = 0.5 * (T2 + T3)
-            T5      = 1.0 + PRWG_i * Vgs_eff
-            T6      = (1.0 / T5) + PRWB_i * Vsb_noswap
-            T4      = 0.5 * (T6 + sqrt(T6 * T6 + 0.01))
-            Rsource = rdstemp * (RSourceGeo + (RSWMIN_i + RSW_i * T4) * WeffWRFactor)
+            self.T2      = self.Vgs_noswap - self.Vfbsdr
+            self.T3      = sqrt(self.T2 * self.T2 + 0.01)
+            self.Vgs_eff = 0.5 * (self.T2 + self.T3)
+            self.T5      = 1.0 + self.PRWG_i * self.Vgs_eff
+            self.T6      = (1.0 / self.T5) + self.PRWB_i * self.Vsb_noswap
+            self.T4      = 0.5 * (self.T6 + sqrt(self.T6 * self.T6 + 0.01))
+            self.Rsource = self.rdstemp * (self.RSourceGeo + (self.RSWMIN_i + self.RSW_i * self.T4) * self.WeffWRFactor)
             # Rd (Drain side resistance for all fingers)
-            T2      = Vgd_noswap - Vfbsdr
-            T3      = sqrt(T2 * T2 + 0.01)
-            Vgd_eff = 0.5 * (T2 + T3)
-            T5      = 1.0 + PRWG_i * Vgd_eff
-            T6      = (1.0 / T5) + PRWB_i * Vdb_noswap
-            T4      = 0.5 * (T6 + sqrt(T6 * T6 + 0.01))
-            Rdrain  = rdstemp * (RDrainGeo + (RDWMIN_i + RDW_i * T4) * WeffWRFactor)
+            self.T2      = self.Vgd_noswap - self.Vfbsdr
+            self.T3      = sqrt(self.T2 * self.T2 + 0.01)
+            self.Vgd_eff = 0.5 * (self.T2 + self.T3)
+            self.T5      = 1.0 + self.PRWG_i * self.Vgd_eff
+            self.T6      = (1.0 / self.T5) + self.PRWB_i * self.Vdb_noswap
+            self.T4      = 0.5 * (self.T6 + sqrt(self.T6 * self.T6 + 0.01))
+            self.Rdrain  = self.rdstemp * (self.RDrainGeo + (self.RDWMIN_i + self.RDW_i * self.T4) * self.WeffWRFactor)
         else:
             # Ref: (1) BSIM4 (2) "Operation and Modeling of the MOS Transistor" by Yannis Tsividis
-            T0      = 1.0 + PRWG_i * qia
-            T1      = PRWB_i * (sqrtPhistVbs - sqrtPhist)
-            T2      = 1.0 / T0 + T1
-            T3      = 0.5 * (T2 + sqrt(T2 * T2 + 0.01))
-            Rdsi    = rdstemp * (RDSWMIN_i + RDSW_i * T3) * WeffWRFactor * self.NF
-            Rdrain  = RDrainGeo
-            Rsource = RSourceGeo
-            Dr      = 1.0 + U0_a /(Dvsat * Dmob) * Cox * Weff / Leff * qia * Rdsi
+            self.T0      = 1.0 + self.PRWG_i * self.qia
+            self.T1      = self.PRWB_i * (self.sqrtPhistVbs - self.sqrtPhist)
+            self.T2      = 1.0 / self.T0 + self.T1
+            self.T3      = 0.5 * (self.T2 + sqrt(self.T2 * self.T2 + 0.01))
+            self.Rdsi    = self.rdstemp * (self.RDSWMIN_i + self.RDSW_i * self.T3) * self.WeffWRFactor * self.NF
+            self.Rdrain  = self.RDrainGeo
+            self.Rsource = self.RSourceGeo
+            self.Dr      = 1.0 + self.U0_a /(self.Dvsat * self.Dmob) * self.Cox * self.Weff / self.Leff * self.qia * self.Rdsi
             if (self.RDSMOD == 2):
-                Rdsi    = rdstemp * (RSourceGeo + (RDSWMIN_i + RDSW_i * T3) * WeffWRFactor * self.NF + RDrainGeo)
-                Rdrain  = 0.0
-                Rsource = 0.0
-                Dr      = 1.0 + U0_a /(Dvsat * Dmob) * Cox * Weff / Leff * qia * Rdsi
+                self.Rdsi    = self.rdstemp * (self.RSourceGeo + (self.RDSWMIN_i + self.RDSW_i * self.T3) * self.WeffWRFactor * self.NF + self.RDrainGeo)
+                self.Rdrain  = 0.0
+                self.Rsource = 0.0
+                self.Dr      = 1.0 + self.U0_a /(self.Dvsat * self.Dmob) * self.Cox * self.Weff / self.Leff * self.qia * self.Rdsi
 
         # Non-saturation effect
-        T0   = A1_t + A2_t / (qia + 2.0 * n * Vtm)
-        DQSD = qs - qdeff
-        T1   = T0 * DQSD * DQSD
-        T2   = T1 + 1.0 - 0.001
-        T3   = -1.0 + 0.5 * (T2 + sqrt(T2 * T2 + 0.004))
-        Nsat = 0.5 * (1.0 + sqrt(1.0 + T3))
+        self.T0   = self.A1_t + self.A2_t / (self.qia + 2.0 * self.n * self.Vtm)
+        self.DQSD = self.qs - self.qdeff
+        self.T1   = self.T0 * self.DQSD * self.DQSD
+        self.T2   = self.T1 + 1.0 - 0.001
+        self.T3   = -1.0 + 0.5 * (self.T2 + sqrt(self.T2 * self.T2 + 0.004))
+        self.Nsat = 0.5 * (1.0 + sqrt(1.0 + self.T3))
 
         # MNUD model to enhance Id-Vd fitting flexibility
-        T0   = (qs + qdeff)
-        T1   = (qs - qdeff)
-        T2   = T1 / (T0 + M0_t)
-        T3   = K0_t * T2 * T2
-        Mnud = 1.0 + T3
+        self.T0   = (self.qs + self.qdeff)
+        self.T1   = (self.qs - self.qdeff)
+        self.T2   = self.T1 / (self.T0 + self.M0_t)
+        self.T3   = self.K0_t * self.T2 * self.T2
+        self.Mnud = 1.0 + self.T3
 
         # MNUD1 to enhance the fitting flexiblity for the gm/Id - similar approach used in BSIM-CMG
-        T9    = C0_t / (max(0, C0SI_t + C0SISAT_t * T1 * T1) * T0 + 2.0 * n * Vtm)
-        Mnud1 = self.lexp(-T9)
-        Dtot  = Dmob * Dvsat * Dr
+        self.T9    = self.C0_t / (max(0, self.C0SI_t + self.C0SISAT_t * self.T1 * self.T1) * self.T0 + 2.0 * self.n * self.Vtm)
+        self.Mnud1 = self.lexp(-self.T9)
+        self.Dtot  = self.Dmob * self.Dvsat * self.Dr
 
         # Effective mobility including mobility degradation
-        ueff = U0_a / Dtot
+        self.ueff = self.U0_a / self.Dtot
 
         # I-V
-        ids  = 2.0 * self.NF * nq * ueff * Weff / Leff * Cox * nVt * nVt * ((qs - qdeff) * (1.0 + qs + qdeff)) * Moc / Nsat * Mnud * Mnud1
-        ids  = ids * self.IDS0MULT
+        self.ids  = 2.0 * self.NF * self.nq * self.ueff * self.Weff / self.Leff * self.Cox * self.nVt * self.nVt * ((self.qs - self.qdeff) * (1.0 + self.qs + self.qdeff)) * self.Moc / self.Nsat * self.Mnud * self.Mnud1
+        self.ids  = self.ids * self.IDS0MULT
 
         # High-voltage model s: Ref. - Harshit Agarwal et.al., IEEE TED vol. 66, issue 10, pp. 4258, 2019
         if (self.RDSMOD == 1 and self.HVMOD == 1):
-            T4  = 1 + self.PDRWB * Vbsx
-            T0  = ids
-            T11 = self.NF * Weff * self.q  * VDRIFT_t
+            self.T4  = 1 + self.PDRWB * self.Vbsx
+            self.T0  = self.ids
+            self.T11 = self.NF * self.Weff * self.q  * self.VDRIFT_t
             if (self.RDLCW != 0):
-                idrift_sat_d = T11 * self.NDRIFTD
-                delta_hv = ids**(4 - self.MDRIFT) / (ids**(4 - self.MDRIFT) + self.HVFACTOR * idrift_sat_d**(4 - self.MDRIFT))
-                T5  = T0/idrift_sat_d
-                if (T5 >= 0.99):
-                    T5  = 0.5 * ((T5 + 0.99) - sqrt( (T5 - 0.99) * (T5 - 0.99) + 1.0e-6) + 0.001)
-                T0D = delta_hv * T5**self.MDRIFT
-                T1D = 1.0 - T0D
-                T2D = T1D**(1.0 / self.MDRIFT)
-                rdrift_d = rdstemphv * self.RDLCW * WeffWRFactor/T2D * T4
-                IDRIFTSATD = idrift_sat_d
-                if (rdrift_d < 0):
-                    rdrift_d = 0
+                self.idrift_sat_d = self.T11 * self.NDRIFTD
+                self.delta_hv = self.ids**(4 - self.MDRIFT) / (self.ids**(4 - self.MDRIFT) + self.HVFACTOR * self.idrift_sat_d**(4 - self.MDRIFT))
+                self.T5  = self.T0/self.idrift_sat_d
+                if (self.T5 >= 0.99):
+                    self.T5  = 0.5 * ((self.T5 + 0.99) - sqrt( (self.T5 - 0.99) * (self.T5 - 0.99) + 1.0e-6) + 0.001)
+                self.T0D = self.delta_hv * self.T5**self.MDRIFT
+                self.T1D = 1.0 - self.T0D
+                self.T2D = self.T1D**(1.0 / self.MDRIFT)
+                self.rdrift_d = self.rdstemphv * self.RDLCW * self.WeffWRFactor/self.T2D * self.T4
+                self.IDRIFTSATD = self.idrift_sat_d
+                if (self.rdrift_d < 0):
+                    self.rdrift_d = 0
             if (self.RSLCW != 0):
-                idrift_sat_s = T11 * self.NDRIFTS
-                delta_hv = ids**(4 - self.MDRIFT) / (ids**(4 - self.MDRIFT) + self.HVFACTOR * idrift_sat_s**(4 - self.MDRIFT))
-                T5  = T0/idrift_sat_s
-                if (T5 >= 0.99):
-                    T5  = 0.5 * ((T5 + 0.99) - sqrt( (T5 - 0.99) * (T5 - 0.99) + 1.0e-6) + 0.001 )
-                T0S = delta_hv * T5**self.MDRIFT
-                T1S = 1.0 - T0S
-                T2S = T1S**(1.0 / self.MDRIFT)
-                rdrift_s = rdstemphv * self.RSLCW * WeffWRFactor/T2S * T4
-                if (rdrift_s < 0.0):
-                    rdrift_s = 0.0
-            Rdrain  = Rdrain + rdrift_d
-            Rsource = Rsource + rdrift_s
+                self.idrift_sat_s = self.T11 * self.NDRIFTS
+                self.delta_hv = self.ids**(4 - self.MDRIFT) / (self.ids**(4 - self.MDRIFT) + self.HVFACTOR * self.idrift_sat_s**(4 - self.MDRIFT))
+                self.T5  = self.T0/self.idrift_sat_s
+                if (self.T5 >= 0.99):
+                    self.T5  = 0.5 * ((self.T5 + 0.99) - sqrt( (self.T5 - 0.99) * (self.T5 - 0.99) + 1.0e-6) + 0.001 )
+                self.T0S = self.delta_hv * self.T5**self.MDRIFT
+                self.T1S = 1.0 - self.T0S
+                self.T2S = self.T1S**(1.0 / self.MDRIFT)
+                self.rdrift_s = self.rdstemphv * self.RSLCW * self.WeffWRFactor/self.T2S * self.T4
+                if (self.rdrift_s < 0.0):
+                    self.rdrift_s = 0.0
+            self.Rdrain  = self.Rdrain + self.rdrift_d
+            self.Rsource = self.Rsource + self.rdrift_s
 
         # CV calculations for HVMOD
         if (self.RDSMOD == 1 and self.HVCAP == 1 and self.HVMOD == 1):
-            vgfbdrift = -devsign * (self.VG - self.VD) - self.VFBOV
-            vgfbdrift = vgfbdrift/Vt
-            gamhv     = sqrt(2.0 * self.q * epssi * self.NDR * inv_Vt) / Cox
-            phibHV    = self.lln(self.NDR / ni)
-            psip_k = self.PO_psip(vgfbdrift, gamhv, 0.0)
-            q_k = self.BSIM_q(psip_k, phibHV, devsign * (self.VD - self.VB) / Vt, gamhv)
+            self.vgfbdrift = -self.devsign * (self.VG - self.VD) - self.VFBOV
+            self.vgfbdrift = self.vgfbdrift/self.Vt
+            self.gamhv     = sqrt(2.0 * self.q * self.epssi * self.NDR * self.inv_Vt) / self.Cox
+            self.phibHV    = self.lln(self.NDR / self.ni)
+            self.psip_k = self.PO_psip(self.vgfbdrift, self.gamhv, 0.0)
+            self.q_k = self.BSIM_q(self.psip_k, self.phibHV, self.devsign * (self.VD - self.VB) / self.Vt, self.gamhv)
 
             # calculate nq for the drift region
-            psipclamp_hv = self.Smooth(psip_k, 1.0, 2.0)
-            sqrtpsip_k = sqrt(psipclamp_hv)
-            psiavg_hv = psip_k - 2.0 * q_k
-            T0 = self.Smooth(psiavg_hv, 1.0, 2.0)
-            nq_hv = 1.0 + gamhv / (sqrtpsip_k + sqrt(T0))
-            psi_k = psip_k - 2 * q_k
+            self.psipclamp_hv = self.Smooth(self.psip_k, 1.0, 2.0)
+            self.sqrtpsip_k = sqrt(self.psipclamp_hv)
+            self.psiavg_hv = self.psip_k - 2.0 * self.q_k
+            self.T0 = self.Smooth(self.psiavg_hv, 1.0, 2.0)
+            self.nq_hv = 1.0 + self.gamhv / (self.sqrtpsip_k + sqrt(self.T0))
+            self.psi_k = self.psip_k - 2 * self.q_k
 
             # contribution due to accumulation of the overlap region
-            QBOV = self.NF * Wact * self.LOVER * self.EPS0 * self.EPSROX / BSIMBULKTOXP * Vt * (vgfbdrift - psi_k - 2 * nq_hv * q_k)
+            self.QBOV = self.NF * self.Wact * self.LOVER * self.EPS0 * self.EPSROX / self.BSIMBULKTOXP * self.Vt * (self.vgfbdrift - self.psi_k - 2 * self.nq_hv * self.q_k)
 
             # contribution due to inversion of the overlap region
             if (self.SLHV > 0):
-                T1 = 1 + q_k / self.SLHV1
-                T2 = self.SLHV * 1.9e-9 / T1
-                T0 = 3.9 * self.EPS0 / (BSIMBULKTOXP * 3.9 / self.EPSROX + T2 / epsratio)
+                self.T1 = 1 + self.q_k / self.SLHV1
+                self.T2 = self.SLHV * 1.9e-9 / self.T1
+                self.T0 = 3.9 * self.EPS0 / (self.BSIMBULKTOXP * 3.9 / self.EPSROX + self.T2 / self.epsratio)
             else:
-                T0 = self.EPS0 * self.EPSROX / BSIMBULKTOXP
+                self.T0 = self.EPS0 * self.EPSROX / self.BSIMBULKTOXP
 
-            QIOV = self.NF * Wact * self.LOVERACC * 2 * nq_hv * Vt * T0 * q_k
+            self.QIOV = self.NF * self.Wact * self.LOVERACC * 2 * self.nq_hv * self.Vt * self.T0 * self.q_k
 
             # For symmetric device, adding contribution of the source side drift region
             if (self.HVCAPS == 1):
-                vgfbdrift = -devsign * (self.VG - self.VS) - self.VFBOV
-                vgfbdrift = vgfbdrift/Vt
-                psip_k = self.PO_psip(vgfbdrift, gamhv, 0.0)
-                q_k = self.BSIM_q(psip_k, phibHV, devsign * (self.VS - self.VB) / Vt, gamhv)
-                psipclamp_hv = self.Smooth(psip_k, 1.0, 2.0)
-                sqrtpsip_k = sqrt(psipclamp_hv)
-                psiavg_hv = psip_k - 2.0 * q_k
-                T0 = self.Smooth(psiavg_hv, 1.0, 2.0)
-                nq_hv = 1.0 + gamhv / (sqrtpsip_k + sqrt(T0))
-                psi_k = psip_k - 2 * q_k
-                QBOVS = self.NF * Wact * self.LOVER * self.EPS0 * self.EPSROX / BSIMBULKTOXP * Vt * (vgfbdrift - psi_k - 2 * nq_hv * q_k)
+                self.vgfbdrift = -self.devsign * (self.VG - self.VS) - self.VFBOV
+                self.vgfbdrift = self.vgfbdrift/self.Vt
+                self.psip_k = self.PO_psip(self.vgfbdrift, self.gamhv, 0.0)
+                self.q_k = self.BSIM_q(self.psip_k, self.phibHV, self.devsign * (self.VS - self.VB) / self.Vt, self.gamhv)
+                self.psipclamp_hv = self.Smooth(self.psip_k, 1.0, 2.0)
+                self.sqrtpsip_k = sqrt(self.psipclamp_hv)
+                self.psiavg_hv = self.psip_k - 2.0 * self.q_k
+                self.T0 = self.Smooth(self.psiavg_hv, 1.0, 2.0)
+                self.nq_hv = 1.0 + self.gamhv / (self.sqrtpsip_k + sqrt(self.T0))
+                self.psi_k = self.psip_k - 2 * self.q_k
+                self.QBOVS = self.NF * self.Wact * self.LOVER * self.EPS0 * self.EPSROX / self.BSIMBULKTOXP * self.Vt * (self.vgfbdrift - self.psi_k - 2 * self.nq_hv * self.q_k)
                 if (self.SLHV > 0):
-                    T1 = 1 + q_k / self.SLHV1
-                    T2 = self.SLHV * 1.9e-9 / T1
-                    T0 = 3.9 * self.EPS0 / (BSIMBULKTOXP * 3.9 / self.EPSROX + T2 / epsratio)
+                    self.T1 = 1 + self.q_k / self.SLHV1
+                    self.T2 = self.SLHV * 1.9e-9 / self.T1
+                    self.T0 = 3.9 * self.EPS0 / (self.BSIMBULKTOXP * 3.9 / self.EPSROX + self.T2 / self.epsratio)
                 else:
-                    T0 = self.EPS0 * self.EPSROX / BSIMBULKTOXP
-                QIOVS = self.NF * Wact * self.LOVERACC * 2 * nq_hv * Vt * T0 * q_k
+                    self.T0 = self.EPS0 * self.EPSROX / self.BSIMBULKTOXP
+                self.QIOVS = self.NF * self.Wact * self.LOVERACC * 2 * self.nq_hv * self.Vt * self.T0 * self.q_k
         if (self.RGATEMOD > 1):
-            idsovvds = ueff * Weff / Leff * Cox * qia
-            T9       = self.XRCRG2 * Vt
-            T0       = T9 * ueff * Weff / Leff * Cox
-            Gcrg     = self.XRCRG1 * self.NF * (T0 + idsovvds)
+            self.idsovvds = self.ueff * self.Weff / self.Leff * self.Cox * self.qia
+            self.T9       = self.XRCRG2 * self.Vt
+            self.T0       = self.T9 * self.ueff * self.Weff / self.Leff * self.Cox
+            self.Gcrg     = self.XRCRG1 * self.NF * (self.T0 + self.idsovvds)
             if (self.RGATEMOD == 2):
-                T11  = Grgeltd + Gcrg
-                Gcrg = Grgeltd * Gcrg / T11
+                self.T11  = self.Grgeltd + self.Gcrg
+                self.Gcrg = self.Grgeltd * self.Gcrg / self.T11
 
         # Impact ionization currents, Ref: BSIM4
-        if ((ALPHA0_i <= 0.0) or (BETA0_t <= 0.0)):
-            Iii = 0.0
-        elif (diffVds > BETA0_t / self.EXPL_THRESHOLD):
-            T1  = -BETA0_t / diffVds
-            Iii = ALPHA0_i * diffVds * ids * self.lexp(T1) / Mscbe
+        if ((self.ALPHA0_i <= 0.0) or (self.BETA0_t <= 0.0)):
+            self.Iii = 0.0
+        elif (self.diffVds > self.BETA0_t / self.EXPL_THRESHOLD):
+            self.T1  = -self.BETA0_t / self.diffVds
+            self.Iii = self.ALPHA0_i * self.diffVds * self.ids * self.lexp(self.T1) / self.Mscbe
         else:
-            Iii = ALPHA0_i * diffVds * ids * self.MIN_EXPL / Mscbe
+            self.Iii = self.ALPHA0_i * self.diffVds * self.ids * self.MIN_EXPL / self.Mscbe
 
         # Secondary impact ionization in the drift region
         if (self.HVMOD == 1 and self.IIMOD == 1):
-            Ntot = self.DRII1 * ids/(self.NF * Weff * self.q  * VDRIFT_t )
-            Nextra = Ntot/self.NDRIFTD - 1
-            Nextra = self.Smooth(Nextra, 0, self.DELTAII)
-            Nextra = self.NDRIFTD * Nextra
-            T2 = self.Smooth(devsign * (self.VD - self.VB) - Vdseff - self.DRII2, 0, 0.05)
-            T3 = 2.0 * self.q /(self.EPSRSUB * self.EPS0) * Nextra
-            T3 = T3 * T2
-            if (T3 > self.BETADR / self.EXPL_THRESHOLD):
-                T1  = -self.BETADR/T3
-                IsubDR = self.ALPHADR * T2 * ids * self.lexp(T1)
+            self.Ntot = self.DRII1 * self.ids/(self.NF * self.Weff * self.q  * self.VDRIFT_t )
+            self.Nextra = self.Ntot/self.NDRIFTD - 1
+            self.Nextra = self.Smooth(self.Nextra, 0, self.DELTAII)
+            self.Nextra = self.NDRIFTD * self.Nextra
+            self.T2 = self.Smooth(self.devsign * (self.VD - self.VB) - self.Vdseff - self.DRII2, 0, 0.05)
+            self.T3 = 2.0 * self.q /(self.EPSRSUB * self.EPS0) * self.Nextra
+            self.T3 = self.T3 * self.T2
+            if (self.T3 > self.BETADR / self.EXPL_THRESHOLD):
+                self.T1  = -self.BETADR/self.T3
+                self.IsubDR = self.ALPHADR * self.T2 * self.ids * self.lexp(self.T1)
             else:
-                IsubDR = self.ALPHADR * T2 * ids * self.MIN_EXPL
-            Iii = Iii + IsubDR
+                self.IsubDR = self.ALPHADR * self.T2 * self.ids * self.MIN_EXPL
+            self.Iii = self.Iii + self.IsubDR
 
         # Gate currents, Ref: BSIM4
         if ((self.IGCMOD != 0) or (self.IGBMOD != 0)):
-            Voxm    = nVt * (vgfb - psip + qs + qdeff)
-            T1      = sqrt(Voxm * Voxm + 1.0e-4)
-            Voxmacc = 0.5 * (-Voxm + T1)
-            Voxminv = 0.5 * (Voxm + T1)
+            self.Voxm    = self.nVt * (self.vgfb - self.psip + self.qs + self.qdeff)
+            self.T1      = sqrt(self.Voxm * self.Voxm + 1.0e-4)
+            self.Voxmacc = 0.5 * (-self.Voxm + self.T1)
+            self.Voxminv = 0.5 * (self.Voxm + self.T1)
             # Igbinv
             if (self.IGBMOD != 0):
-                T1     = Voxm / NIGBACC_i / Vt
-                Vaux_Igbacc = NIGBACC_i * Vt * self.lln(1.0 + self.lexp(-T1))
-                T2     = AIGBACC_i - BIGBACC_i * Voxmacc
-                T3     = 1.0 + CIGBACC_i * Voxmacc
-                T4     = -7.45669e11 * self.TOXE * T2 * T3
-                T5     = self.lexp(T4)
-                T6     = 4.97232e-7
-                igbacc = self.NF * Weff * Leff * T6 * ToxRatio * Vg * Vaux_Igbacc * T5
-                igbacc = igbacc * igtemp
-                T1     = (Voxm - EIGBINV_i) / NIGBINV_i / Vt
-                Vaux_Igbinv = NIGBINV_i * Vt * self.lln(1.0 + self.lexp(T1))
-                T2     = AIGBINV_i - BIGBINV_i * Voxminv
-                T3     = 1.0 + CIGBINV_i * Voxminv
-                T4     = -9.82222e11 * self.TOXE * T2 * T3
-                T5     = self.lexp(T4)
-                T6     = 3.75956e-7
-                igbinv = self.NF * Weff * Leff * T6 * ToxRatio * Vg * Vaux_Igbinv * T5
-                igbinv = igbinv * igtemp
-                igb    = igbacc + igbinv
+                self.T1     = self.Voxm / self.NIGBACC_i / self.Vt
+                self.Vaux_Igbacc = self.NIGBACC_i * self.Vt * self.lln(1.0 + self.lexp(-self.T1))
+                self.T2     = self.AIGBACC_i - self.BIGBACC_i * self.Voxmacc
+                self.T3     = 1.0 + self.CIGBACC_i * self.Voxmacc
+                self.T4     = -7.45669e11 * self.TOXE * self.T2 * self.T3
+                self.T5     = self.lexp(self.T4)
+                self.T6     = 4.97232e-7
+                self.igbacc = self.NF * self.Weff * self.Leff * self.T6 * self.ToxRatio * self.Vg * self.Vaux_Igbacc * self.T5
+                self.igbacc = self.igbacc * self.igtemp
+                self.T1     = (self.Voxm - self.EIGBINV_i) / self.NIGBINV_i / self.Vt
+                self.Vaux_Igbinv = self.NIGBINV_i * self.Vt * self.lln(1.0 + self.lexp(self.T1))
+                self.T2     = self.AIGBINV_i - self.BIGBINV_i * self.Voxminv
+                self.T3     = 1.0 + self.CIGBINV_i * self.Voxminv
+                self.T4     = -9.82222e11 * self.TOXE * self.T2 * self.T3
+                self.T5     = self.lexp(self.T4)
+                self.T6     = 3.75956e-7
+                self.igbinv = self.NF * self.Weff * self.Leff * self.T6 * self.ToxRatio * self.Vg * self.Vaux_Igbinv * self.T5
+                self.igbinv = self.igbinv * self.igtemp
+                self.igb    = self.igbacc + self.igbinv
             if (self.IGCMOD != 0):
                 # Igcinv
-                T1   = AIGC_i - BIGC_i * Voxminv
-                T2   = 1.0 + CIGC_i * Voxminv
-                T3   = Bechvb * T1 * T2
-                T4   = nq * nVt * (qs + qdeff) * self.lexp(T3)
-                igc0 = self.NF * Aechvb * T4 * (Vg + 0.5 * Vdsx - 0.5 * (Vs + Vd)) * igtemp
+                self.T1   = self.AIGC_i - self.BIGC_i * self.Voxminv
+                self.T2   = 1.0 + self.CIGC_i * self.Voxminv
+                self.T3   = self.Bechvb * self.T1 * self.T2
+                self.T4   = self.nq * self.nVt * (self.qs + self.qdeff) * self.lexp(self.T3)
+                self.igc0 = self.NF * self.Aechvb * self.T4 * (self.Vg + 0.5 * self.Vdsx - 0.5 * (self.Vs + self.Vd)) * self.igtemp
                 # Gate-current partitioning
-                Vdseffx = sqrt(Vdseff * Vdseff + 0.01) - 0.1
-                T1      = PIGCD_i * Vdseffx
-                T1_exp  = self.lexp(-T1)
-                T3      = T1 + T1_exp -1.0 + 1.0e-4
-                T4      = 1.0 - (T1 + 1.0) * T1_exp + 1.0e-4
-                T5      = T1 * T1 + 2.0e-4
-                if (sigvds > 0):
-                    igcd = igc0 * T4 / T5
-                    igcs = igc0 * T3 / T5
+                self.Vdseffx = sqrt(self.Vdseff * self.Vdseff + 0.01) - 0.1
+                self.T1      = self.PIGCD_i * self.Vdseffx
+                self.T1_exp  = self.lexp(-self.T1)
+                self.T3      = self.T1 + self.T1_exp -1.0 + 1.0e-4
+                self.T4      = 1.0 - (self.T1 + 1.0) * self.T1_exp + 1.0e-4
+                self.T5      = self.T1 * self.T1 + 2.0e-4
+                if (self.sigvds > 0):
+                    self.igcd = self.igc0 * self.T4 / self.T5
+                    self.igcs = self.igc0 * self.T3 / self.T5
                 else:
-                    igcs = igc0 * T4 / T5
-                    igcd = igc0 * T3 / T5
+                    self.igcs = self.igc0 * self.T4 / self.T5
+                    self.igcd = self.igc0 * self.T3 / self.T5
                 # Igs
-                T2      = Vgs_noswap - Vfbsdr
-                Vgs_eff = sqrt(T2 * T2 + 1.0e-4)
+                self.T2      = self.Vgs_noswap - self.Vfbsdr
+                self.Vgs_eff = sqrt(self.T2 * self.T2 + 1.0e-4)
                 if (self.IGCLAMP == 1):
-                    T1 = self.hypsmooth((AIGS_i - BIGS_i * Vgs_eff), 1.0e-6)
-                    if (CIGS_i < 0.01):
-                        CIGS_i = 0.01
+                    self.T1 = self.hypsmooth((self.AIGS_i - self.BIGS_i * self.Vgs_eff), 1.0e-6)
+                    if (self.CIGS_i < 0.01):
+                        self.CIGS_i = 0.01
                 else:
-                    T1 = AIGS_i - BIGS_i * Vgs_eff
+                    self.T1 = self.AIGS_i - self.BIGS_i * self.Vgs_eff
 
-                T2       = 1.0 + CIGS_i * Vgs_eff
-                T3       = BechvbEdge * T1 * T2
-                T4       = self.lexp(T3)
-                igs_mult = igtemp * self.NF * AechvbEdge * DLCIG_i
-                igs      = igs_mult * Vgs_noswap * Vgs_eff * T4
+                self.T2       = 1.0 + self.CIGS_i * self.Vgs_eff
+                self.T3       = self.BechvbEdge * self.T1 * self.T2
+                self.T4       = self.lexp(self.T3)
+                self.igs_mult = self.igtemp * self.NF * self.AechvbEdge * self.DLCIG_i
+                self.igs      = self.igs_mult * self.Vgs_noswap * self.Vgs_eff * self.T4
                 # Igd
-                T2      = Vgd_noswap - Vfbsdr
-                Vgd_eff = sqrt(T2 * T2 + 1.0e-4)
+                self.T2      = self.Vgd_noswap - self.Vfbsdr
+                self.Vgd_eff = sqrt(self.T2 * self.T2 + 1.0e-4)
                 if (self.IGCLAMP == 1):
-                    T1 = self.hypsmooth((AIGD_i - BIGD_i * Vgd_eff), 1.0e-6)
-                    if (CIGD_i < 0.01):
-                        CIGD_i = 0.01
+                    self.T1 = self.hypsmooth((self.AIGD_i - self.BIGD_i * self.Vgd_eff), 1.0e-6)
+                    if (self.CIGD_i < 0.01):
+                        self.CIGD_i = 0.01
                 else:
-                    T1 = AIGD_i - BIGD_i * Vgd_eff
-                T2       = 1.0 + CIGD_i * Vgd_eff
-                T3       = BechvbEdge * T1 * T2
-                T4       = self.lexp(T3)
-                igd_mult = igtemp * self.NF * AechvbEdge * DLCIGD_i
-                igd      = igd_mult * Vgd_noswap * Vgd_eff * T4
+                    self.T1 = self.AIGD_i - self.BIGD_i * self.Vgd_eff
+                self.T2       = 1.0 + self.CIGD_i * self.Vgd_eff
+                self.T3       = self.BechvbEdge * self.T1 * self.T2
+                self.T4       = self.lexp(self.T3)
+                self.igd_mult = self.igtemp * self.NF * self.AechvbEdge * self.DLCIGD_i
+                self.igd      = self.igd_mult * self.Vgd_noswap * self.Vgd_eff * self.T4
 
         # GIDL and GISL currents, Ref: BSIM4
         if (self.GIDLMOD != 0):
-            T0 = epsratio * self.TOXE
+            self.T0 = self.epsratio * self.TOXE
             # GIDL
-            if ((AGIDL_i <= 0.0) or (BGIDL_t <= 0.0) or (CGIDL_i < 0.0)):
-                T6 = 0.0
+            if ((self.AGIDL_i <= 0.0) or (self.BGIDL_t <= 0.0) or (self.CGIDL_i < 0.0)):
+                self.T6 = 0.0
             else:
-                T1 = (-Vgd_noswap - EGIDL_i + Vfbsdr) / T0
-                T1 = self.hypsmooth(T1, 1.0e-2)
-                T2 = BGIDL_t / (T1 + 1.0e-3)
-                if (CGIDL_i != 0.0):
-                    T3 = Vdb_noswap * Vdb_noswap * Vdb_noswap
-                    T4 = CGIDL_i + abs(T3) + 1.0e-4
-                    T5 = self.hypsmooth(T3 / T4, 1.0e-6) - 1.0e-6
+                self.T1 = (-self.Vgd_noswap - self.EGIDL_i + self.Vfbsdr) / self.T0
+                self.T1 = self.hypsmooth(self.T1, 1.0e-2)
+                self.T2 = self.BGIDL_t / (self.T1 + 1.0e-3)
+                if (self.CGIDL_i != 0.0):
+                    self.T3 = self.Vdb_noswap * self.Vdb_noswap * self.Vdb_noswap
+                    self.T4 = self.CGIDL_i + abs(self.T3) + 1.0e-4
+                    self.T5 = self.hypsmooth(self.T3 / self.T4, 1.0e-6) - 1.0e-6
                 else:
-                    T5 = 1.0
-                T6 = AGIDL_i * Weff * T1 * self.lexp(-T2) * T5
+                    self.T5 = 1.0
+                self.T6 = self.AGIDL_i * self.Weff * self.T1 * self.lexp(-self.T2) * self.T5
 
-            igidl = T6
+            self.igidl = self.T6
             # GISL
-            if ((AGISL_i <= 0.0) or (BGISL_t <= 0.0) or (CGISL_i < 0.0)):
-                T6 = 0.0
+            if ((self.AGISL_i <= 0.0) or (self.BGISL_t <= 0.0) or (self.CGISL_i < 0.0)):
+                self.T6 = 0.0
             else:
-                T1 = (-Vgs_noswap - EGISL_i + Vfbsdr) / T0
-                T1 = self.hypsmooth(T1, 1.0e-2)
-                T2 = BGISL_t / (T1 + 1.0e-3)
-                if (CGISL_i != 0.0):
-                    T3 = Vsb_noswap * Vsb_noswap * Vsb_noswap
-                    T4 = CGISL_i + abs(T3) + 1.0e-4
-                    T5 = self.hypsmooth(T3 / T4, 1.0e-6) - 1.0e-6
+                self.T1 = (-self.Vgs_noswap - self.EGISL_i + self.Vfbsdr) / self.T0
+                self.T1 = self.hypsmooth(self.T1, 1.0e-2)
+                self.T2 = self.BGISL_t / (self.T1 + 1.0e-3)
+                if (self.CGISL_i != 0.0):
+                    self.T3 = self.Vsb_noswap * self.Vsb_noswap * self.Vsb_noswap
+                    self.T4 = self.CGISL_i + abs(self.T3) + 1.0e-4
+                    self.T5 = self.hypsmooth(self.T3 / self.T4, 1.0e-6) - 1.0e-6
                 else:
-                    T5 = 1.0
-                T6 = AGISL_i * Weff * T1 * self.lexp(-T2) * T5
-            igisl = T6
+                    self.T5 = 1.0
+                self.T6 = self.AGISL_i * self.Weff * self.T1 * self.lexp(-self.T2) * self.T5
+            self.igisl = self.T6
 
         # Junction currents and capacitances
         # Source-side junction currents
-        if (Isbs > 0.0):
-            if (Vbs_jct < VjsmRev):
-                T0  = Vbs_jct / Nvtms
-                T1  = self.lexp(T0) - 1.0
-                T2  = IVjsmRev + SslpRev * (Vbs_jct - VjsmRev)
-                Ibs = T1 * T2
-            elif (Vbs_jct <= VjsmFwd):
-                T0  = Vbs_jct / Nvtms
-                T1  = (self.BVS + Vbs_jct) / Nvtms
-                T2  = self.lexp(-T1)
-                Ibs = Isbs * (self.lexp(T0) + XExpBVS - 1.0 - self.XJBVS * T2)
+        if (self.Isbs > 0.0):
+            if (self.Vbs_jct < self.VjsmRev):
+                self.T0  = self.Vbs_jct / self.Nvtms
+                self.T1  = self.lexp(self.T0) - 1.0
+                self.T2  = self.IVjsmRev + self.SslpRev * (self.Vbs_jct - self.VjsmRev)
+                self.Ibs = self.T1 * self.T2
+            elif (self.Vbs_jct <= self.VjsmFwd):
+                self.T0  = self.Vbs_jct / self.Nvtms
+                self.T1  = (self.BVS + self.Vbs_jct) / self.Nvtms
+                self.T2  = self.lexp(-self.T1)
+                self.Ibs = self.Isbs * (self.lexp(self.T0) + self.XExpBVS - 1.0 - self.XJBVS * self.T2)
             else:
-                Ibs = IVjsmFwd + SslpFwd * (Vbs_jct - VjsmFwd)
+                self.Ibs = self.IVjsmFwd + self.SslpFwd * (self.Vbs_jct - self.VjsmFwd)
         else:
-            Ibs = 0.0
+            self.Ibs = 0.0
 
         # Source-side junction tunneling currents
-        if (JTSS_t > 0.0):
-            if ((self.VTSS - Vbs_jct) < (self.VTSS * 1.0e-3)):
-                T0  = -Vbs_jct / Vtm0 / NJTS_t
-                T1  = self.lexp(T0 * 1.0e3) - 1.0
-                Ibs = Ibs - ASeff * JTSS_t * T1
+        if (self.JTSS_t > 0.0):
+            if ((self.VTSS - self.Vbs_jct) < (self.VTSS * 1.0e-3)):
+                self.T0  = -self.Vbs_jct / self.Vtm0 / self.NJTS_t
+                self.T1  = self.lexp(self.T0 * 1.0e3) - 1.0
+                self.Ibs = self.Ibs - self.ASeff * self.JTSS_t * self.T1
             else:
-                T0  = -Vbs_jct / Vtm0 / NJTS_t
-                T1  = self.lexp(T0 * self.VTSS / (self.VTSS - Vbs_jct)) - 1.0
-                Ibs = Ibs - ASeff * JTSS_t * T1
-        if (JTSSWS_t > 0.0):
-            if ((self.VTSSWS - Vbs_jct) < (self.VTSSWS * 1.0e-3)):
-                T0  = -Vbs_jct / Vtm0 / NJTSSW_t
-                T1  = self.lexp(T0 * 1.0e3) - 1.0
-                Ibs = Ibs - PSeff * JTSSWS_t * T1
+                self.T0  = -self.Vbs_jct / self.Vtm0 / self.NJTS_t
+                self.T1  = self.lexp(self.T0 * self.VTSS / (self.VTSS - self.Vbs_jct)) - 1.0
+                self.Ibs = self.Ibs - self.ASeff * self.JTSS_t * self.T1
+        if (self.JTSSWS_t > 0.0):
+            if ((self.VTSSWS - self.Vbs_jct) < (self.VTSSWS * 1.0e-3)):
+                self.T0  = -self.Vbs_jct / self.Vtm0 / self.NJTSSW_t
+                self.T1  = self.lexp(self.T0 * 1.0e3) - 1.0
+                self.Ibs = self.Ibs - self.PSeff * self.JTSSWS_t * self.T1
             else:
-                T0  = -Vbs_jct / Vtm0 / NJTSSW_t
-                T1  = self.lexp(T0 * self.VTSSWS / (self.VTSSWS - Vbs_jct)) - 1.0
-                Ibs = Ibs - PSeff * JTSSWS_t * T1
-        if (JTSSWGS_t > 0.0):
-            if ((self.VTSSWGS - Vbs_jct) < (self.VTSSWGS * 1.0e-3)):
-                T0  = -Vbs_jct / Vtm0 / NJTSSWG_t
-                T1  = self.lexp(T0 * 1.0e3) - 1.0
-                Ibs = Ibs - Weffcj * self.NF * JTSSWGS_t * T1
+                self.T0  = -self.Vbs_jct / self.Vtm0 / self.NJTSSW_t
+                self.T1  = self.lexp(self.T0 * self.VTSSWS / (self.VTSSWS - self.Vbs_jct)) - 1.0
+                self.Ibs = self.Ibs - self.PSeff * self.JTSSWS_t * self.T1
+        if (self.JTSSWGS_t > 0.0):
+            if ((self.VTSSWGS - self.Vbs_jct) < (self.VTSSWGS * 1.0e-3)):
+                self.T0  = -self.Vbs_jct / self.Vtm0 / self.NJTSSWG_t
+                self.T1  = self.lexp(self.T0 * 1.0e3) - 1.0
+                self.Ibs = self.Ibs - self.Weffcj * self.NF * self.JTSSWGS_t * self.T1
             else:
-                T0  = -Vbs_jct / Vtm0 / NJTSSWG_t
-                T1  = self.lexp(T0 * self.VTSSWGS / (self.VTSSWGS - Vbs_jct)) - 1.0
-                Ibs = Ibs - Weffcj * self.NF * JTSSWGS_t * T1
+                self.T0  = -self.Vbs_jct / self.Vtm0 / self.NJTSSWG_t
+                self.T1  = self.lexp(self.T0 * self.VTSSWGS / (self.VTSSWGS - self.Vbs_jct)) - 1.0
+                self.Ibs = self.Ibs - self.Weffcj * self.NF * self.JTSSWGS_t * self.T1
 
         # Drain-side junction currents
-        if (Isbd > 0.0):
-            if (Vbd_jct < VjdmRev):
-                T0  = Vbd_jct / Nvtmd
-                T1  = self.lexp(T0) - 1.0
-                T2  = IVjdmRev + DslpRev * (Vbd_jct - VjdmRev)
-                Ibd = T1 * T2
-            elif (Vbd_jct <= VjdmFwd):
-                T0  = Vbd_jct / Nvtmd
-                T1  = (self.BVD + Vbd_jct) / Nvtmd
-                T2  = self.lexp(-T1)
-                Ibd = Isbd * (self.lexp(T0) + XExpBVD - 1.0 - self.XJBVD * T2)
+        if (self.Isbd > 0.0):
+            if (self.Vbd_jct < self.VjdmRev):
+                self.T0  = self.Vbd_jct / self.Nvtmd
+                self.T1  = self.lexp(self.T0) - 1.0
+                self.T2  = self.IVjdmRev + self.DslpRev * (self.Vbd_jct - self.VjdmRev)
+                self.Ibd = self.T1 * self.T2
+            elif (self.Vbd_jct <= self.VjdmFwd):
+                self.T0  = self.Vbd_jct / self.Nvtmd
+                self.T1  = (self.BVD + self.Vbd_jct) / self.Nvtmd
+                self.T2  = self.lexp(-self.T1)
+                self.Ibd = self.Isbd * (self.lexp(self.T0) + self.XExpBVD - 1.0 - self.XJBVD * self.T2)
             else:
-                Ibd = IVjdmFwd + DslpFwd * (Vbd_jct - VjdmFwd)
+                self.Ibd = self.IVjdmFwd + self.DslpFwd * (self.Vbd_jct - self.VjdmFwd)
         else:
-            Ibd = 0.0
+            self.Ibd = 0.0
 
         # Drain-side junction tunneling currents
-        if (JTSD_t > 0.0):
-            if ((self.VTSD - Vbd_jct) < (self.VTSD * 1.0e-3)):
-                T0  = -Vbd_jct / Vtm0 / NJTSD_t
-                T1  = self.lexp(T0 * 1.0e3) - 1.0
-                Ibd = Ibd - ADeff * JTSD_t * T1
+        if (self.JTSD_t > 0.0):
+            if ((self.VTSD - self.Vbd_jct) < (self.VTSD * 1.0e-3)):
+                self.T0  = -self.Vbd_jct / self.Vtm0 / self.NJTSD_t
+                self.T1  = self.lexp(self.T0 * 1.0e3) - 1.0
+                self.Ibd = self.Ibd - self.ADeff * self.JTSD_t * self.T1
             else:
-                T0  = -Vbd_jct / Vtm0 / NJTSD_t
-                T1  = self.lexp(T0 * self.VTSD/ (self.VTSD - Vbd_jct)) - 1.0
-                Ibd = Ibd - ADeff * JTSD_t * T1
-        if (JTSSWD_t > 0.0):
-            if ((self.VTSSWD - Vbd_jct) < (self.VTSSWD * 1.0e-3)):
-                T0  = -Vbd_jct / Vtm0 / NJTSSWD_t
-                T1  = self.lexp(T0 * 1.0e3) - 1.0
-                Ibd = Ibd - PDeff * JTSSWD_t * T1
+                self.T0  = -self.Vbd_jct / self.Vtm0 / self.NJTSD_t
+                self.T1  = self.lexp(self.T0 * self.VTSD/ (self.VTSD - self.Vbd_jct)) - 1.0
+                self.Ibd = self.Ibd - self.ADeff * self.JTSD_t * self.T1
+        if (self.JTSSWD_t > 0.0):
+            if ((self.VTSSWD - self.Vbd_jct) < (self.VTSSWD * 1.0e-3)):
+                self.T0  = -self.Vbd_jct / self.Vtm0 / self.NJTSSWD_t
+                self.T1  = self.lexp(self.T0 * 1.0e3) - 1.0
+                self.Ibd = self.Ibd - self.PDeff * self.JTSSWD_t * self.T1
             else:
-                T0  = -Vbd_jct / Vtm0 / NJTSSWD_t
-                T1  = self.lexp(T0 * self.VTSSWD / (self.VTSSWD - Vbd_jct)) - 1.0
-                Ibd = Ibd - PDeff * JTSSWD_t * T1
-        if (JTSSWGD_t > 0.0):
-            if ((self.VTSSWGD - Vbd_jct) < (self.VTSSWGD * 1.0e-3)):
-                T0  = -Vbd_jct / Vtm0 / NJTSSWGD_t
-                T1  = self.lexp(T0 * 1.0e3) - 1.0
-                Ibd = Ibd - Weffcj * self.NF * JTSSWGD_t * T1
+                self.T0  = -self.Vbd_jct / self.Vtm0 / self.NJTSSWD_t
+                self.T1  = self.lexp(self.T0 * self.VTSSWD / (self.VTSSWD - self.Vbd_jct)) - 1.0
+                self.Ibd = self.Ibd - self.PDeff * self.JTSSWD_t * self.T1
+        if (self.JTSSWGD_t > 0.0):
+            if ((self.VTSSWGD - self.Vbd_jct) < (self.VTSSWGD * 1.0e-3)):
+                self.T0  = -self.Vbd_jct / self.Vtm0 / self.NJTSSWGD_t
+                self.T1  = self.lexp(self.T0 * 1.0e3) - 1.0
+                self.Ibd = self.Ibd - self.Weffcj * self.NF * self.JTSSWGD_t * self.T1
             else:
-                T0  = -Vbd_jct / Vtm0 / NJTSSWGD_t
-                T1  = self.lexp(T0 * self.VTSSWGD / (self.VTSSWGD - Vbd_jct)) - 1.0
-                Ibd = Ibd - Weffcj * self.NF * JTSSWGD_t * T1
+                self.T0  = -self.Vbd_jct / self.Vtm0 / self.NJTSSWGD_t
+                self.T1  = self.lexp(self.T0 * self.VTSSWGD / (self.VTSSWGD - self.Vbd_jct)) - 1.0
+                self.Ibd = self.Ibd - self.Weffcj * self.NF * self.JTSSWGD_t * self.T1
 
 
         # Junction capacitances (no swapping)
         # Source-to-bulk junction
-        Czbs       = CJS_t * ASeff
-        Czbssw     = CJSWS_t * PSeff
-        Czbsswg    = CJSWGS_t * Weffcj * self.NF
-        czbs_p1    = 0.1**-self.MJS
-        czbs_p2    = 1.0 / (1.0 - self.MJS) * (1.0 - 0.05 * self.MJS * (1.0 + self.MJS) * czbs_p1)
-        czbssw_p1  = 0.1**-self.MJSWS
-        czbssw_p2  = 1.0 / (1.0 - self.MJSWS) * (1.0 - 0.05 * self.MJSWS * (1.0 + self.MJSWS) * czbssw_p1)
-        czbsswg_p1 = 0.1**-self.MJSWGS
-        czbsswg_p2 = 1.0 / (1.0 - self.MJSWGS) * (1.0 - 0.05 * self.MJSWGS * (1.0 + self.MJSWGS) * czbsswg_p1)
-        Qbsj1 = self.JunCap(Czbs, Vbs_jct, PBS_t, self.MJS, czbs_p1, czbs_p2)
-        Qbsj2 = self.JunCap(Czbssw, Vbs_jct, PBSWS_t, self.MJSWS, czbssw_p1, czbssw_p2)
-        Qbsj3 = self.JunCap(Czbsswg, Vbs_jct, PBSWGS_t, self.MJSWGS, czbsswg_p1, czbsswg_p2)
-        Qbsj = Qbsj1 + Qbsj2 + Qbsj3
+        self.Czbs       = self.CJS_t * self.ASeff
+        self.Czbssw     = self.CJSWS_t * self.PSeff
+        self.Czbsswg    = self.CJSWGS_t * self.Weffcj * self.NF
+        self.czbs_p1    = 0.1**-self.MJS
+        self.czbs_p2    = 1.0 / (1.0 - self.MJS) * (1.0 - 0.05 * self.MJS * (1.0 + self.MJS) * self.czbs_p1)
+        self.czbssw_p1  = 0.1**-self.MJSWS
+        self.czbssw_p2  = 1.0 / (1.0 - self.MJSWS) * (1.0 - 0.05 * self.MJSWS * (1.0 + self.MJSWS) * self.czbssw_p1)
+        self.czbsswg_p1 = 0.1**-self.MJSWGS
+        self.czbsswg_p2 = 1.0 / (1.0 - self.MJSWGS) * (1.0 - 0.05 * self.MJSWGS * (1.0 + self.MJSWGS) * self.czbsswg_p1)
+        self.Qbsj1 = self.JunCap(self.Czbs, self.Vbs_jct, self.PBS_t, self.MJS, self.czbs_p1, self.czbs_p2)
+        self.Qbsj2 = self.JunCap(self.Czbssw, self.Vbs_jct, self.PBSWS_t, self.MJSWS, self.czbssw_p1, self.czbssw_p2)
+        self.Qbsj3 = self.JunCap(self.Czbsswg, self.Vbs_jct, self.PBSWGS_t, self.MJSWGS, self.czbsswg_p1, self.czbsswg_p2)
+        self.Qbsj = self.Qbsj1 + self.Qbsj2 + self.Qbsj3
 
         # Drain-to-bulk junction
-        Czbd       = CJD_t * ADeff
-        Czbdsw     = CJSWD_t * PDeff
-        Czbdswg    = CJSWGD_t * Weffcj * self.NF
-        czbd_p1    = 0.1**-self.MJD
-        czbd_p2    = 1.0 / (1.0 - self.MJD) * (1.0 - 0.05 * self.MJD * (1.0 + self.MJD) * czbd_p1)
-        czbdsw_p1  = 0.1**-self.MJSWD
-        czbdsw_p2  = 1.0 / (1.0 - self.MJSWD) * (1.0 - 0.05 * self.MJSWD * (1.0 + self.MJSWD) * czbdsw_p1)
-        czbdswg_p1 = 0.1**-self.MJSWGD
-        czbdswg_p2 = 1.0 / (1.0 - self.MJSWGD) * (1.0 - 0.05 * self.MJSWGD * (1.0 + self.MJSWGD) * czbdswg_p1)
-        Qbdj1 = self.JunCap(Czbd, Vbd_jct, PBD_t, self.MJD, czbd_p1, czbd_p2)
-        Qbdj2 = self.JunCap(Czbdsw, Vbd_jct, PBSWD_t, self.MJSWD, czbdsw_p1, czbdsw_p2)
-        Qbdj3 = self.JunCap(Czbdswg, Vbd_jct, PBSWGD_t, self.MJSWGD, czbdswg_p1, czbdswg_p2)
-        Qbdj = Qbdj1 + Qbdj2 + Qbdj3
+        self.Czbd       = self.CJD_t * self.ADeff
+        self.Czbdsw     = self.CJSWD_t * self.PDeff
+        self.Czbdswg    = self.CJSWGD_t * self.Weffcj * self.NF
+        self.czbd_p1    = 0.1**-self.MJD
+        self.czbd_p2    = 1.0 / (1.0 - self.MJD) * (1.0 - 0.05 * self.MJD * (1.0 + self.MJD) * self.czbd_p1)
+        self.czbdsw_p1  = 0.1**-self.MJSWD
+        self.czbdsw_p2  = 1.0 / (1.0 - self.MJSWD) * (1.0 - 0.05 * self.MJSWD * (1.0 + self.MJSWD) * self.czbdsw_p1)
+        self.czbdswg_p1 = 0.1**-self.MJSWGD
+        self.czbdswg_p2 = 1.0 / (1.0 - self.MJSWGD) * (1.0 - 0.05 * self.MJSWGD * (1.0 + self.MJSWGD) * self.czbdswg_p1)
+        self.Qbdj1 = self.JunCap(self.Czbd, self.Vbd_jct, self.PBD_t, self.MJD, self.czbd_p1, self.czbd_p2)
+        self.Qbdj2 = self.JunCap(self.Czbdsw, self.Vbd_jct, self.PBSWD_t, self.MJSWD, self.czbdsw_p1, self.czbdsw_p2)
+        self.Qbdj3 = self.JunCap(self.Czbdswg, self.Vbd_jct, self.PBSWGD_t, self.MJSWGD, self.czbdswg_p1, self.czbdswg_p2)
+        self.Qbdj = self.Qbdj1 + self.Qbdj2 + self.Qbdj3
 
         # Sub-surface leakage drain current
         if (self.SSLMOD != 0):
-            T1 = (NDEP_i / 1.0e23)**self.SSLEXP1
-            T2 = (300.0 / DevTemp)**self.SSLEXP2
-            T3 = (devsign * self.SSL5 * (self.VB - self.VS)) / Vt
-            SSL0_NT  = self.SSL0 * self.lexp(-T1 * T2)
-            SSL1_NT  = self.SSL1 * T2 * T1
-            PHIB_SSL = self.SSL3 * tanh(self.lexp(devsign * self.SSL4 * ((self.VG - self.VB) - VTH - (self.VS - self.VB))))
-            Issl     = sigvds * self.NF * Weff * SSL0_NT * self.lexp(T3) * self.lexp(-SSL1_NT * Leff) * self.lexp(PHIB_SSL / Vt) * (self.lexp(self.SSL2 * Vdsx / Vt) - 1.0)
+            self.T1 = (self.NDEP_i / 1.0e23)**self.SSLEXP1
+            self.T2 = (300.0 / self.DevTemp)**self.SSLEXP2
+            self.T3 = (self.devsign * self.SSL5 * (self.VB - self.VS)) / self.Vt
+            self.SSL0_NT  = self.SSL0 * self.lexp(-self.T1 * self.T2)
+            self.SSL1_NT  = self.SSL1 * self.T2 * self.T1
+            self.PHIB_SSL = self.SSL3 * tanh(self.lexp(self.devsign * self.SSL4 * ((self.VG - self.VB) - self.VTH - (self.VS - self.VB))))
+            self.Issl     = self.sigvds * self.NF * self.Weff * self.SSL0_NT * self.lexp(self.T3) * self.lexp(-self.SSL1_NT * self.Leff) * self.lexp(self.PHIB_SSL / self.Vt) * (self.lexp(self.SSL2 * self.Vdsx / self.Vt) - 1.0)
 
         # Harshit's new flicker noise model. Ref: H. Agarwal et. al., IEEE J-EDS, vol. 3, no. 4, April 2015.
-        Nt      = 4.0 * Vt * self.q
-        Esatnoi = 2.0 * VSAT_a / ueff
+        self.Nt      = 4.0 * self.Vt * self.q
+        self.Esatnoi = 2.0 * self.VSAT_a / self.ueff
         if (self.EM <= 0.0):
-           DelClm = 0.0
+           self.DelClm = 0.0
         else:
-            T0     = (diffVds / litl + self.EM) / Esatnoi
-            DelClm = litl * self.lln(T0)
-            if (DelClm < 0.0):
-                DelClm = 0.0
+            self.T0     = (self.diffVds / self.litl + self.EM) / self.Esatnoi
+            self.DelClm = self.litl * self.lln(self.T0)
+            if (self.DelClm < 0.0):
+                self.DelClm = 0.0
 
-        Nstar = Vt / self.q * (Cox + Cdep + CIT_i)
-        Nl    = 2.0 * nq * Cox * Vt * qdeff * Mnud1 * Mnud / self.q
-        T0a   = self.q * self.q * self.q * Vt * abs(ids) * ueff
-        T0b   = self.q * Vt * ids * ids
-        T0c   = self.NOIA + self.NOIB * Nl + self.NOIC * Nl * Nl
-        T0d   = (Nl + Nstar) * (Nl + Nstar)
-        T0e   = self.NOIA * self.q * Vt
+        self.Nstar = self.Vt / self.q * (self.Cox + self.Cdep + self.CIT_i)
+        self.Nl    = 2.0 * self.nq * self.Cox * self.Vt * self.qdeff * self.Mnud1 * self.Mnud / self.q
+        self.T0a   = self.q * self.q * self.q * self.Vt * abs(self.ids) * self.ueff
+        self.T0b   = self.q * self.Vt * self.ids * self.ids
+        self.T0c   = self.NOIA + self.NOIB * self.Nl + self.NOIC * self.Nl * self.Nl
+        self.T0d   = (self.Nl + self.Nstar) * (self.Nl + self.Nstar)
+        self.T0e   = self.NOIA * self.q * self.Vt
         if (self.FNOIMOD == 1):
-            LH1 = self.LH
-            if (Leff > LH1):
-                T0 = (Leff - LH1)
+            self.LH1 = self.LH
+            if (self.Leff > self.LH1):
+                self.T0 = (self.Leff - self.LH1)
             else:
-                LH1 = Leff
-                T0 = LH1
-            if (self.LINTNOI >= T0 / 2.0):
+                self.LH1 = self.Leff
+                self.T0 = self.LH1
+            if (self.LINTNOI >= self.T0 / 2.0):
                 print("Warning: LINTNOI = %e is too large - Leff for noise is negative. Re-setting LINTNOI = 0.", LINTNOI)
-                LINTNOI_i = 0.0
+                self.LINTNOI_i = 0.0
             else:
-                LINTNOI_i = self.LINTNOI
+                self.LINTNOI_i = self.LINTNOI
 
-            LeffnoiH = Leff
-            vgfbh  = (Vg - VFB_i) / Vt
-            gam_h  = sqrt(2.0 * self.q * epssi * self.HNDEP / Vt) / Cox
-            phib_h = log(self.HNDEP / ni)
+            self.LeffnoiH = self.Leff
+            self.vgfbh  = (self.Vg - self.VFB_i) / self.Vt
+            self.gam_h  = sqrt(2.0 * self.q * self.epssi * self.HNDEP / self.Vt) / self.Cox
+            self.phib_h = log(self.HNDEP / self.ni)
 
             # Pinch-Off potential for halo region
-            psiph = self.PO_psip(vgfbh, gam_h, 0.0)
+            self.psiph = self.PO_psip(self.vgfbh, self.gam_h, 0.0)
 
             # Normalized inversion charge at source end of halo MOSFET
-            qsh = self.BSIM_q(psiph, phib_h, vs, gam_h)
-            nq_h = 1.0 + gam_h / (2.0 * sqrt(psiph))
+            self.qsh = self.BSIM_q(self.psiph, self.phib_h, self.vs, self.gam_h)
+            self.nq_h = 1.0 + self.gam_h / (2.0 * sqrt(self.psiph))
 
             # Setting mobility of halo region equal to the mobility of the channel. In general, U0H < ueff
-            U0_i_h  = ueff
-            beta_h  = U0_i_h * Cox * Weff
-            beta_ch = ueff * Cox * Weff
+            self.U0_i_h  = self.ueff
+            self.beta_h  = self.U0_i_h * self.Cox * self.Weff
+            self.beta_ch = self.ueff * self.Cox * self.Weff
 
             # Normalized drain current for halo transistor. Eq. (14) of the paper
-            i1 = ids * LH1 / (2.0 * nq_h * beta_h * Vt * Vt)
+            self.i1 = self.ids * self.LH1 / (2.0 * self.nq_h * self.beta_h * self.Vt * self.Vt)
 
             # Normalized drain current for channel transistor. Eq. (15) of the paper
-            i2 = ids * (LeffnoiH - LH1) / (2.0 * nq * beta_ch * nVt * nVt)
-            T0 = (1.0 + 4.0 * (qsh * qsh + qsh - i1))
-            if (T0 < 1.0):
-                qdh = 0.0
+            self.i2 = self.ids * (self.LeffnoiH - self.LH1) / (2.0 * self.nq * self.beta_ch * self.nVt * self.nVt)
+            self.T0 = (1.0 + 4.0 * (self.qsh * self.qsh + self.qsh - self.i1))
+            if (self.T0 < 1.0):
+                self.qdh = 0.0
             else:
                 # Drain charge of halo transistor. Eq. (16) of the paper
-                qdh = -0.5 + 0.5 * sqrt(T0)
+                self.qdh = -0.5 + 0.5 * sqrt(self.T0)
 
             # Source charge of channel transistor. Eq. (17) of the paper
-            qsch   = -0.5 + 0.5 * sqrt(1.0 + 4.0 * (qdeff * qdeff + qdeff + i2))
-            gds_h  = 2.0 * nq_h * beta_h * Vt * qdh
-            gds_ch = 2.0 * nq * beta_ch * Vt * qdeff
-            gm_ch  = 2.0 * beta_ch * Vt * (qsch - qdeff)
-            R_ch   = gds_h * (LeffnoiH - LH1)
-            R_h    = gm_ch * LH1 + gds_ch * LH1
-            t_tot  = 1.0 / (R_ch + R_h) / (R_ch + R_h)
-            CF_ch  = R_ch * R_ch * t_tot
-            CF_h   = R_h * R_h * t_tot
+            self.qsch   = -0.5 + 0.5 * sqrt(1.0 + 4.0 * (self.qdeff * self.qdeff + self.qdeff + self.i2))
+            self.gds_h  = 2.0 * self.nq_h * self.beta_h * self.Vt * self.qdh
+            self.gds_ch = 2.0 * self.nq * self.beta_ch * self.Vt * self.qdeff
+            self.gm_ch  = 2.0 * self.beta_ch * self.Vt * (self.qsch - self.qdeff)
+            self.R_ch   = self.gds_h * (self.LeffnoiH - self.LH1)
+            self.R_h    = self.gm_ch * self.LH1 + self.gds_ch * self.LH1
+            self.t_tot  = 1.0 / (self.R_ch + self.R_h) / (self.R_ch + self.R_h)
+            self.CF_ch  = self.R_ch * self.R_ch * self.t_tot
+            self.CF_h   = self.R_h * self.R_h * self.t_tot
 
             # Local noise source
-            if (Leff != LH1):
-                Np2       = 2.0 * nq * Cox * Vt * qsch / self.q
-                Leffnoi   = LeffnoiH - 2.0 * LINTNOI_i-LH1
-                Leffnoisq = Leffnoi * Leffnoi
+            if (self.Leff != self.LH1):
+                self.Np2       = 2.0 * self.nq * self.Cox * self.Vt * self.qsch / self.q
+                self.Leffnoi   = self.LeffnoiH - 2.0 * self.LINTNOI_i-self.LH1
+                self.Leffnoisq = self.Leffnoi * self.Leffnoi
                 # Channel transistor LNS
-                T1     = 1.0e10 * Cox * Leffnoisq
-                T2     = self.NOIA * self.lln((Np2 + Nstar) / (Nl + Nstar))
-                T3     = self.NOIB * (Np2 - Nl)
-                T4     = 0.5 * self.NOIC * (Np2 * Np2 - Nl * Nl)
-                T5     = 1.0e10 * Leffnoisq * Weff * self.NF
-                Ssi_ch = T0a / T1 * (T2 + T3 + T4) + T0b / T5 * DelClm * T0c / T0d
-                T6     = Weff * self.NF * Leffnoi * 1.0e10 * Nstar * Nstar
-                Swi_ch = T0e / T6 * ids * ids
-                T7 = Swi_ch + Ssi_ch
-                if (T7 > 0.0):
-                    FNPowerAt1Hz_ch = (Ssi_ch * Swi_ch) / T7
+                self.T1     = 1.0e10 * self.Cox * self.Leffnoisq
+                self.T2     = self.NOIA * self.lln((self.Np2 + self.Nstar) / (self.Nl + self.Nstar))
+                self.T3     = self.NOIB * (self.Np2 - self.Nl)
+                self.T4     = 0.5 * self.NOIC * (self.Np2 * self.Np2 - self.Nl * self.Nl)
+                self.T5     = 1.0e10 * self.Leffnoisq * self.Weff * self.NF
+                self.Ssi_ch = self.T0a / self.T1 * (self.T2 + self.T3 + self.T4) + self.T0b / self.T5 * self.DelClm * self.T0c / self.T0d
+                self.T6     = self.Weff * self.NF * self.Leffnoi * 1.0e10 * self.Nstar * self.Nstar
+                self.Swi_ch = self.T0e / self.T6 * self.ids * self.ids
+                self.T7 = self.Swi_ch + self.Ssi_ch
+                if (self.T7 > 0.0):
+                    self.FNPowerAt1Hz_ch = (self.Ssi_ch * self.Swi_ch) / self.T7
                 else:
-                    FNPowerAt1Hz_ch = 0.0
+                    self.FNPowerAt1Hz_ch = 0.0
             else:
-                FNPowerAt1Hz_ch = 0.0
+                self.FNPowerAt1Hz_ch = 0.0
             # Halo transistor LNS
-            T8    = self.NOIA2 * self.q * Vt
-            T9    = Weff * self.NF * LH1 * 1.0e10 * Nstar * Nstar
-            Swi_h = T8 / T9 * ids * ids
-            T10   = Swi_h
-            if (T10 > 0.0):
-                FNPowerAt1Hz_h = Swi_h
+            self.T8    = self.NOIA2 * self.q * self.Vt
+            self.T9    = self.Weff * self.NF * self.LH1 * 1.0e10 * self.Nstar * self.Nstar
+            self.Swi_h = self.T8 / self.T9 * self.ids * self.ids
+            self.T10   = self.Swi_h
+            if (self.T10 > 0.0):
+                self.FNPowerAt1Hz_h = self.Swi_h
             else:
-                FNPowerAt1Hz_h = 0.0
+                self.FNPowerAt1Hz_h = 0.0
             # Overall noise
-            FNPowerAt1Hz = FNPowerAt1Hz_ch * CF_ch + FNPowerAt1Hz_h * CF_h
+            self.FNPowerAt1Hz = self.FNPowerAt1Hz_ch * self.CF_ch + self.FNPowerAt1Hz_h * self.CF_h
         else:
             # Parameter checking
-            if (self.LINTNOI >= Leff/2.0):
+            if (self.LINTNOI >= self.Leff/2.0):
                 print("Warning: LINTNOI = %e is too large - Leff for noise is negative. Re-setting LINTNOI = 0.", LINTNOI)
-                LINTNOI_i = 0.0
+                self.LINTNOI_i = 0.0
             else:
-                LINTNOI_i = self.LINTNOI
+                self.LINTNOI_i = self.LINTNOI
 
             if (self.NOIA > 0.0 or self.NOIB > 0.0 or self.NOIC > 0.0):
-                Leffnoi   = Leff - 2.0 * LINTNOI_i
-                Leffnoisq = Leffnoi * Leffnoi
-                T0        = 1.0e10 * Cox * Leffnoisq
-                N0        = 2.0 * nq * Cox * Vt * qs * Mnud1 * Mnud / self.q
-                T1        = self.NOIA * self.lln((N0 + Nstar) / (Nl + Nstar))
-                T2        = self.NOIB * (N0 - Nl)
-                T3        = 0.5 * self.NOIC * (N0 * N0 - Nl * Nl)
-                T4        = 1.0e10 * Leffnoisq * Weff * self.NF
-                Ssi       = T0a / T0 * (T1 + T2 + T3) + T0b / T4 * DelClm * T0c / T0d
-                T5        = Weff * self.NF * Leffnoi * 1.0e10 * Nstar * Nstar
-                Swi       = T0e / T5 * ids * ids
-                T6        = Swi + Ssi
-                if (T6 > 0.0):
-                    FNPowerAt1Hz = (Ssi * Swi) / T6 / (1 + self.NOIA1 * (qs-qdeff)**self.NOIAX)
+                self.Leffnoi   = self.Leff - 2.0 * self.LINTNOI_i
+                self.Leffnoisq = self.Leffnoi * self.Leffnoi
+                self.T0        = 1.0e10 * self.Cox * self.Leffnoisq
+                self.N0        = 2.0 * self.nq * self.Cox * self.Vt * self.qs * self.Mnud1 * self.Mnud / self.q
+                self.T1        = self.NOIA * self.lln((self.N0 + self.Nstar) / (self.Nl + self.Nstar))
+                self.T2        = self.NOIB * (self.N0 - self.Nl)
+                self.T3        = 0.5 * self.NOIC * (self.N0 * self.N0 - self.Nl * self.Nl)
+                self.T4        = 1.0e10 * self.Leffnoisq * self.Weff * self.NF
+                self.Ssi       = self.T0a / self.T0 * (self.T1 + self.T2 + self.T3) + self.T0b / self.T4 * self.DelClm * self.T0c / self.T0d
+                self.T5        = self.Weff * self.NF * self.Leffnoi * 1.0e10 * self.Nstar * self.Nstar
+                self.Swi       = self.T0e / self.T5 * self.ids * self.ids
+                self.T6        = self.Swi + self.Ssi
+                if (self.T6 > 0.0):
+                    self.FNPowerAt1Hz = (self.Ssi * self.Swi) / self.T6 / (1 + self.NOIA1 * (self.qs-self.qdeff)**self.NOIAX)
                 else:
-                    FNPowerAt1Hz = 0.0
+                    self.FNPowerAt1Hz = 0.0
             else:
-                FNPowerAt1Hz = 0.0
-        T0         = qia / Esatnoi / Leff
-        T1         = T0 * T0
-        T3         = self.RNOIA * (1.0 + self.TNOIA * Leff * T1)
-        T4         = self.RNOIB * (1.0 + self.TNOIB * Leff * T1)
-        T5         = self.RNOIK * (1.0 + self.TNOIK * Leff * T1)
-        ctnoi      = self.RNOIC * (1.0 + self.TNOIC * Leff * T1)
-        betanoisq  = 3.0 * T3 * T3
-        betanoisq  = (betanoisq - 1.0) * exp(-Leff / self.LP) + 1.0
-        betaLowId  = T5 * T5
-        thetanoisq = T4 * T4
-        cm_igid    = 0.0
+                self.FNPowerAt1Hz = 0.0
+        self.T0         = self.qia / self.Esatnoi / self.Leff
+        self.T1         = self.T0 * self.T0
+        self.T3         = self.RNOIA * (1.0 + self.TNOIA * self.Leff * self.T1)
+        self.T4         = self.RNOIB * (1.0 + self.TNOIB * self.Leff * self.T1)
+        self.T5         = self.RNOIK * (1.0 + self.TNOIK * self.Leff * self.T1)
+        self.ctnoi      = self.RNOIC * (1.0 + self.TNOIC * self.Leff * self.T1)
+        self.betanoisq  = 3.0 * self.T3 * self.T3
+        self.betanoisq  = (self.betanoisq - 1.0) * exp(-self.Leff / self.LP) + 1.0
+        self.betaLowId  = self.T5 * self.T5
+        self.thetanoisq = self.T4 * self.T4
+        self.cm_igid    = 0.0
 
         # C-V model
-        vgfbCV   = vgfb
-        gamg2    = (2.0 * self.q * epssi * NGATE_i) / (Cox * Cox * Vt)
-        invgamg2 = 0.0
+        self.vgfbCV   = self.vgfb
+        self.gamg2    = (2.0 * self.q * self.epssi * self.NGATE_i) / (self.Cox * self.Cox * self.Vt)
+        self.invgamg2 = 0.0
         if (self.CVMOD == 1):
-            VFBCV_i = VFBCV_i + self.DELVTO
-            vg      = Vg * inv_Vt
-            vs      = Vs * inv_Vt
-            vfb     = VFBCV_i * inv_Vt
-            vgfbCV  = vg - vfb
-            phibCV    = self.lln(NDEPCV_i / ni)
+            self.VFBCV_i = self.VFBCV_i + self.DELVTO
+            self.vg      = self.Vg * self.inv_Vt
+            self.vs      = self.Vs * self.inv_Vt
+            self.vfb     = self.VFBCV_i * self.inv_Vt
+            self.vgfbCV  = self.vg - self.vfb
+            self.phibCV    = self.lln(self.NDEPCV_i / self.ni)
             # Normalized body factor
-            gamCV      = sqrt(2.0 * self.q * epssi * NDEPCV_i * inv_Vt) / Cox
-            inv_gam  = 1.0 / gamCV
-            gamg2    = (2.0 * self.q * epssi * NGATE_i) / (Cox * Cox * Vt)
-            invgamg2 = (1.0 / gamg2) if (NGATE_i > 0.0) else 0.0
-            DPD      = (NDEPCV_i / NGATE_i) if (NGATE_i > 0.0) else 0.0
+            self.gamCV      = sqrt(2.0 * self.q * self.epssi * self.NDEPCV_i * self.inv_Vt) / self.Cox
+            self.inv_gam  = 1.0 / self.gamCV
+            self.gamg2    = (2.0 * self.q * self.epssi * self.NGATE_i) / (self.Cox * self.Cox * self.Vt)
+            self.invgamg2 = (1.0 / self.gamg2) if (self.NGATE_i > 0.0) else 0.0
+            self.DPD      = (self.NDEPCV_i / self.NGATE_i) if (self.NGATE_i > 0.0) else 0.0
 
             # psip: pinch-off voltage
-            psip = self.PO_psip(vgfbCV, gamCV, DPD)
+            self.psip = self.PO_psip(self.vgfbCV, self.gamCV, self.DPD)
 
             # Normalized inversion charge at source end of channel
-            qs = self.BSIM_q(psip, phibCV, vs, gamCV)
-            psipclamp = self.Smooth(psip, 1.0, 2.0)
-            sqrtpsip = sqrt(psipclamp)
+            self.qs = self.BSIM_q(self.psip, self.phibCV, self.vs, self.gamCV)
+            self.psipclamp = self.Smooth(self.psip, 1.0, 2.0)
+            self.sqrtpsip = sqrt(self.psipclamp)
 
             # Source side surface potential
-            psiavg = psip - 2.0 * qs
-            T0 = self.Smooth(psiavg, 1.0, 2.0)
-            nq = 1.0 + gamCV / (sqrtpsip + sqrt(T0))
+            self.psiavg = self.psip - 2.0 * self.qs
+            self.T0 = self.Smooth(self.psiavg, 1.0, 2.0)
+            self.nq = 1.0 + self.gamCV / (self.sqrtpsip + sqrt(self.T0))
 
             # Drain saturation voltage
-            T0 = Vt * (vgfbCV - psip - 2.0 * qs * (nq - 1.0))
-            qbs = self.Smooth(T0, 0.0, 0.1)
+            self.T0 = self.Vt * (self.vgfbCV - self.psip - 2.0 * self.qs * (self.nq - 1.0))
+            self.qbs = self.Smooth(self.T0, 0.0, 0.1)
 
             # Source side qi and qb for Vdsat (normalized to Cox)
-            qis = 2.0 * nq * Vt * qs
-            Eeffs = EeffFactor * (qbs + eta_mu * qis)
+            self.qis = 2.0 * self.nq * self.Vt * self.qs
+            self.Eeffs = self.EeffFactor * (self.qbs + self.eta_mu * self.qis)
 
             # Ref: BSIM4 mobility model
-            T3 = (UA_a + UC_a * Vbsx) * Eeffs**EU_t
-            T4 = 1.0 + T3
-            Dmobs = self.Smooth(T4, 1.0, 0.0015)
-            LambdaC_by2 = (U0_a / Dmobs) * Vt / (VSATCV_t * Lact)
-            qdsat       = LambdaC_by2 * (qs * qs + qs) / (1.0 + LambdaC_by2 * (1.0 + qs))
-            vdsatcv     = psip - 2.0 * phibCV - (2.0 * qdsat + self.lln((qdsat * 2.0 * nq * inv_gam) * ((qdsat * 2.0 * nq * inv_gam) + (gam / (nq - 1.0)))))
-            VdsatCV     = vdsatcv * Vt
+            self.T3 = (self.UA_a + self.UC_a * self.Vbsx) * self.Eeffs**self.EU_t
+            self.T4 = 1.0 + self.T3
+            self.Dmobs = self.Smooth(self.T4, 1.0, 0.0015)
+            self.LambdaC_by2 = (self.U0_a / self.Dmobs) * self.Vt / (self.VSATCV_t * self.Lact)
+            self.qdsat       = self.LambdaC_by2 * (self.qs * self.qs + self.qs) / (1.0 + self.LambdaC_by2 * (1.0 + self.qs))
+            self.vdsatcv     = self.psip - 2.0 * self.phibCV - (2.0 * self.qdsat + self.lln((self.qdsat * 2.0 * self.nq * self.inv_gam) * ((self.qdsat * 2.0 * self.nq * self.inv_gam) + (self.gam / (self.nq - 1.0)))))
+            self.VdsatCV     = self.vdsatcv * self.Vt
 
             # Normalized charge qdeff at drain end of channel
-            VdssatCV = self.Smooth(VdsatCV - Vs, 0.0, 1e-3)
-            VdssatCV     = VdssatCV / self.ABULK
-            T7     = (Vds / VdssatCV)**(1.0 / DELTA_t)
-            T8     = (1.0 + T7)**-DELTA_t
-            Vdseff = Vds * T8
-            vdeff  = (Vdseff + Vs) * inv_Vt
-            qdeff = self.BSIM_q(psip, phibCV, vdeff, gamCV)
+            self.VdssatCV = self.Smooth(self.VdsatCV - self.Vs, 0.0, 1e-3)
+            self.VdssatCV     = self.VdssatCV / self.ABULK
+            self.T7     = (self.Vds / self.VdssatCV)**(1.0 / self.DELTA_t)
+            self.T8     = (1.0 + self.T7)**-self.DELTA_t
+            self.Vdseff = self.Vds * self.T8
+            self.vdeff  = (self.Vdseff + self.Vs) * self.inv_Vt
+            self.qdeff = self.BSIM_q(self.psip, self.phibCV, self.vdeff, self.gamCV)
 
             # Reevaluation of nq to include qdeff needed for gummel symmetry
-            psiavg = psip - qs - qdeff - 1.0
-            T0 = self.Smooth(psiavg, 1.0, 2.0)
-            T2 = sqrt(T0)
-            T3 = 1.0 + DPD + gamCV / (sqrtpsip + T2)
-            T4 = 0.5 + DPD * T2 * inv_gam
-            T5 = sqrt(T4 * T4 + T3 * (qs + qdeff) * invgamg2)
-            nq = T3 / (T4 + T5)
+            self.psiavg = self.psip - self.qs - self.qdeff - 1.0
+            self.T0 = self.Smooth(self.psiavg, 1.0, 2.0)
+            self.T2 = sqrt(self.T0)
+            self.T3 = 1.0 + self.DPD + self.gamCV / (self.sqrtpsip + self.T2)
+            self.T4 = 0.5 + self.DPD * self.T2 * self.inv_gam
+            self.T5 = sqrt(self.T4 * self.T4 + self.T3 * (self.qs + self.qdeff) * self.invgamg2)
+            self.nq = self.T3 / (self.T4 + self.T5)
 
             # C-V expressions including velocity saturation and CLM
             # Velocity saturation for C-V
-            T0  = Vt * (vgfbCV - psip - 2.0 * qs * (nq - 1.0))
-            qbs = self.Smooth(T0, 0.0, 0.1)
-            T1  = Vt * (vgfbCV - psip - 2.0 * qdeff * (nq - 1.0))
-            qbd = self.Smooth(T1, 0.0, 0.1)
-            qb  = 0.5 * (qbs + qbd)
-            qia = nq * Vt * (qs + qdeff)
-            Eeffm = EeffFactor * (qb + eta_mu * qia)
-            psip = self.PO_psip((vgfbCV + self.DELVFBACC * inv_Vt), gamCV, DPD)
-            T3    = (UA_a + UC_a * Vbsx) * Eeffm**EU_t
-            T4    = 1.0 + T3
-            Dmob = self.Smooth(T4, 1.0, 0.0015)
-            LambdaC = 2.0 * (U0_a / Dmob) * Vt / (VSATCV_t * Lact)
-            dps     = qs - qdeff
-            T1      = 2.0 * (LambdaC * dps) * (LambdaC * dps)
-            zsat    = sqrt(1.0 + T1)
-            Dvsat   = 0.5 * (1.0 + zsat)
+            self.T0  = self.Vt * (self.vgfbCV - self.psip - 2.0 * self.qs * (self.nq - 1.0))
+            self.qbs = self.Smooth(self.T0, 0.0, 0.1)
+            self.T1  = self.Vt * (self.vgfbCV - self.psip - 2.0 * self.qdeff * (self.nq - 1.0))
+            self.qbd = self.Smooth(self.T1, 0.0, 0.1)
+            self.qb  = 0.5 * (self.qbs + self.qbd)
+            self.qia = self.nq * self.Vt * (self.qs + self.qdeff)
+            self.Eeffm = self.EeffFactor * (self.qb + self.eta_mu * self.qia)
+            self.psip = self.PO_psip((self.vgfbCV + self.DELVFBACC * self.inv_Vt), self.gamCV, self.DPD)
+            self.T3    = (self.UA_a + self.UC_a * self.Vbsx) * self.Eeffm**self.EU_t
+            self.T4    = 1.0 + self.T3
+            self.Dmob = self.Smooth(self.T4, 1.0, 0.0015)
+            self.LambdaC = 2.0 * (self.U0_a / self.Dmob) * self.Vt / (self.VSATCV_t * self.Lact)
+            self.dps     = self.qs - self.qdeff
+            self.T1      = 2.0 * (self.LambdaC * self.dps) * (self.LambdaC * self.dps)
+            self.zsat    = sqrt(1.0 + self.T1)
+            self.Dvsat   = 0.5 * (1.0 + self.zsat)
             # CLM for C-V
-            Esat    = 2.0 * VSATCV_t / (U0_a / Dmob)
-            EsatL   = Esat * Lact
-            Vasat   = VdssatCV + EsatL
-            diffVds = Vds - Vdseff
-        if (PCLMCV_i != 0.0):
-            MdL = 1.0 + PCLMCV_i * self.lln(1.0 + diffVds / PCLMCV_i / Vasat)
+            self.Esat    = 2.0 * self.VSATCV_t / (self.U0_a / self.Dmob)
+            self.EsatL   = self.Esat * self.Lact
+            self.Vasat   = self.VdssatCV + self.EsatL
+            self.diffVds = self.Vds - self.Vdseff
+        if (self.PCLMCV_i != 0.0):
+            self.MdL = 1.0 + self.PCLMCV_i * self.lln(1.0 + self.diffVds / self.PCLMCV_i / self.Vasat)
         else:
-            MdL = 1.0
-        MdL_2       = MdL * MdL
-        inv_MdL     = 1.0 / MdL
-        inv_MdL_2   = 1.0 / MdL_2
-        MdL_less_1  = MdL - 1.0
-        vgpqm = vgfbCV - psip
-        DQSD  = (qs - qdeff)
-        DQSD2 = (qs - qdeff) * (qs - qdeff)
-        sis   = vgpqm + 2.0 * qs
-        sid   = vgpqm + 2.0 * qdeff
-        T1 = self.Smooth(sis, 0.0, 0.5)
-        T2 = self.Smooth(sid, 0.0, 0.5)
-        Temps = sqrt(0.25 + T1 * invgamg2)
-        Tempd = sqrt(0.25 + T2 * invgamg2)
-        T1 = sis / (1.0 + 2.0 * Temps)
-        T2 = sid / (1.0 + 2.0 * Tempd)
-        T3 = Temps + Tempd
-        T4 = self.Oneby3 * (DQSD2 / (T3 * T3 * T3))
-        T5 = (self.ABULK*Dvsat * inv_MdL) / (1.0 + qs + qdeff)
-        T6 = 0.8 * (T3 * T3 + Temps * Tempd) * T5
-        T7 = T6 + (2.0 * invgamg2)
-        T8 = self.Oneby3 * DQSD2 * T5
-        dqgeff = sid * (2.0 * Tempd - 1.0) / (2.0 * Tempd + 1.0)
-        qbeff  = vgpqm - 2.0 * (nq - 1.0) * qdeff + dqgeff
-        Qb  = inv_MdL * (T1 + T2 + (T4 * T7 - nq * (qs + qdeff + T8))) + MdL_less_1 * qbeff
-        T9  = qs + qdeff
-        T10 = DQSD2 * T5 * T5
-        Qi  = nq * inv_MdL * (T9 + self.Oneby3 * DQSD2 * T5) + 2.0 * nq * MdL_less_1 * qdeff
-        Qd1 = nq * inv_MdL_2 * (0.5 * T9 - (DQSD / 6.0) * (1.0 - DQSD * T5 - 0.2 * T10))
-        Qd2 = nq * (MdL - inv_MdL) * qdeff
-        Qd  = Qd1 + Qd2
-        Qs  = Qi - Qd
+            self.MdL = 1.0
+        self.MdL_2       = self.MdL * self.MdL
+        self.inv_MdL     = 1.0 / self.MdL
+        self.inv_MdL_2   = 1.0 / self.MdL_2
+        self.MdL_less_1  = self.MdL - 1.0
+        self.vgpqm = self.vgfbCV - self.psip
+        self.DQSD  = (self.qs - self.qdeff)
+        self.DQSD2 = (self.qs - self.qdeff) * (self.qs - self.qdeff)
+        self.sis   = self.vgpqm + 2.0 * self.qs
+        self.sid   = self.vgpqm + 2.0 * self.qdeff
+        self.T1 = self.Smooth(self.sis, 0.0, 0.5)
+        self.T2 = self.Smooth(self.sid, 0.0, 0.5)
+        self.Temps = sqrt(0.25 + self.T1 * self.invgamg2)
+        self.Tempd = sqrt(0.25 + self.T2 * self.invgamg2)
+        self.T1 = self.sis / (1.0 + 2.0 * self.Temps)
+        self.T2 = self.sid / (1.0 + 2.0 * self.Tempd)
+        self.T3 = self.Temps + self.Tempd
+        self.T4 = self.Oneby3 * (self.DQSD2 / (self.T3 * self.T3 * self.T3))
+        self.T5 = (self.ABULK*self.Dvsat * self.inv_MdL) / (1.0 + self.qs + self.qdeff)
+        self.T6 = 0.8 * (self.T3 * self.T3 + self.Temps * self.Tempd) * self.T5
+        self.T7 = self.T6 + (2.0 * self.invgamg2)
+        self.T8 = self.Oneby3 * self.DQSD2 * self.T5
+        self.dqgeff = self.sid * (2.0 * self.Tempd - 1.0) / (2.0 * self.Tempd + 1.0)
+        self.qbeff  = self.vgpqm - 2.0 * (self.nq - 1.0) * self.qdeff + self.dqgeff
+        self.Qb  = self.inv_MdL * (self.T1 + self.T2 + (self.T4 * self.T7 - self.nq * (self.qs + self.qdeff + self.T8))) + self.MdL_less_1 * self.qbeff
+        self.T9  = self.qs + self.qdeff
+        self.T10 = self.DQSD2 * self.T5 * self.T5
+        self.Qi  = self.nq * self.inv_MdL * (self.T9 + self.Oneby3 * self.DQSD2 * self.T5) + 2.0 * self.nq * self.MdL_less_1 * self.qdeff
+        self.Qd1 = self.nq * self.inv_MdL_2 * (0.5 * self.T9 - (self.DQSD / 6.0) * (1.0 - self.DQSD * self.T5 - 0.2 * self.T10))
+        self.Qd2 = self.nq * (self.MdL - self.inv_MdL) * self.qdeff
+        self.Qd  = self.Qd1 + self.Qd2
+        self.Qs  = self.Qi - self.Qd
 
         # Quantum mechanical effects
-        qbaCV = self.Smooth(Vt * Qb, 0.0, 0.1)
-        qiaCV      = Vt * (Qs + Qd)
-        T0         = (qiaCV + self.ETAQM * qbaCV) / self.QM0
-        T1         = 1.0 + T0**(0.7 * self.BDOS)
-        XDCinv     = self.ADOS * 1.9e-9 / T1
-        Coxeffinv  = 3.9 * self.EPS0 / (BSIMBULKTOXP * 3.9 / self.EPSROX + XDCinv / epsratio)
-        QBi        = -self.NF * Wact * Lact * (self.EPS0 * self.EPSROX / BSIMBULKTOXP) * Vt * Qb
-        WLCOXVtinv = self.NF * Wact * Lact * Coxeffinv * Vt
-        QSi        = -WLCOXVtinv * Qs
-        QDi        = -WLCOXVtinv * Qd
-        QGi        = -(QBi + QSi + QDi)
+        self.qbaCV = self.Smooth(self.Vt * self.Qb, 0.0, 0.1)
+        self.qiaCV      = self.Vt * (self.Qs + self.Qd)
+        self.T0         = (self.qiaCV + self.ETAQM * self.qbaCV) / self.QM0
+        self.T1         = 1.0 + self.T0**(0.7 * self.BDOS)
+        self.XDCinv     = self.ADOS * 1.9e-9 / self.T1
+        self.Coxeffinv  = 3.9 * self.EPS0 / (self.BSIMBULKTOXP * 3.9 / self.EPSROX + self.XDCinv / self.epsratio)
+        self.QBi        = -self.NF * self.Wact * self.Lact * (self.EPS0 * self.EPSROX / self.BSIMBULKTOXP) * self.Vt * self.Qb
+        self.WLCOXVtinv = self.NF * self.Wact * self.Lact * self.Coxeffinv * self.Vt
+        self.QSi        = -self.WLCOXVtinv * self.Qs
+        self.QDi        = -self.WLCOXVtinv * self.Qd
+        self.QGi        = -(self.QBi + self.QSi + self.QDi)
 
         # Outer fringing capacitances
-        if self.CFgiven == False:
-            CF_i = 2.0 * self.EPSROX * self.EPS0 / self.M_PI * self.lln(self.CFRCOEFF * (1.0 + 0.4e-6 / self.TOXE))
-        Cgsof = self.CGSO + CF_i
-        Cgdof = self.CGDO + CF_i
+        if ("CF" not in param.keys()):
+            self.CF_i = 2.0 * self.EPSROX * self.EPS0 / self.M_PI * self.lln(self.CFRCOEFF * (1.0 + 0.4e-6 / self.TOXE))
+        self.Cgsof = self.CGSO + self.CF_i
+        self.Cgdof = self.CGDO + self.CF_i
 
         # Overlap capacitances
         if (self.COVMOD == 0):
-            Qovs = -Wact * self.NF * Cgsof * Vgs_ov_noswap
-            Qovd = -Wact * self.NF * Cgdof * Vgd_ov_noswap
+            self.Qovs = -self.Wact * self.NF * self.Cgsof * self.Vgs_ov_noswap
+            self.Qovd = -self.Wact * self.NF * self.Cgdof * self.Vgd_ov_noswap
         else:
-            T0    = sqrt((Vgs_ov_noswap - Vfbsdr + self.DELTA_1) * (Vgs_ov_noswap - Vfbsdr + self.DELTA_1) + 4.0 * self.DELTA_1)
-            Vgsov = 0.5 * (Vgs_ov_noswap - Vfbsdr + self.DELTA_1 - T0)
-            T1    = sqrt(1.0 - 4.0 * Vgsov / CKAPPAS_i)
-            Qovs  = -Wact * self.NF * (Cgsof * Vgs_ov_noswap + CGSL_i * (Vgs_ov_noswap - Vfbsdr - Vgsov - 0.5 * CKAPPAS_i * (-1.0 + T1)))
-            T0    = sqrt((Vgd_ov_noswap - Vfbsdr + self.DELTA_1) * (Vgd_ov_noswap - Vfbsdr + self.DELTA_1) + 4.0 * self.DELTA_1)
-            Vgdov = 0.5 * (Vgd_ov_noswap - Vfbsdr + self.DELTA_1 - T0)
-            T2    = sqrt(1.0 - 4.0 * Vgdov / CKAPPAD_i)
-            Qovd  = -Wact * self.NF * (Cgdof * Vgd_ov_noswap + CGDL_i * (Vgd_ov_noswap - Vfbsdr - Vgdov - 0.5 * CKAPPAD_i * (-1.0 + T2)))
-        Qovb = -devsign * self.NF * Lact * self.CGBO * (self.VG - self.VB)
-        Qovg = -(Qovs + Qovd + Qovb)
+            self.T0    = sqrt((self.Vgs_ov_noswap - self.Vfbsdr + self.DELTA_1) * (self.Vgs_ov_noswap - self.Vfbsdr + self.DELTA_1) + 4.0 * self.DELTA_1)
+            self.Vgsov = 0.5 * (self.Vgs_ov_noswap - self.Vfbsdr + self.DELTA_1 - self.T0)
+            self.T1    = sqrt(1.0 - 4.0 * self.Vgsov / self.CKAPPAS_i)
+            self.Qovs  = -self.Wact * self.NF * (self.Cgsof * self.Vgs_ov_noswap + self.CGSL_i * (self.Vgs_ov_noswap - self.Vfbsdr - self.Vgsov - 0.5 * self.CKAPPAS_i * (-1.0 + self.T1)))
+            self.T0    = sqrt((self.Vgd_ov_noswap - self.Vfbsdr + self.DELTA_1) * (self.Vgd_ov_noswap - self.Vfbsdr + self.DELTA_1) + 4.0 * self.DELTA_1)
+            self.Vgdov = 0.5 * (self.Vgd_ov_noswap - self.Vfbsdr + self.DELTA_1 - self.T0)
+            self.T2    = sqrt(1.0 - 4.0 * self.Vgdov / self.CKAPPAD_i)
+            self.Qovd  = -self.Wact * self.NF * (self.Cgdof * self.Vgd_ov_noswap + self.CGDL_i * (self.Vgd_ov_noswap - self.Vfbsdr - self.Vgdov - 0.5 * self.CKAPPAD_i * (-1.0 + self.T2)))
+        self.Qovb = -self.devsign * self.NF * self.Lact * self.CGBO * (self.VG - self.VB)
+        self.Qovg = -(self.Qovs + self.Qovd + self.Qovb)
 
         # Edge FET model
         if (self.EDGEFET == 1):
-            phib_edge     = self.lln(NDEPEDGE_i / ni)
-            Phist         = max(0.4 + Vt * phib_edge + PHIN_i, 0.4)
-            sqrtPhist     = sqrt(Phist)
-            T1DEP         = sqrt(2.0 * epssi / (self.q * NDEPEDGE_i))
-            NFACTOREDGE_t = NFACTOREDGE_i * self.hypsmooth((1.0 + TNFACTOREDGE_i * (TRatio - 1.0)), 1e-3)
-            ETA0EDGE_t    = ETA0EDGE_i * (1.0 + TETA0EDGE_i * (TRatio - 1.0))
-            PhistVbs = self.Smooth(Phist - Vbsx, 0.05, 0.1)
-            sqrtPhistVbs  = sqrt(PhistVbs)
-            Xdep          = T1DEP * sqrtPhistVbs
-            Cdep          = epssi / Xdep
-            cdsc          = CITEDGE_i + NFACTOREDGE_t + CDSCDEDGE_i * Vdsx - CDSCBEDGE_i * Vbsx
-            T1            = 1.0 + cdsc/Cox
-            n = self.Smooth(T1, 1.0, 0.05)
-            nVt       = n * Vt
-            inv_nVt   = 1.0 / nVt
-            vg        = Vg * inv_nVt
-            vs        = Vs * inv_nVt
-            vfb       = VFB_i * inv_nVt
-            dvth_dibl = -(ETA0EDGE_t + ETABEDGE_i * Vbsx) * Vdsx
-            dvth_temp = (KT1EDGE_i + KT1LEDGE_i / Leff + KT2EDGE_i * Vbsx) * (TRatio**KT1EXPEDGE_i - 1.0)
-            litl_edge = litl * (1.0 + self.DVT2EDGE * Vbsx)
-            T0        = self.DVT1EDGE * Leff / litl_edge
-            if (T0 < 40.0):
-                theta_sce_edge = 0.5 * self.DVT0EDGE / (cosh(T0) - 1.0)
+            self.phib_edge     = self.lln(self.NDEPEDGE_i / self.ni)
+            self.Phist         = max(0.4 + self.Vt * self.phib_edge + self.PHIN_i, 0.4)
+            self.sqrtPhist     = sqrt(self.Phist)
+            self.T1DEP         = sqrt(2.0 * self.epssi / (self.q * self.NDEPEDGE_i))
+            self.NFACTOREDGE_t = self.NFACTOREDGE_i * self.hypsmooth((1.0 + self.TNFACTOREDGE_i * (self.TRatio - 1.0)), 1e-3)
+            self.ETA0EDGE_t    = self.ETA0EDGE_i * (1.0 + self.TETA0EDGE_i * (self.TRatio - 1.0))
+            self.PhistVbs = self.Smooth(self.Phist - self.Vbsx, 0.05, 0.1)
+            self.sqrtPhistVbs  = sqrt(self.PhistVbs)
+            self.Xdep          = self.T1DEP * self.sqrtPhistVbs
+            self.Cdep          = self.epssi / self.Xdep
+            self.cdsc          = self.CITEDGE_i + self.NFACTOREDGE_t + self.CDSCDEDGE_i * self.Vdsx - self.CDSCBEDGE_i * self.Vbsx
+            self.T1            = 1.0 + self.cdsc/self.Cox
+            self.n = self.Smooth(self.T1, 1.0, 0.05)
+            self.nVt       = self.n * self.Vt
+            self.inv_nVt   = 1.0 / self.nVt
+            self.vg        = self.Vg * self.inv_nVt
+            self.vs        = self.Vs * self.inv_nVt
+            self.vfb       = self.VFB_i * self.inv_nVt
+            self.dvth_dibl = -(self.ETA0EDGE_t + self.ETABEDGE_i * self.Vbsx) * self.Vdsx
+            self.dvth_temp = (self.KT1EDGE_i + self.KT1LEDGE_i / self.Leff + self.KT2EDGE_i * self.Vbsx) * (self.TRatio**self.KT1EXPEDGE_i - 1.0)
+            self.litl_edge = self.litl * (1.0 + self.DVT2EDGE * self.Vbsx)
+            self.T0        = self.DVT1EDGE * self.Leff / self.litl_edge
+            if (self.T0 < 40.0):
+                self.theta_sce_edge = 0.5 * self.DVT0EDGE / (cosh(self.T0) - 1.0)
             else:
-                theta_sce_edge = self.DVT0EDGE * self.lexp(-T0)
-            dvth_sce  = theta_sce_edge * (Vbi_edge - Phist)
-            Vth_shift = dvth_dibl - dvth_temp + dvth_sce + self.DVTEDGE + vth0_stress_EDGE - K2EDGE_i * Vbsx
-            vgfb      = vg - vfb - Vth_shift * inv_nVt
+                self.theta_sce_edge = self.DVT0EDGE * self.lexp(-self.T0)
+            self.dvth_sce  = self.theta_sce_edge * (self.Vbi_edge - self.Phist)
+            self.Vth_shift = self.dvth_dibl - self.dvth_temp + self.dvth_sce + self.DVTEDGE + self.vth0_stress_EDGE - self.K2EDGE_i * self.Vbsx
+            self.vgfb      = self.vg - self.vfb - self.Vth_shift * self.inv_nVt
 
             # Normalized body factor
-            DGAMMAEDGE_i = self.DGAMMAEDGE * (1.0 + self.DGAMMAEDGEL * Leff**-self.DGAMMAEDGELEXP)
-            gam_edge          = sqrt(2.0 * self.q * epssi * NDEPEDGE_i * inv_nVt) / Cox
-            gam_edge          = gam_edge * (1.0 + DGAMMAEDGE_i)
-            inv_gam           = 1.0 / gam_edge
+            self.DGAMMAEDGE_i = self.DGAMMAEDGE * (1.0 + self.DGAMMAEDGEL * self.Leff**-self.DGAMMAEDGELEXP)
+            self.gam_edge          = sqrt(2.0 * self.q * self.epssi * self.NDEPEDGE_i * self.inv_nVt) / self.Cox
+            self.gam_edge          = self.gam_edge * (1.0 + self.DGAMMAEDGE_i)
+            self.inv_gam           = 1.0 / self.gam_edge
 
             # psip: pinch-off voltage
-            phib_n_edge  = phib_edge / n
-            psip = self.PO_psip(vgfb, gam_edge, 0.0)
-            qs_edge = self.BSIM_q(psip, phib_n_edge, vs, gam_edge)
+            self.phib_n_edge  = self.phib_edge / self.n
+            self.psip = self.PO_psip(self.vgfb, self.gam_edge, 0.0)
+            self.qs_edge = self.BSIM_q(self.psip, self.phib_n_edge, self.vs, self.gam_edge)
 
             # Approximate pinch-off voltage
-            vdsatedge = 2.0 * nVt * qs_edge + 2.0 * nVt
-            Vdsatedge = vdsatedge
-            Vdsatedge = Vdsatedge + Vs
+            self.vdsatedge = 2.0 * self.nVt * self.qs_edge + 2.0 * self.nVt
+            self.Vdsatedge = self.vdsatedge
+            self.Vdsatedge = self.Vdsatedge + self.Vs
 
             # Vdssat clamped to avoid negative values during transient simulation
-            Vdssate = self.Smooth(Vdsatedge - Vs, 0.0, 1.0e-3)
-            T7     = (Vds / Vdssate)**(1.0 / DELTA_t)
-            T8     = (1.0 + T7)**-DELTA_t
-            Vdseff = Vds * T8
-            vdeff  = (Vdseff + Vs) * inv_nVt
-            qdeff_edge = self.BSIM_q(psip, phib_n_edge, vdeff, gam_edge)
+            self.Vdssate = self.Smooth(self.Vdsatedge - self.Vs, 0.0, 1.0e-3)
+            self.T7     = (self.Vds / self.Vdssate)**(1.0 / self.DELTA_t)
+            self.T8     = (1.0 + self.T7)**-self.DELTA_t
+            self.Vdseff = self.Vds * self.T8
+            self.vdeff  = (self.Vdseff + self.Vs) * self.inv_nVt
+            self.qdeff_edge = self.BSIM_q(self.psip, self.phib_n_edge, self.vdeff, self.gam_edge)
 
             # Nq calculation for Edge FET
-            psipclamp = self.Smooth(psip, 1.0, 2.0)
-            sqrtpsip = sqrt(psipclamp)
-            psiavg   = psip - qs_edge - qdeff_edge -1.0
-            T0 = self.Smooth(psiavg, 1.0, 2.0)
-            T2       = sqrt(T0)
-            nq_edge  = 1.0 + gam_edge / (sqrtpsip + T2)
-            ids_edge = 2.0 * self.NF * nq_edge * ueff * self.WEDGE / Leff * Cox * nVt * nVt * ((qs_edge - qdeff_edge) * (1.0 + qs_edge + qdeff_edge)) * Moc
-            ids      = ids_edge + ids
-        return ids
+            self.psipclamp = self.Smooth(self.psip, 1.0, 2.0)
+            self.sqrtpsip = sqrt(self.psipclamp)
+            self.psiavg   = self.psip - self.qs_edge - self.qdeff_edge -1.0
+            self.T0 = self.Smooth(self.psiavg, 1.0, 2.0)
+            self.T2       = sqrt(self.T0)
+            self.nq_edge  = 1.0 + self.gam_edge / (self.sqrtpsip + self.T2)
+            self.ids_edge = 2.0 * self.NF * self.nq_edge * self.ueff * self.WEDGE / self.Leff * self.Cox * self.nVt * self.nVt * ((self.qs_edge - self.qdeff_edge) * (1.0 + self.qs_edge + self.qdeff_edge)) * self.Moc
+            self.ids      = self.ids_edge + self.ids
+
 
 def read_mdl(file):
     mdl = {}
@@ -12965,20 +12966,14 @@ biasT = {
     "VG": 1.0,
     "VS": 0.0,
     "VB": 0.0,
-    "TEMP": 25.0,
+    "TEMP": -40.0,
 }
 
 yy=bsimbulk(**model, **biasT, **{"A21":-0.01})
 
 sweep = np.arange(0,1.1,0.1)
 
-ids = []
+print(f"{'VG':4}", f"{'ids':15}", f"{'ueff':15}")
 for x in sweep:
     yy.param_update(**{'VG':x})
-    ids.append(yy.calc())
-
-#plt.scatter(sweep,id)
-#plt.show()
-
-for x, y in zip(sweep, ids):
-    print(f"{x:.2f}", f"{y:.9e}")
+    print(f"{x:.2f}", f"{yy.ids:.9e}", f"{yy.ueff:.9e}")
