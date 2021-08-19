@@ -3,7 +3,6 @@
 + GEOMOD = 0
 + RGEOMOD = 0
 + COVMOD = 1
-+ RDSMOD = 0
 + IGCMOD = 0
 + IGBMOD = 0
 + SHMOD = 0

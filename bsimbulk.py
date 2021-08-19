@@ -1,4 +1,5 @@
 from math import *
+from scipy.optimize import fsolve
 import matplotlib.pyplot as plt
 import numpy as np
 import re
@@ -1086,6 +1087,7 @@ class bsimbulk:
         else:
             if self.VDgiven == False:
                 self.VD = 1.0
+        #self.VDI = self.VD
         if 'VG' in param:
             self.VG = param['VG']
             self.VGgiven = True
@@ -1098,6 +1100,7 @@ class bsimbulk:
         else:
             if self.VSgiven == False:
                 self.VS = 0.0
+        #self.VSI = self.VS
         if 'VB' in param:
             self.VB = param['VB']
             self.VBgiven = True
@@ -12945,6 +12948,21 @@ class bsimbulk:
             self.nq_edge  = 1.0 + self.gam_edge / (self.sqrtpsip + self.T2)
             self.ids_edge = 2.0 * self.NF * self.nq_edge * self.ueff * self.WEDGE / self.Leff * self.Cox * self.nVt * self.nVt * ((self.qs_edge - self.qdeff_edge) * (1.0 + self.qs_edge + self.qdeff_edge)) * self.Moc
             self.ids      = self.ids_edge + self.ids
+        return self.ids
+
+    def calc_rdsmod(self, z):
+        x, y = z
+        f = np.zeros(2)
+        f[0] = self.VD - x - self.calc(**{"VD":x, "VS":y}) * self.Rdrain     # Rdrain
+        f[1] = y - self.VS - self.calc(**{"VD":x, "VS":y}) * self.Rsource    # Rsource
+        return f
+
+    def calc_ext(self):
+        #print(self.Rdrain, self.Rsource)
+        self.VDI, self.VSI = fsolve(self.calc_rdsmod, [self.VD, self.VS])
+        #print(self.VDI, self.VSI)
+        #return self.calc_instrinsic({"VDI":self.VDI,"VSI":self.VSI})
+        return self.ids
 
 
 def read_mdl(file):
@@ -12967,12 +12985,18 @@ biasT = {
     "VS": 0.0,
     "VB": 0.0,
     "TEMP": -40.0,
+    "W": 1e-5,
+    "L": 1e-5,
 }
 
-yy=bsimbulk(**model, **biasT, **{"A21":-0.01})
+yy=bsimbulk(**model, **biasT, **{"A21":-0.01,"RDSMOD":0})
+print(yy.calc_ext())
+pp=bsimbulk(**model, **biasT, **{"A21":-0.01,"RDSMOD":1})
+print(pp.calc_ext())
+zz=bsimbulk(**model, **biasT, **{"A21":-0.01,"RDSMOD":2})
+print(zz.calc_ext())
 
 sweep = np.arange(0,1.1,0.1)
-
 print(f"{'VG':4}", f"{'ids':15}", f"{'ueff':15}")
 for x in sweep:
     yy.param_update(**{'VG':x})
