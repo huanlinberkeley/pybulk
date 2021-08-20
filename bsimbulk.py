@@ -1,8 +1,6 @@
 from math import *
 from scipy.optimize import fsolve
-import matplotlib.pyplot as plt
 import numpy as np
-import re
 
 class bsimbulk:
     """
@@ -24,8 +22,367 @@ class bsimbulk:
     def __repr__(self):
         return f"A bsimbulk class"
 
+    # Clamped exponential function
+    def lexp(self, x):
+        if (x > 80.0):
+            return 5.540622384e34 * (1.0 + x - 80.0)
+        elif (x < -80.0):
+            return 1.804851387e-35
+        else:
+            return exp(x)
+
+    # Smoothing def for (max of x, x0 with deltax)
+    def Smooth(self, x, x0, deltax):
+        return 0.5 * (x + x0 + sqrt((x - x0) * (x - x0) + 0.25 * deltax * deltax))
+
+    # Smoothing def for (min of x, x0 with deltax)
+    def Smooth2(self, x, x0, deltax):
+        return 0.5 * (x + x0 - sqrt((x - x0) * (x - x0) + 0.25 * deltax * deltax)) + 0.25 * deltax
+
+    # Clamped log function
+    def lln(self, x):
+        return log(max(x, 1.0e-38))
+
+    # Hyperbolic smoothing function
+    def hypsmooth(self, x, c):
+        return 0.5 * (x + sqrt(x * x + 4.0 * c * c))
+
+    # Junction capacitance macro between S/D and bulk
+    def JunCap(self, Czbx, Vbx_jct, PBX_t, MJX, czbx_p1, czbx_p2):
+        if (Czbx > 0.0):
+            T1 = Vbx_jct / PBX_t
+            if (T1 < 0.9):
+                arg = 1.0 - T1
+                if (MJX == 0.5):
+                    sarg = 1.0 / sqrt(arg)
+                else:
+                    sarg = self.lexp(-MJX * self.lln(arg))
+                return PBX_t * Czbx * (1.0 - arg * sarg) / (1.0 - MJX)
+            else:
+                T2 = czbx_p1 * (T1 - 1.0) * (5.0 * MJX * (T1 - 1.0) + (1.0 + MJX))
+                return PBX_t * Czbx * (T2 + czbx_p2)
+        else:
+            return 0.0
+
+    # Normalized pinch-off voltage including PD
+    def PO_psip(self, vg_vfb, gamma, DPD):
+        T1       = 1.0 + DPD
+        vgfbPD   = vg_vfb / T1
+        gammaPD  = gamma / T1
+        T1       = 0.5 * vgfbPD - 3.0 * (1.0 + gammaPD / 1.41421356237309504880)
+        T2       = T1 + sqrt(T1 * T1 + 6.0 * vgfbPD)
+        if (vgfbPD < 0.0):
+            T3   = (vgfbPD - T2) / gammaPD
+            return -self.lln(1.0 - T2 + T3 * T3)
+        else:
+            T3   = self.lexp(-T2)
+            T1   = 0.5 * gammaPD
+            T2   = sqrt(vgfbPD - 1.0 + T3 + T1 * T1) - T1
+            return T2 * T2 + 1.0 - T3
+
+    # Normalized charge-voltage relationship
+    def BSIM_q(self, psip, phib, vch, gam):
+        T8 = 0.5 * (psip + 1.0 + sqrt((psip - 1.0) * (psip - 1.0) + 0.25 * 2.0 * 2.0))
+        sqrtpsip = sqrt(T8)
+        T9 = 1.0 + gam / (2.0 * sqrtpsip)
+        T0 = (1.0 + (gam / (2.0 * sqrtpsip))) / gam
+        T1 = psip - 2.0 * phib - vch
+        T2 = T1 - self.lln(4.0 * T0 * sqrtpsip)
+        T8 = 0.5 * (T2 - 0.201491 - sqrt(T2 * (T2 + 0.402982) + 2.446562))
+        sqrtpsisa = sqrtpsip
+        if (T8 <= -68.0):
+            T4 = -100.0
+            T5 = 20.0
+            if (T8 < T4 - 0.5 * T5):
+                T3 = self.lexp(T4)
+            else:
+                if (T8 > T4 + 0.5 * T5):
+                    T3 = self.lexp(T8)
+                else:
+                    T2 = (T8 - T4) / T5
+                    T6 = T2 * T2
+                    T3 = self.lexp(T4 + T5 * ((5.0 / 64.0) + 0.5 * T2 + T6 * ((15.0 / 16.0) - T6 * (1.25 - T6))))
+            return T3 * (1.0 + T1 - T8 - self.lln(2.0 * T0 * (T3 * 2.0 * T0 + 2.0 * sqrtpsisa)))
+        else:
+            T3 = self.lexp(T8)
+            sqrtpsisainv = 1.0 / sqrtpsisa
+            T4 = 2.0 * T3 + self.lln(T3 * 2.0 * T0 * (T3 *  2.0 * T0 + 2.0 * sqrtpsisa)) - T1
+            T5 = 2.0 + (1.0 / T3) + (T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa)
+            T3 = T3 - T4 / T5
+            T4 = 2.0 * T3 + self.lln(T3 * 2.0 * T0 * (T3 * 2.0 * T0 + 2.0 * sqrtpsisa)) - T1
+            T5 = 2.0 + (1.0 / T3) + (T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa)
+            T6 = ((T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa)) * ((T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa))
+            T7 = -((1.0 / T3) * (1.0 / T3)) - (1.0 / (sqrtpsisa * sqrtpsisa * sqrtpsisa * (T0 * T3 + sqrtpsisa))) - T6
+            return T3 - (T4 / T5) * (1.0 + T4 * T7 / (2.0 * T5 * T5))
+
+    # Define GEOMOD and RGEOMOD in the modelcard
+    def BSIMBULKNumFingerDiff(self, nf, minSD):
+        if (nf % 2) != 0:
+            nuEndD = 1
+            nuIntD = 2 * max((nf - 1) / 2, 0)
+            nuEndS = 1
+            nuIntS = nuIntD
+        else:
+            if (minSD == 1):
+                nuEndD = 2
+                nuIntD = 2 * max((nf / 2 - 1), 0.0)
+                nuEndS = 0
+                nuIntS = nf
+            else:
+                nuEndD = 0
+                nuIntD = nf
+                nuEndS = 2
+                nuIntS = 2 * max((nf / 2 - 1), 0)
+        return nuEndD, nuIntD, nuEndS, nuIntS
+
+    def BSIMBULKRdsEndIso(self, Weffcj, Rsh, DMCG, DMCI, DMDG, nuEnd, rgeo, SRCFLAG):
+        if (SRCFLAG == 1):
+            if (rgeo == 1) or (rgeo == 2) or (rgeo == 5):
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
+            elif (rgeo == 3) or (rgeo == 4) or (rgeo == 6):
+                if ((DMCG + DMCI) == 0.0):
+                    print("(DMCG + DMCI) can not be equal to zero")
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * Weffcj / (3.0 * nuEnd * (DMCG + DMCI))
+            else:
+                print("Warning: (instance %M) Specified RGEO = %d not matched (self.BSIMBULKRdsEndIso), Rend is set to zero.", rgeo)
+                Rend = 0.0
+        else:
+            if (rgeo == 1) or (rgeo == 3) or (rgeo == 7):
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
+            elif (rgeo == 2) or (rgeo == 4) or (rgeo == 8):
+                if ((DMCG + DMCI) == 0.0):
+                    print("(DMCG + DMCI) can not be equal to zero")
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * Weffcj / (3.0 * nuEnd * (DMCG + DMCI))
+            else:
+                print("Warning: (instance %M) Specified RGEO=%d not matched (self.BSIMBULKRdsEndIso type 2), Rend is set to zero.", rgeo)
+                Rend = 0.0
+        return Rend
+
+    def BSIMBULKRdsEndSha(self, Weffcj, Rsh, DMCG, DMCI, DMDG, nuEnd, rgeo, SRCFLAG):
+        if (SRCFLAG == 1):
+            if (rgeo == 1) or (rgeo == 2) or (rgeo == 5):
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
+            elif (rgeo == 3) or (rgeo == 4) or (rgeo == 6):
+                if (DMCG == 0.0):
+                    print("DMCG can not be equal to zero")
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * Weffcj / (6.0 * nuEnd * DMCG)
+            else:
+                print("Warning: (instance %M) Specified RGEO = %d not matched (self.BSIMBULKRdsEndSha), Rend is set to zero.", rgeo)
+                Rend = 0.0
+        else:
+            if (rgeo == 1) or (rgeo == 3) or (rgeo == 7):
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
+            elif (rgeo == 2) or (rgeo == 4) or (rgeo == 8):
+                if (DMCG == 0.0):
+                    print("DMCG can not be equal to zero")
+                if (nuEnd == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * Weffcj / (6.0 * nuEnd * DMCG)
+            else:
+                print("Warning: (instance %M) Specified RGEO=%d not matched (self.BSIMBULKRdsEndSha type 2), Rend is set to zero.", rgeo)
+                Rend = 0.0
+        return Rend
+
+    def BSIMBULKRdseffGeo(self, nf, geo, rgeo, minSD, Weffcj, Rsh, DMCG, DMCI, DMDG, SRCFLAG):
+        if (geo < 9):
+            nuEndD, nuIntD, nuEndS, nuIntS = self.BSIMBULKNumFingerDiff(nf, minSD)
+            if (SRCFLAG == 1):
+                if (nuIntS == 0):
+                    Rint = 0.0
+                else:
+                    Rint = Rsh * DMCG / ( Weffcj * nuIntS)
+            else:
+                if (nuIntD == 0):
+                    Rint = 0.0
+                else:
+                    Rint = Rsh * DMCG / ( Weffcj * nuIntD)
+        if (geo == 0):
+            if (SRCFLAG == 1):
+                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
+            else:
+                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
+        elif (geo == 1):
+            if (SRCFLAG == 1):
+                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
+            else:
+                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
+        elif (geo == 2):
+            if (SRCFLAG == 1):
+                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
+            else:
+                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
+        elif (geo == 3):
+            if (SRCFLAG == 1):
+                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
+            else:
+                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
+        elif (geo == 4):
+            if (SRCFLAG == 1):
+                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
+            else:
+                Rend = Rsh * DMDG / Weffcj
+        elif (geo == 5):
+            if (SRCFLAG == 1):
+                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
+            else:
+                if (nuEndD == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * DMDG / (Weffcj * nuEndD)
+        elif (geo == 6):
+            if (SRCFLAG == 1):
+                Rend = Rsh * DMDG / Weffcj
+            else:
+                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
+        elif (geo == 7):
+            if (SRCFLAG == 1):
+                if (nuEndS == 0):
+                    Rend = 0.0
+                else:
+                    Rend = Rsh * DMDG / (Weffcj * nuEndS)
+            else:
+                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
+        elif (geo == 8):
+            Rend = Rsh * DMDG / Weffcj
+        elif (geo == 9):        # all wide contacts assumed for geo = 9 and 10
+            if (SRCFLAG == 1):
+                Rend = 0.5 * Rsh * DMCG / Weffcj
+                if (nf == 2):
+                    Rint = 0.0
+                else:
+                    Rint = Rsh * DMCG / (Weffcj * (nf - 2.0))
+            else:
+                Rend = 0.0
+                Rint = Rsh * DMCG / (Weffcj * nf)
+        elif (geo == 10):
+            if (SRCFLAG == 1):
+                Rend = 0.0
+                Rint = Rsh * DMCG / (Weffcj * nf)
+            else:
+                Rend = 0.5 * Rsh * DMCG / Weffcj
+                if (nf == 2):
+                    Rint = 0.0
+                else:
+                    Rint = Rsh * DMCG / (Weffcj * (nf - 2.0))
+        else:
+            print("Warning: (instance %M) Specified GEO=%d not matched (self.BSIMBULKRdseffGeo), Rint is set to zero.", geo)
+            Rint = 0.0
+        if (Rint <= 0.0):
+            Rtot = Rend
+        elif (Rend <= 0.0):
+            Rtot = Rint
+        else:
+            Rtot = Rint * Rend / (Rint + Rend)
+        if (Rtot == 0.0):
+            print("Warning: (instance %M) Zero resistance returned from RdseffGeo")
+        return Rtot
+
+    # Effective PS, PD, AS, AD calculation, Ref: BSIM4
+    def BSIMBULKPAeffGeo(self, nf, geo, minSD, Weffcj, DMCG, DMCI, DMDG):
+        if (geo < 9):
+            nuEndD, nuIntD, nuEndS, nuIntS = self.BSIMBULKNumFingerDiff(nf, minSD)
+            T0 = DMCG + DMCI
+            T1 = DMCG + DMCG
+            T2 = DMDG + DMDG
+            PSiso = T0 + T0 + Weffcj
+            PDiso = T0 + T0 + Weffcj
+            PSsha = T1
+            PDsha = T1
+            PSmer = T2
+            PDmer = T2
+            ASiso = T0 * Weffcj
+            ADiso = T0 * Weffcj
+            ASsha = DMCG * Weffcj
+            ADsha = DMCG * Weffcj
+            ASmer = DMDG * Weffcj
+            ADmer = DMDG * Weffcj
+        if (geo == 0):
+            Ps = nuEndS * PSiso + nuIntS * PSsha
+            Pd = nuEndD * PDiso + nuIntD * PDsha
+            As = nuEndS * ASiso + nuIntS * ASsha
+            Ad = nuEndD * ADiso + nuIntD * ADsha
+        elif (geo == 1):
+            Ps = nuEndS * PSiso + nuIntS * PSsha
+            Pd = (nuEndD + nuIntD) * PDsha
+            As = nuEndS * ASiso + nuIntS * ASsha
+            Ad = (nuEndD + nuIntD) * ADsha
+        elif (geo == 2):
+            Ps = (nuEndS + nuIntS) * PSsha
+            Pd = nuEndD * PDiso + nuIntD * PDsha
+            As = (nuEndS + nuIntS) * ASsha
+            Ad = nuEndD * ADiso + nuIntD * ADsha
+        elif (geo == 3):
+            Ps = (nuEndS + nuIntS) * PSsha
+            Pd = (nuEndD + nuIntD) * PDsha
+            As = (nuEndS + nuIntS) * ASsha
+            Ad = (nuEndD + nuIntD) * ADsha
+        elif (geo == 4):
+            Ps = nuEndS * PSiso + nuIntS * PSsha
+            Pd = nuEndD * PDmer + nuIntD * PDsha
+            As = nuEndS * ASiso + nuIntS * ASsha
+            Ad = nuEndD * ADmer + nuIntD * ADsha
+        elif (geo == 5):
+            Ps = (nuEndS + nuIntS) * PSsha
+            Pd = nuEndD * PDmer + nuIntD * PDsha
+            As = (nuEndS + nuIntS) * ASsha
+            Ad = nuEndD * ADmer + nuIntD * ADsha
+        elif (geo == 6):
+            Ps = nuEndS * PSmer + nuIntS * PSsha
+            Pd = nuEndD * PDiso + nuIntD * PDsha
+            As = nuEndS * ASmer + nuIntS * ASsha
+            Ad = nuEndD * ADiso + nuIntD * ADsha
+        elif (geo == 7):
+            Ps = nuEndS * PSmer + nuIntS * PSsha
+            Pd = (nuEndD + nuIntD) * PDsha
+            As = nuEndS * ASmer + nuIntS * ASsha
+            Ad = (nuEndD + nuIntD) * ADsha
+        elif (geo == 8):
+            Ps = nuEndS * PSmer + nuIntS * PSsha
+            Pd = nuEndD * PDmer + nuIntD * PDsha
+            As = nuEndS * ASmer + nuIntS * ASsha
+            Ad = nuEndD * ADmer + nuIntD * ADsha
+        elif (geo == 9):
+            Ps = PSiso + (nf - 1.0) * PSsha
+            Pd = nf * PDsha
+            As = ASiso + (nf - 1.0) * ASsha
+            Ad = nf * ADsha
+        elif (geo == 10):
+            Ps = nf * PSsha
+            Pd = PDiso + (nf - 1.0) * PDsha
+            As = nf * ASsha
+            Ad = ADiso + (nf - 1.0) * ADsha
+        else:
+            print("Warning: (instance %M) Specified GEO=%d not matched (self.BSIMBULKPAeffGeo), PS,PD,AS,AD set to zero.", geo)
+            Ps = 0
+            Pd = 0
+            As = 0
+            Ad = 0
+        return Ps, Pd, As, Ad
+
     # Set param ungiven first, then call param_update()
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.VDgiven = False
         self.VGgiven = False
         self.VSgiven = False
@@ -1077,17 +1434,17 @@ class bsimbulk:
         self.DRII1given = False
         self.DRII2given = False
         self.DELTAIIgiven = False
-        self.param_update(**kwargs)
+        self.par_update()
 
     # Param initialization and later update
-    def param_update(self, **param):
+    def par_update(self, **param):
         if 'VD' in param:
             self.VD = param['VD']
             self.VDgiven = True
         else:
             if self.VDgiven == False:
                 self.VD = 1.0
-        #self.VDI = self.VD
+        self.VDI = self.VD
         if 'VG' in param:
             self.VG = param['VG']
             self.VGgiven = True
@@ -1100,7 +1457,7 @@ class bsimbulk:
         else:
             if self.VSgiven == False:
                 self.VS = 0.0
-        #self.VSI = self.VS
+        self.VSI = self.VS
         if 'VB' in param:
             self.VB = param['VB']
             self.VBgiven = True
@@ -10527,368 +10884,20 @@ class bsimbulk:
         else:
             if self.DELTAIIgiven == False:
                 self.DELTAII = 0.5
-        self.calc(**param)
 
-    # Clamped exponential function
-    def lexp(self, x):
-        if (x > 80.0):
-            return 5.540622384e34 * (1.0 + x - 80.0)
-        elif (x < -80.0):
-            return 1.804851387e-35
-        else:
-            return exp(x)
+    def _rdsmod(self, z):
+        x, y = z
+        f = np.zeros(2)
+        f[0] = self.VD - x - self._calc(**{"VD":x, "VS":y}) * self.Rdrain
+        f[1] = y - self.VS - self._calc(**{"VD":x, "VS":y}) * self.Rsource
+        return f
 
-    # Smoothing def for (max of x, x0 with deltax)
-    def Smooth(self, x, x0, deltax):
-        return 0.5 * (x + x0 + sqrt((x - x0) * (x - x0) + 0.25 * deltax * deltax))
+    def get_id(self, **param):        
+        self.VDI, self.VSI = fsolve(self._rdsmod, [self.VD, self.VS])
+        return self._calc(**{"VD":self.VDI, "VS":self.VSI})
 
-    # Smoothing def for (min of x, x0 with deltax)
-    def Smooth2(self, x, x0, deltax):
-        return 0.5 * (x + x0 - sqrt((x - x0) * (x - x0) + 0.25 * deltax * deltax)) + 0.25 * deltax
-
-    # Clamped log function
-    def lln(self, x):
-        return log(max(x, 1.0e-38))
-
-    # Hyperbolic smoothing function
-    def hypsmooth(self, x, c):
-        return 0.5 * (x + sqrt(x * x + 4.0 * c * c))
-
-    # Junction capacitance macro between S/D and bulk
-    def JunCap(self, Czbx, Vbx_jct, PBX_t, MJX, czbx_p1, czbx_p2):
-        if (Czbx > 0.0):
-            T1 = Vbx_jct / PBX_t
-            if (T1 < 0.9):
-                arg = 1.0 - T1
-                if (MJX == 0.5):
-                    sarg = 1.0 / sqrt(arg)
-                else:
-                    sarg = self.lexp(-MJX * self.lln(arg))
-                return PBX_t * Czbx * (1.0 - arg * sarg) / (1.0 - MJX)
-            else:
-                T2 = czbx_p1 * (T1 - 1.0) * (5.0 * MJX * (T1 - 1.0) + (1.0 + MJX))
-                return PBX_t * Czbx * (T2 + czbx_p2)
-        else:
-            return 0.0
-
-    # Normalized pinch-off voltage including PD
-    def PO_psip(self, vg_vfb, gamma, DPD):
-        T1       = 1.0 + DPD
-        vgfbPD   = vg_vfb / T1
-        gammaPD  = gamma / T1
-        T1       = 0.5 * vgfbPD - 3.0 * (1.0 + gammaPD / 1.41421356237309504880)
-        T2       = T1 + sqrt(T1 * T1 + 6.0 * vgfbPD)
-        if (vgfbPD < 0.0):
-            T3   = (vgfbPD - T2) / gammaPD
-            return -self.lln(1.0 - T2 + T3 * T3)
-        else:
-            T3   = self.lexp(-T2)
-            T1   = 0.5 * gammaPD
-            T2   = sqrt(vgfbPD - 1.0 + T3 + T1 * T1) - T1
-            return T2 * T2 + 1.0 - T3
-
-    # Normalized charge-voltage relationship
-    def BSIM_q(self, psip, phib, vch, gam):
-        T8 = 0.5 * (psip + 1.0 + sqrt((psip - 1.0) * (psip - 1.0) + 0.25 * 2.0 * 2.0))
-        sqrtpsip = sqrt(T8)
-        T9 = 1.0 + gam / (2.0 * sqrtpsip)
-        T0 = (1.0 + (gam / (2.0 * sqrtpsip))) / gam
-        T1 = psip - 2.0 * phib - vch
-        T2 = T1 - self.lln(4.0 * T0 * sqrtpsip)
-        T8 = 0.5 * (T2 - 0.201491 - sqrt(T2 * (T2 + 0.402982) + 2.446562))
-        sqrtpsisa = sqrtpsip
-        if (T8 <= -68.0):
-            T4 = -100.0
-            T5 = 20.0
-            if (T8 < T4 - 0.5 * T5):
-                T3 = self.lexp(T4)
-            else:
-                if (T8 > T4 + 0.5 * T5):
-                    T3 = self.lexp(T8)
-                else:
-                    T2 = (T8 - T4) / T5
-                    T6 = T2 * T2
-                    T3 = self.lexp(T4 + T5 * ((5.0 / 64.0) + 0.5 * T2 + T6 * ((15.0 / 16.0) - T6 * (1.25 - T6))))
-            return T3 * (1.0 + T1 - T8 - self.lln(2.0 * T0 * (T3 * 2.0 * T0 + 2.0 * sqrtpsisa)))
-        else:
-            T3 = self.lexp(T8)
-            sqrtpsisainv = 1.0 / sqrtpsisa
-            T4 = 2.0 * T3 + self.lln(T3 * 2.0 * T0 * (T3 *  2.0 * T0 + 2.0 * sqrtpsisa)) - T1
-            T5 = 2.0 + (1.0 / T3) + (T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa)
-            T3 = T3 - T4 / T5
-            T4 = 2.0 * T3 + self.lln(T3 * 2.0 * T0 * (T3 * 2.0 * T0 + 2.0 * sqrtpsisa)) - T1
-            T5 = 2.0 + (1.0 / T3) + (T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa)
-            T6 = ((T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa)) * ((T0 + sqrtpsisainv) / (T0 * T3 + sqrtpsisa))
-            T7 = -((1.0 / T3) * (1.0 / T3)) - (1.0 / (sqrtpsisa * sqrtpsisa * sqrtpsisa * (T0 * T3 + sqrtpsisa))) - T6
-            return T3 - (T4 / T5) * (1.0 + T4 * T7 / (2.0 * T5 * T5))
-
-    # Define GEOMOD and RGEOMOD in the modelcard
-    def BSIMBULKNumFingerDiff(self, nf, minSD):
-        if (nf % 2) != 0:
-            nuEndD = 1
-            nuIntD = 2 * max((nf - 1) / 2, 0)
-            nuEndS = 1
-            nuIntS = nuIntD
-        else:
-            if (minSD == 1):
-                nuEndD = 2
-                nuIntD = 2 * max((nf / 2 - 1), 0.0)
-                nuEndS = 0
-                nuIntS = nf
-            else:
-                nuEndD = 0
-                nuIntD = nf
-                nuEndS = 2
-                nuIntS = 2 * max((nf / 2 - 1), 0)
-        return nuEndD, nuIntD, nuEndS, nuIntS
-
-    def BSIMBULKRdsEndIso(self, Weffcj, Rsh, DMCG, DMCI, DMDG, nuEnd, rgeo, SRCFLAG):
-        if (SRCFLAG == 1):
-            if (rgeo == 1) or (rgeo == 2) or (rgeo == 5):
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
-            elif (rgeo == 3) or (rgeo == 4) or (rgeo == 6):
-                if ((DMCG + DMCI) == 0.0):
-                    print("(DMCG + DMCI) can not be equal to zero")
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * Weffcj / (3.0 * nuEnd * (DMCG + DMCI))
-            else:
-                print("Warning: (instance %M) Specified RGEO = %d not matched (self.BSIMBULKRdsEndIso), Rend is set to zero.", rgeo)
-                Rend = 0.0
-        else:
-            if (rgeo == 1) or (rgeo == 3) or (rgeo == 7):
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
-            elif (rgeo == 2) or (rgeo == 4) or (rgeo == 8):
-                if ((DMCG + DMCI) == 0.0):
-                    print("(DMCG + DMCI) can not be equal to zero")
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * Weffcj / (3.0 * nuEnd * (DMCG + DMCI))
-            else:
-                print("Warning: (instance %M) Specified RGEO=%d not matched (self.BSIMBULKRdsEndIso type 2), Rend is set to zero.", rgeo)
-                Rend = 0.0
-        return Rend
-
-    def BSIMBULKRdsEndSha(self, Weffcj, Rsh, DMCG, DMCI, DMDG, nuEnd, rgeo, SRCFLAG):
-        if (SRCFLAG == 1):
-            if (rgeo == 1) or (rgeo == 2) or (rgeo == 5):
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
-            elif (rgeo == 3) or (rgeo == 4) or (rgeo == 6):
-                if (DMCG == 0.0):
-                    print("DMCG can not be equal to zero")
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * Weffcj / (6.0 * nuEnd * DMCG)
-            else:
-                print("Warning: (instance %M) Specified RGEO = %d not matched (self.BSIMBULKRdsEndSha), Rend is set to zero.", rgeo)
-                Rend = 0.0
-        else:
-            if (rgeo == 1) or (rgeo == 3) or (rgeo == 7):
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * DMCG / (Weffcj * nuEnd)
-            elif (rgeo == 2) or (rgeo == 4) or (rgeo == 8):
-                if (DMCG == 0.0):
-                    print("DMCG can not be equal to zero")
-                if (nuEnd == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * Weffcj / (6.0 * nuEnd * DMCG)
-            else:
-                print("Warning: (instance %M) Specified RGEO=%d not matched (self.BSIMBULKRdsEndSha type 2), Rend is set to zero.", rgeo)
-                Rend = 0.0
-        return Rend
-
-    def BSIMBULKRdseffGeo(self, nf, geo, rgeo, minSD, Weffcj, Rsh, DMCG, DMCI, DMDG, SRCFLAG):
-        if (geo < 9):
-            nuEndD, nuIntD, nuEndS, nuIntS = self.BSIMBULKNumFingerDiff(nf, minSD)
-            if (SRCFLAG == 1):
-                if (nuIntS == 0):
-                    Rint = 0.0
-                else:
-                    Rint = Rsh * DMCG / ( Weffcj * nuIntS)
-            else:
-                if (nuIntD == 0):
-                    Rint = 0.0
-                else:
-                    Rint = Rsh * DMCG / ( Weffcj * nuIntD)
-        if (geo == 0):
-            if (SRCFLAG == 1):
-                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
-            else:
-                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
-        elif (geo == 1):
-            if (SRCFLAG == 1):
-                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
-            else:
-                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
-        elif (geo == 2):
-            if (SRCFLAG == 1):
-                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
-            else:
-                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
-        elif (geo == 3):
-            if (SRCFLAG == 1):
-                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
-            else:
-                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
-        elif (geo == 4):
-            if (SRCFLAG == 1):
-                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
-            else:
-                Rend = Rsh * DMDG / Weffcj
-        elif (geo == 5):
-            if (SRCFLAG == 1):
-                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndS, rgeo, 1)
-            else:
-                if (nuEndD == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * DMDG / (Weffcj * nuEndD)
-        elif (geo == 6):
-            if (SRCFLAG == 1):
-                Rend = Rsh * DMDG / Weffcj
-            else:
-                Rend = self.BSIMBULKRdsEndIso(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
-        elif (geo == 7):
-            if (SRCFLAG == 1):
-                if (nuEndS == 0):
-                    Rend = 0.0
-                else:
-                    Rend = Rsh * DMDG / (Weffcj * nuEndS)
-            else:
-                Rend = self.BSIMBULKRdsEndSha(Weffcj, Rsh, DMCG, DMCI, DMDG, nuEndD, rgeo, 0)
-        elif (geo == 8):
-            Rend = Rsh * DMDG / Weffcj
-        elif (geo == 9):        # all wide contacts assumed for geo = 9 and 10
-            if (SRCFLAG == 1):
-                Rend = 0.5 * Rsh * DMCG / Weffcj
-                if (nf == 2):
-                    Rint = 0.0
-                else:
-                    Rint = Rsh * DMCG / (Weffcj * (nf - 2.0))
-            else:
-                Rend = 0.0
-                Rint = Rsh * DMCG / (Weffcj * nf)
-        elif (geo == 10):
-            if (SRCFLAG == 1):
-                Rend = 0.0
-                Rint = Rsh * DMCG / (Weffcj * nf)
-            else:
-                Rend = 0.5 * Rsh * DMCG / Weffcj
-                if (nf == 2):
-                    Rint = 0.0
-                else:
-                    Rint = Rsh * DMCG / (Weffcj * (nf - 2.0))
-        else:
-            print("Warning: (instance %M) Specified GEO=%d not matched (self.BSIMBULKRdseffGeo), Rint is set to zero.", geo)
-            Rint = 0.0
-        if (Rint <= 0.0):
-            Rtot = Rend
-        elif (Rend <= 0.0):
-            Rtot = Rint
-        else:
-            Rtot = Rint * Rend / (Rint + Rend)
-        if (Rtot == 0.0):
-            print("Warning: (instance %M) Zero resistance returned from RdseffGeo")
-        return Rtot
-
-    # Effective PS, PD, AS, AD calculation, Ref: BSIM4
-    def BSIMBULKPAeffGeo(self, nf, geo, minSD, Weffcj, DMCG, DMCI, DMDG):
-        if (geo < 9):
-            nuEndD, nuIntD, nuEndS, nuIntS = self.BSIMBULKNumFingerDiff(nf, minSD)
-            T0 = DMCG + DMCI
-            T1 = DMCG + DMCG
-            T2 = DMDG + DMDG
-            PSiso = T0 + T0 + Weffcj
-            PDiso = T0 + T0 + Weffcj
-            PSsha = T1
-            PDsha = T1
-            PSmer = T2
-            PDmer = T2
-            ASiso = T0 * Weffcj
-            ADiso = T0 * Weffcj
-            ASsha = DMCG * Weffcj
-            ADsha = DMCG * Weffcj
-            ASmer = DMDG * Weffcj
-            ADmer = DMDG * Weffcj
-        if (geo == 0):
-            Ps = nuEndS * PSiso + nuIntS * PSsha
-            Pd = nuEndD * PDiso + nuIntD * PDsha
-            As = nuEndS * ASiso + nuIntS * ASsha
-            Ad = nuEndD * ADiso + nuIntD * ADsha
-        elif (geo == 1):
-            Ps = nuEndS * PSiso + nuIntS * PSsha
-            Pd = (nuEndD + nuIntD) * PDsha
-            As = nuEndS * ASiso + nuIntS * ASsha
-            Ad = (nuEndD + nuIntD) * ADsha
-        elif (geo == 2):
-            Ps = (nuEndS + nuIntS) * PSsha
-            Pd = nuEndD * PDiso + nuIntD * PDsha
-            As = (nuEndS + nuIntS) * ASsha
-            Ad = nuEndD * ADiso + nuIntD * ADsha
-        elif (geo == 3):
-            Ps = (nuEndS + nuIntS) * PSsha
-            Pd = (nuEndD + nuIntD) * PDsha
-            As = (nuEndS + nuIntS) * ASsha
-            Ad = (nuEndD + nuIntD) * ADsha
-        elif (geo == 4):
-            Ps = nuEndS * PSiso + nuIntS * PSsha
-            Pd = nuEndD * PDmer + nuIntD * PDsha
-            As = nuEndS * ASiso + nuIntS * ASsha
-            Ad = nuEndD * ADmer + nuIntD * ADsha
-        elif (geo == 5):
-            Ps = (nuEndS + nuIntS) * PSsha
-            Pd = nuEndD * PDmer + nuIntD * PDsha
-            As = (nuEndS + nuIntS) * ASsha
-            Ad = nuEndD * ADmer + nuIntD * ADsha
-        elif (geo == 6):
-            Ps = nuEndS * PSmer + nuIntS * PSsha
-            Pd = nuEndD * PDiso + nuIntD * PDsha
-            As = nuEndS * ASmer + nuIntS * ASsha
-            Ad = nuEndD * ADiso + nuIntD * ADsha
-        elif (geo == 7):
-            Ps = nuEndS * PSmer + nuIntS * PSsha
-            Pd = (nuEndD + nuIntD) * PDsha
-            As = nuEndS * ASmer + nuIntS * ASsha
-            Ad = (nuEndD + nuIntD) * ADsha
-        elif (geo == 8):
-            Ps = nuEndS * PSmer + nuIntS * PSsha
-            Pd = nuEndD * PDmer + nuIntD * PDsha
-            As = nuEndS * ASmer + nuIntS * ASsha
-            Ad = nuEndD * ADmer + nuIntD * ADsha
-        elif (geo == 9):
-            Ps = PSiso + (nf - 1.0) * PSsha
-            Pd = nf * PDsha
-            As = ASiso + (nf - 1.0) * ASsha
-            Ad = nf * ADsha
-        elif (geo == 10):
-            Ps = nf * PSsha
-            Pd = PDiso + (nf - 1.0) * PDsha
-            As = nf * ASsha
-            Ad = ADiso + (nf - 1.0) * ADsha
-        else:
-            print("Warning: (instance %M) Specified GEO=%d not matched (self.BSIMBULKPAeffGeo), PS,PD,AS,AD set to zero.", geo)
-            Ps = 0
-            Pd = 0
-            As = 0
-            Ad = 0
-        return Ps, Pd, As, Ad
-
-    def calc(self, **param):
+    def _calc(self, **param):
+        self.par_update(**param)
         # Bias-independent calculations
         if (self.TYPE == self.ntype):
             self.devsign = 1
@@ -10902,7 +10911,7 @@ class bsimbulk:
         self.epsratio = self.EPSRSUB / self.EPSROX
 
         # Physical oxide thickness
-        if ("TOXP" not in param.keys()):
+        if self.TOXPgiven == False:
             self.BSIMBULKTOXP = (self.TOXE * self.EPSROX / 3.9) - self.DTOX
         else:
             self.BSIMBULKTOXP = self.TOXP
@@ -11351,14 +11360,14 @@ class bsimbulk:
         self.DMDGeff = self.DMDG - self.DMCGT
 
         # Processing S/D resistances and conductances
-        if "NRS" in param.keys():
+        if self.NRSgiven == True:
             self.RSourceGeo = self.RSH * self.NRS
         elif (self.RGEOMOD > 0 and self.RSH > 0.0):
             self.RSourceGeo = self.BSIMBULKRdseffGeo(self.NF, self.GEOMOD, self.RGEOMOD, self.MINZ, self.Weff, self.RSH, self.DMCGeff, self.DMCIeff, self.DMDGeff, 1)
         else:
             self.RSourceGeo = 0.0
 
-        if "NRD" in param.keys():
+        if self.NRDgiven == True:
             self.RDrainGeo = self.RSH * self.NRD
         elif (self.RGEOMOD > 0 and self.RSH > 0.0):
             self.RDrainGeo = self.BSIMBULKRdseffGeo(self.NF, self.GEOMOD, self.RGEOMOD, self.MINZ, self.Weff, self.RSH, self.DMCGeff, self.DMCIeff, self.DMDGeff, 0)
@@ -11402,9 +11411,9 @@ class bsimbulk:
             self.Rbps = self.RBPS
             self.Rbdb = self.RBDB
             self.Rbsb = self.RBSB
-            if ("RBPS0" not in param.keys()) or ("RBPD0" not in param.keys()):
+            if self.RBPS0given == False or self.RBPD0given == False:
                 self.Bodymode = 1
-            elif ("RBSBX0" not in param.keys()) and ("RBSBY0" not in param.keys()) or ("RBDBX0" not in param.keys()) and ("RBDBY0" not in param.keys()):
+            elif self.RBSBX0given == False and self.RBSBY0given == False or self.RBDBX0given == False and self.RBDBY0given == False:
                 self.Bodymode = 3
             if (self.RBODYMOD == 2):
                 if (self.Bodymode == 5):
@@ -11635,21 +11644,21 @@ class bsimbulk:
 
         # Effective S/D junction area and perimeters
         self.temp_PSeff, self.temp_PDeff, self.temp_ASeff, self.temp_ADeff = self.BSIMBULKPAeffGeo(self.NF, self.GEOMOD, self.MINZ, self.Weffcj, self.DMCGeff, self.DMCIeff, self.DMDGeff)
-        if "AS" in param.keys():
+        if self.ASgiven == True:
             self.ASeff = self.AS * self.WMLT * self.LMLT
         else:
             self.ASeff = self.temp_ASeff
         if (self.ASeff < 0.0):
             print("Warning: (instance %M) ASeff = %e is negative. Set to 0.0.", ASeff)
             self.ASeff = 0.0
-        if "AD" in param.keys():
+        if self.ADgiven == True:
             self.ADeff = self.AD * self.WMLT * self.LMLT
         else:
             self.ADeff = self.temp_ADeff
         if (self.ADeff < 0.0):
             print("Warning: (instance %M) ADeff = %e is negative. Set to 0.0.", ADeff)
             self.ADeff = 0.0
-        if "PS" in param.keys():
+        if self.PSgiven == True:
             if (self.PERMOD == 0):
                 # PS does not include gate-edge perimeters
                 self.PSeff = self.PS * self.WMLT
@@ -11661,7 +11670,7 @@ class bsimbulk:
             if (self.PSeff < 0.0):
                 print("Warning: (instance %M) PSeff = %e is negative. Set to 0.0.", PSeff)
                 self.PSeff = 0.0
-        if "PD" in param.keys():
+        if self.PDgiven == True:
             if (self.PERMOD == 0):
                 # PD does not include gate-edge perimeters
                 self.PDeff = self.PD * self.WMLT
@@ -11774,8 +11783,8 @@ class bsimbulk:
             self.local_sca = self.SCA
             self.local_scb = self.SCB
             self.local_scc = self.SCC
-            if ("SCA" not in param.keys()) and ("SCB" not in param.keys()) and ("SCC" not in param.keys()):
-                if ("SC" in param.keys()) and (self.SC > 0.0):
+            if self.SCAgiven == False and self.SCBgiven == False and self.SCCgiven == False:
+                if self.SCgiven == True and self.SC > 0.0:
                     self.T1        = self.SC + self.Wdrn
                     self.T2        = 1.0 / self.SCREF
                     self.local_sca = self.SCREF * self.SCREF / (self.SC * self.T1)
@@ -12154,6 +12163,8 @@ class bsimbulk:
             self.Dvsat = 0.5 * (self.T2 + (1.0 / self.T2))
         self.Dptwg = self.Dvsat
 
+        self.Rsource = 0.0
+        self.Rdrain = 0.0
         # S/D series resistances, Ref: BSIM4
         if (self.RDSMOD == 1):
             self.Rdsi = 0.0
@@ -12862,7 +12873,7 @@ class bsimbulk:
         self.QGi        = -(self.QBi + self.QSi + self.QDi)
 
         # Outer fringing capacitances
-        if ("CF" not in param.keys()):
+        if self.CFgiven == False:
             self.CF_i = 2.0 * self.EPSROX * self.EPS0 / self.M_PI * self.lln(self.CFRCOEFF * (1.0 + 0.4e-6 / self.TOXE))
         self.Cgsof = self.CGSO + self.CF_i
         self.Cgdof = self.CGDO + self.CF_i
@@ -12950,54 +12961,3 @@ class bsimbulk:
             self.ids      = self.ids_edge + self.ids
         return self.ids
 
-    def calc_rdsmod(self, z):
-        x, y = z
-        f = np.zeros(2)
-        f[0] = self.VD - x - self.calc(**{"VD":x, "VS":y}) * self.Rdrain     # Rdrain
-        f[1] = y - self.VS - self.calc(**{"VD":x, "VS":y}) * self.Rsource    # Rsource
-        return f
-
-    def calc_ext(self):
-        #print(self.Rdrain, self.Rsource)
-        self.VDI, self.VSI = fsolve(self.calc_rdsmod, [self.VD, self.VS])
-        #print(self.VDI, self.VSI)
-        #return self.calc_instrinsic({"VDI":self.VDI,"VSI":self.VSI})
-        return self.ids
-
-
-def read_mdl(file):
-    mdl = {}
-    with open(file,'r') as f:
-        lines = f.read().splitlines()
-    for line in lines:
-        pair = re.findall(r"\w+\s*=\s*[+-]*\d+\.*\d*[Ee]*[+-]*\d*", line)
-        for item in pair:
-            par, val = re.split(r"\s*=\s*", item)
-            mdl[par] = float(val)
-    return mdl
-
-filepath = "modelcard.l"
-model = read_mdl(filepath)
-
-biasT = {
-    "VD": 1.0,
-    "VG": 1.0,
-    "VS": 0.0,
-    "VB": 0.0,
-    "TEMP": -40.0,
-    "W": 1e-5,
-    "L": 1e-5,
-}
-
-yy=bsimbulk(**model, **biasT, **{"A21":-0.01,"RDSMOD":0})
-print(yy.calc_ext())
-pp=bsimbulk(**model, **biasT, **{"A21":-0.01,"RDSMOD":1})
-print(pp.calc_ext())
-zz=bsimbulk(**model, **biasT, **{"A21":-0.01,"RDSMOD":2})
-print(zz.calc_ext())
-
-sweep = np.arange(0,1.1,0.1)
-print(f"{'VG':4}", f"{'ids':15}", f"{'ueff':15}")
-for x in sweep:
-    yy.param_update(**{'VG':x})
-    print(f"{x:.2f}", f"{yy.ids:.9e}", f"{yy.ueff:.9e}")
